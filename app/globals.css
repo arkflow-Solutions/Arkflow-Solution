@@ -1,0 +1,271 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============================================================
+   ArkFlow Design System — global tokens
+   Palette locked by Founder Bible Ch. 2.13.
+   ============================================================ */
+
+:root {
+  --ink: #0a0e1a;
+  --surface: #0f172a;
+  --blue: #1a3cff;
+  --blue-soft: #3b82f6;
+  --platinum: #d1d5db;
+
+  /* Text roles */
+  --text-primary: #ffffff;
+  --text-secondary: rgba(209, 213, 219, 0.92);
+  --text-tertiary: rgba(209, 213, 219, 0.6);
+
+  /* Hairlines — thin borders, never heavy */
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-strong: rgba(255, 255, 255, 0.14);
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    @apply bg-ink text-white font-sans;
+  }
+
+  ::selection {
+    background: rgba(26, 60, 255, 0.35);
+    color: #fff;
+  }
+
+  /* Accessibility: visible focus, always */
+  :focus-visible {
+    outline: 2px solid var(--blue-soft);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+@layer base {
+  /* Quiet dark scrollbar — the frame matches the painting */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(209, 213, 219, 0.18) transparent;
+  }
+  *::-webkit-scrollbar { width: 10px; height: 10px; }
+  *::-webkit-scrollbar-thumb {
+    background: rgba(209, 213, 219, 0.18);
+    border-radius: 9999px;
+    border: 3px solid var(--ink);
+  }
+  *::-webkit-scrollbar-track { background: transparent; }
+}
+
+@layer components {
+  /* Nav link: hairline underline grows from the left */
+  .nav-link {
+    position: relative;
+  }
+  .nav-link::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -4px;
+    height: 1px;
+    width: 100%;
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .nav-link:hover::after,
+  .nav-link:focus-visible::after {
+    transform: scaleX(1);
+  }
+
+  /* Card material: a 1px light catching the top edge */
+  .card-toplight {
+    position: relative;
+  }
+  .card-toplight::before {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 1px;
+    border-radius: 1rem 1rem 0 0;
+    background: linear-gradient(
+      90deg,
+      transparent 8%,
+      rgba(255, 255, 255, 0.09) 50%,
+      transparent 92%
+    );
+    pointer-events: none;
+  }
+
+  /* Hairline divider */
+  .hairline {
+    @apply border-t;
+    border-color: var(--border-subtle);
+  }
+
+  /* Signature: the flow line — a thin vertical connector with a blue node.
+     Used in section transitions and process diagrams. Use once per view. */
+  .flow-line {
+    position: relative;
+    width: 1px;
+    background: linear-gradient(
+      to bottom,
+      transparent,
+      rgba(59, 130, 246, 0.5),
+      transparent
+    );
+  }
+  .flow-line::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 6px;
+    height: 6px;
+    border-radius: 9999px;
+    background: var(--blue);
+    box-shadow: 0 0 16px rgba(26, 60, 255, 0.6);
+  }
+}
+
+/* ============================================================
+   Phase 2.5 — refinement layer
+   ============================================================ */
+
+@layer base {
+  /* Elegant page entrance: the ink lifts, once */
+  body {
+    animation: page-in 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  @keyframes page-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+}
+
+@layer base {
+  /* Quiet dark scrollbar — the frame matches the painting */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(209, 213, 219, 0.18) transparent;
+  }
+  *::-webkit-scrollbar { width: 10px; height: 10px; }
+  *::-webkit-scrollbar-thumb {
+    background: rgba(209, 213, 219, 0.18);
+    border-radius: 9999px;
+    border: 3px solid var(--ink);
+  }
+  *::-webkit-scrollbar-track { background: transparent; }
+}
+
+@layer components {
+  /* Nav link: hairline underline grows from the left */
+  .nav-link {
+    position: relative;
+  }
+  .nav-link::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -4px;
+    height: 1px;
+    width: 100%;
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .nav-link:hover::after,
+  .nav-link:focus-visible::after {
+    transform: scaleX(1);
+  }
+
+  /* Card material: a 1px light catching the top edge */
+  .card-toplight {
+    position: relative;
+  }
+  .card-toplight::before {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 1px;
+    border-radius: 1rem 1rem 0 0;
+    background: linear-gradient(
+      90deg,
+      transparent 8%,
+      rgba(255, 255, 255, 0.09) 50%,
+      transparent 92%
+    );
+    pointer-events: none;
+  }
+
+  /* Light-catch ring: the card's hairline brightens where the pointer
+     is, as if catching a light the visitor carries. Driven by --mx/--my
+     from <Tilt>. A reflection, not a glow. */
+  .light-ring {
+    pointer-events: none;
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    padding: 1px;
+    background: radial-gradient(
+      180px circle at var(--mx, 50%) var(--my, 50%),
+      rgba(59, 130, 246, 0.45),
+      transparent 70%
+    );
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask-composite: exclude;
+    opacity: var(--ring, 0);
+    transition: opacity 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  /* Nav links: a hairline that draws itself under the word */
+  .nav-link {
+    position: relative;
+    font-size: 0.875rem;
+    color: var(--platinum);
+    transition: color 0.2s;
+    padding-bottom: 2px;
+  }
+  .nav-link::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    height: 1px;
+    width: 100%;
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .nav-link:hover {
+    color: #fff;
+  }
+  .nav-link:hover::after {
+    transform: scaleX(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body { animation: none; }
+}
