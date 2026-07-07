@@ -39,14 +39,14 @@ export default function PackagesPage() {
       {/* Full package cards with approved copy */}
       <Section className="hairline !pt-16">
         <Container>
-          <div className="grid items-start gap-6 lg:grid-cols-3">
+          <div className="grid items-stretch gap-6 lg:grid-cols-3">
             {packages.map((pkg, i) => (
-              <Reveal key={pkg.id} delay={i * 0.08}>
-                <Tilt>
+              <Reveal key={pkg.id} delay={i * 0.08} className="h-full">
+                <Tilt className="h-full">
                   <Card
                     id={pkg.id}
                     emphasis={pkg.emphasis}
-                    className={pkg.emphasis ? "lg:-mt-2" : ""}
+                    className={`flex h-full flex-col ${pkg.emphasis ? "lg:-mt-2" : ""}`}
                   >
                     <div className="flex items-center justify-between">
                       <p className="font-mono text-eyebrow uppercase text-blue-soft">
@@ -72,7 +72,10 @@ export default function PackagesPage() {
                     <p className="mt-4 font-mono text-eyebrow uppercase text-[color:var(--text-tertiary)]">
                       {pkg.priceNote}
                     </p>
-                    <div className="mt-7">
+                    {/* Pinned to the bottom so buttons align across
+                        cards regardless of how long each package's
+                        copy runs. */}
+                    <div className="mt-auto pt-7">
                       <Button
                         href="/contact"
                         variant={pkg.emphasis ? "primary" : "secondary"}

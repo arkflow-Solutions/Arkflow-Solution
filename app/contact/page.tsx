@@ -26,16 +26,16 @@ export default function ContactPage() {
 
       <Section className="hairline !pt-16">
         <Container>
-          <div className="grid items-start gap-6 lg:grid-cols-3">
+          <div className="grid items-stretch gap-6 lg:grid-cols-3">
             <Reveal>
-              <Card emphasis className="h-full">
+              <Card emphasis className="flex h-full flex-col">
                 <CalendarCheck size={22} className="text-blue-soft" aria-hidden />
                 <h2 className="mt-5 text-subheading font-medium">{contact.call.title}</h2>
                 <p className="mt-3 text-body text-[color:var(--text-secondary)]">
                   Pick a slot that suits you. The call includes a Lead Response
                   Audit on your current numbers.
                 </p>
-                <div className="mt-7">
+                <div className="mt-auto pt-7">
                   {/* CURRENT IMPLEMENTATION — VERIFY BEFORE ACTING:
                       replace href with the live GHL booking-calendar link */}
                   <Button href={contact.call.href} className="w-full" withArrow>
@@ -46,13 +46,13 @@ export default function ContactPage() {
             </Reveal>
 
             <Reveal delay={0.08}>
-              <Card className="h-full">
+              <Card className="flex h-full flex-col">
                 <MessageCircle size={22} className="text-platinum" aria-hidden />
                 <h2 className="mt-5 text-subheading font-medium">{contact.whatsapp.title}</h2>
                 <p className="mt-3 text-body text-[color:var(--text-secondary)]">
                   {contact.whatsapp.body}
                 </p>
-                <div className="mt-7">
+                <div className="mt-auto pt-7">
                   {/* CURRENT IMPLEMENTATION — replace with the live wa.me link */}
                   <Button href={contact.whatsapp.href} variant="secondary" className="w-full">
                     Message on WhatsApp
@@ -62,13 +62,13 @@ export default function ContactPage() {
             </Reveal>
 
             <Reveal delay={0.16}>
-              <Card className="h-full">
+              <Card className="flex h-full flex-col">
                 <Mail size={22} className="text-platinum" aria-hidden />
                 <h2 className="mt-5 text-subheading font-medium">{contact.email.title}</h2>
                 <p className="mt-3 text-body text-[color:var(--text-secondary)]">
                   For anything longer-form — proposals, partnerships, press.
                 </p>
-                <div className="mt-7">
+                <div className="mt-auto pt-7">
                   <Button
                     href={`mailto:${contact.email.address}`}
                     variant="secondary"

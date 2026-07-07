@@ -35,13 +35,13 @@ export function Packages() {
           </p>
         </Reveal>
 
-        <div className="mt-16 grid items-start gap-6 lg:grid-cols-3">
+        <div className="mt-16 grid items-stretch gap-6 lg:grid-cols-3">
           {packages.map((pkg, i) => (
-            <Reveal key={pkg.id} delay={i * 0.08}>
-              <Tilt>
+            <Reveal key={pkg.id} delay={i * 0.08} className="h-full">
+              <Tilt className="h-full">
                 <Card
                   emphasis={pkg.emphasis}
-                  className={pkg.emphasis ? "lg:-mt-4 lg:pb-10" : ""}
+                  className={`flex h-full flex-col ${pkg.emphasis ? "lg:-mt-4 lg:pb-10" : ""}`}
                 >
                   <div className="flex items-center justify-between">
                     <p className="font-mono text-eyebrow uppercase text-blue-soft">
@@ -86,7 +86,9 @@ export function Packages() {
                     ))}
                   </ul>
 
-                  <div className="mt-8">
+                  {/* Pinned to the bottom so buttons align across cards
+                      regardless of how long each package's copy runs. */}
+                  <div className="mt-auto pt-8">
                     <Button
                       href={`/packages#${pkg.id}`}
                       variant={pkg.emphasis ? "primary" : "secondary"}
