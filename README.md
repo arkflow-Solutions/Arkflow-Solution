@@ -52,7 +52,6 @@ lib/use-in-view.ts    Canvas gating hook
 | `lib/content.ts` → `contact.whatsapp.href` | `wa.me/6500000000` | Live WhatsApp Business number |
 | `lib/content.ts` → `contact.email.address` | `hello@arkflow.sg` | Confirmed inbox |
 | `app/layout.tsx` + `app/sitemap.ts` + `components/seo/json-ld.tsx` | `https://arkflow.sg` | Confirmed production domain |
-| `components/layout/wordmark.tsx` | Text wordmark | Exported SVG logo asset |
 | `components/home/trust.tsx` | Logo slot comment | Client logos as case studies publish |
 
 ## Performance & accessibility posture

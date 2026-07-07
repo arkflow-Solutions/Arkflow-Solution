@@ -37,7 +37,7 @@ export function Footer() {
       <Container className="py-16 md:py-20">
         <div className="grid gap-12 md:grid-cols-[1.4fr_1fr_1fr_1fr]">
           <div>
-            <Wordmark />
+            <Wordmark size="large" />
             <p className="mt-4 max-w-xs text-small text-[color:var(--text-tertiary)]">
               Revenue Operations for Singapore service businesses. Capture,
               convert and retain more revenue.
