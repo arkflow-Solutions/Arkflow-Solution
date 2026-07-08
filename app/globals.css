@@ -266,6 +266,44 @@
   }
 }
 
+/* Package card 3D depth utilities — used by TiltCard's children to
+   sit at different Z-depths, and the shimmer sweep on the popular
+   tier. Scoped to the packages surface only. */
+.lift-1 { transform: translateZ(20px); }
+.lift-2 { transform: translateZ(34px); }
+.lift-3 { transform: translateZ(48px); }
+
+.shimmer-sweep {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  overflow: hidden;
+  pointer-events: none;
+}
+.shimmer-sweep::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -60%;
+  width: 40%;
+  height: 100%;
+  background: linear-gradient(
+    105deg,
+    transparent,
+    rgba(255, 255, 255, 0.08),
+    transparent
+  );
+  animation: shimmer-pass 5s ease-in-out infinite;
+  animation-delay: 1.4s;
+}
+@keyframes shimmer-pass {
+  0% { left: -60%; }
+  22% { left: 130%; }
+  100% { left: 130%; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   body { animation: none; }
+  .lift-1, .lift-2, .lift-3 { transform: none; }
+  .shimmer-sweep::after { animation: none; display: none; }
 }

@@ -3,10 +3,9 @@ import { Check, Minus } from "lucide-react";
 import { Container } from "@/components/ui/container";
 import { Section } from "@/components/ui/section";
 import { Eyebrow } from "@/components/ui/eyebrow";
-import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Reveal } from "@/components/motion/reveal";
-import { Tilt } from "@/components/motion/tilt";
+import { TiltCard } from "@/components/motion/tilt-card";
 import { PageHero } from "@/components/pages/page-hero";
 import { CtaBand } from "@/components/pages/cta-band";
 import {
@@ -17,6 +16,7 @@ import {
   upgradeRules,
   boundaries,
   pricingPolicy,
+  accents,
 } from "@/lib/content";
 
 export const metadata: Metadata = {
@@ -40,42 +40,59 @@ export default function PackagesPage() {
       <Section className="hairline !pt-16">
         <Container>
           <div className="grid items-stretch gap-6 lg:grid-cols-3">
-            {packages.map((pkg, i) => (
-              <Reveal key={pkg.id} delay={i * 0.08} className="h-full">
-                <Tilt className="h-full">
-                  <Card
+            {packages.map((pkg, i) => {
+              const accent = accents[pkg.accent as keyof typeof accents];
+              return (
+              <Reveal key={pkg.id} delay={i * 0.1} className="h-full">
+                <TiltCard glow={accent.glow} emphasis={pkg.emphasis} className={pkg.emphasis ? "lg:-mt-2" : ""}>
+                  <div
                     id={pkg.id}
-                    emphasis={pkg.emphasis}
-                    className={`flex h-full flex-col ${pkg.emphasis ? "lg:-mt-2" : ""}`}
+                    className="relative flex h-full flex-col overflow-hidden rounded-card border bg-surface p-8 shadow-card transition-colors duration-300 ease-premium"
+                    style={{
+                      borderColor: pkg.emphasis ? accent.hex : "var(--border-subtle)",
+                      transformStyle: "preserve-3d",
+                    }}
                   >
-                    <div className="flex items-center justify-between">
-                      <p className="font-mono text-eyebrow uppercase text-blue-soft">
+                    <span
+                      aria-hidden
+                      className="absolute inset-x-0 top-0 h-[3px] rounded-t-card"
+                      style={{
+                        background: `linear-gradient(90deg, transparent, ${accent.hex}, transparent)`,
+                        transform: "translateZ(2px)",
+                      }}
+                    />
+                    {pkg.emphasis && <span aria-hidden className="shimmer-sweep" />}
+                    <div className="lift-1 flex items-center justify-between" style={{ transformStyle: "preserve-3d" }}>
+                      <p
+                        className="font-mono text-eyebrow uppercase"
+                        style={{ color: accent.hex }}
+                      >
                         {pkg.name}
                       </p>
                       {"badge" in pkg && pkg.badge && (
-                        <span className="rounded-full bg-blue px-3 py-1 font-mono text-eyebrow uppercase text-white">
+                        <span
+                          className="rounded-full px-3 py-1 font-mono text-eyebrow uppercase text-ink"
+                          style={{ backgroundColor: accent.hex }}
+                        >
                           {pkg.badge}
                         </span>
                       )}
                     </div>
-                    <h2 className="mt-4 text-subheading font-medium">
+                    <h2 className="lift-1 mt-4 text-subheading font-medium">
                       {pkg.headline}
                     </h2>
-                    <p className="mt-5 flex items-baseline gap-2">
+                    <p className="lift-2 mt-5 flex items-baseline gap-2">
                       <span className="text-heading font-semibold">{pkg.price}</span>
                       <span className="text-small text-[color:var(--text-tertiary)]">/month</span>
                     </p>
                     {/* Approved copy — Canonical Package Specification §11 */}
-                    <p className="mt-5 text-body text-[color:var(--text-secondary)]">
+                    <p className="lift-1 mt-5 text-body text-[color:var(--text-secondary)]">
                       {pkg.copy}
                     </p>
-                    <p className="mt-4 font-mono text-eyebrow uppercase text-[color:var(--text-tertiary)]">
+                    <p className="lift-1 mt-4 font-mono text-eyebrow uppercase text-[color:var(--text-tertiary)]">
                       {pkg.priceNote}
                     </p>
-                    {/* Pinned to the bottom so buttons align across
-                        cards regardless of how long each package's
-                        copy runs. */}
-                    <div className="mt-auto pt-7">
+                    <div className="lift-3 mt-auto pt-7">
                       <Button
                         href="/contact"
                         variant={pkg.emphasis ? "primary" : "secondary"}
@@ -85,10 +102,11 @@ export default function PackagesPage() {
                         Start with {pkg.name}
                       </Button>
                     </div>
-                  </Card>
-                </Tilt>
+                  </div>
+                </TiltCard>
               </Reveal>
-            ))}
+              );
+            })}
           </div>
           <Reveal delay={0.2}>
             <p className="mt-10 text-center font-mono text-eyebrow uppercase text-[color:var(--text-tertiary)]">

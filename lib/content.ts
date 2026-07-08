@@ -12,7 +12,7 @@ export const guarantee = {
   fullText:
     "If ArkFlow does not reduce the client's average lead response time to under 90 seconds within the first 30 days after successful onboarding, ArkFlow will refund the client's first monthly subscription fee. This is ArkFlow's only guarantee.",
   summary:
-    "If your average lead response time isn't under 90 seconds within 30 days of onboarding, your first month is refunded — checked proactively at Day 30, so you never have to ask.",
+    "Response time not under 90 seconds within 30 days? Your first month is refunded — checked at Day 30, no need to ask.",
 };
 
 export const packages = [
@@ -30,6 +30,7 @@ export const packages = [
       "Monthly performance report",
     ],
     emphasis: false,
+    accent: "emerald",
   },
   {
     id: "operate",
@@ -45,6 +46,7 @@ export const packages = [
       "Invoicing & collection (InvoiceFlow)",
     ],
     emphasis: true,
+    accent: "violet",
   },
   {
     id: "scale",
@@ -59,8 +61,40 @@ export const packages = [
       "Past-customer reactivation & monthly strategy call",
     ],
     emphasis: false,
+    accent: "blue",
   },
 ] as const;
+
+/* Accent hex per tier — used by the package cards for the coloured
+   header rule, price, and tick marks. Applied via inline style so the
+   values stay data-driven. Canonical facts unchanged; presentation only. */
+export const accents = {
+  emerald: { hex: "#34D399", glow: "rgba(52,211,153,0.10)" },
+  violet: { hex: "#A78BFA", glow: "rgba(167,139,250,0.12)" },
+  blue: { hex: "#3B82F6", glow: "rgba(59,130,246,0.10)" },
+} as const;
+
+/* "What's Included" — icon grid replacing dense feature prose.
+   Every item uses canonical feature names and canonical tier scope. */
+export const packageIncludes = [
+  { icon: "MessageSquare", name: "Instant Response", tier: "All", body: "Every WhatsApp enquiry answered in under 90 seconds, in your voice." },
+  { icon: "Users", name: "CRM & Pipeline", tier: "All", body: "Every contact on one pipeline — no lead lives in a phone." },
+  { icon: "BarChart3", name: "Performance Reporting", tier: "All", body: "A monthly report on what the system captured and converted." },
+  { icon: "CalendarCheck", name: "BookingBot", tier: "Operate+", body: "Booking, reschedules and reminders, synced to your calendar." },
+  { icon: "Receipt", name: "InvoiceFlow", tier: "Operate+", body: "Invoices sent and chased automatically until paid." },
+  { icon: "Globe", name: "Professional Website", tier: "Scale", body: "A credible site that feeds enquiries into the same system." },
+  { icon: "Phone", name: "AI Voice Agent", tier: "Scale", body: "Every call answered in two rings; only the real ones reach you." },
+  { icon: "RefreshCw", name: "Reactivation", tier: "Scale", body: "Past customers brought back — revenue already earned once." },
+  { icon: "UserCheck", name: "Strategy Call", tier: "Scale", body: "A monthly 30-minute working session on your numbers." },
+];
+
+/* Reassurance strip — canonical facts, stated as four quiet promises. */
+export const packageAssurances = [
+  { icon: "ArrowUpRight", title: "Upgrade anytime", body: "Start anywhere, move up as you grow — no second setup fee." },
+  { icon: "Wrench", title: "One-time setup", body: "S$888 covers building and testing your system, once." },
+  { icon: "Unlock", title: "No long lock-in", body: "6-month minimum, then month-to-month on 30 days' notice." },
+  { icon: "Timer", title: "30-Day Response Guarantee", body: "Under 90 seconds within 30 days, or your first month is refunded." },
+];
 
 export const packageTerms = {
   implementationFee: "S$888 one-time implementation fee",
@@ -71,38 +105,38 @@ export const packageTerms = {
 export const problems = [
   {
     title: "Slow response",
-    body: "An enquiry answered tomorrow morning is a patient booked somewhere else tonight. Speed is the first filter every prospect applies — before price, before reviews.",
+    body: "Answered tomorrow morning is booked elsewhere tonight. Speed is the first filter — before price, before reviews.",
   },
   {
     title: "Missed enquiries",
-    body: "Messages arrive at 9pm, on Sundays, mid-treatment. The ones nobody sees never make it into any report — they simply vanish.",
+    body: "9pm, Sundays, mid-treatment. The messages nobody sees never reach a report — they just vanish.",
   },
   {
     title: "Manual admin",
-    body: "Confirmations typed by hand. Reminders sent when someone remembers. Hours every week spent on work a system should be doing silently.",
+    body: "Confirmations typed by hand. Reminders sent when someone remembers. Hours lost to work a system should run silently.",
   },
   {
     title: "Poor follow-up",
-    body: "No-shows that a two-hour reminder would have prevented. Quiet leads that one more message would have converted. Follow-up fails when it depends on memory.",
+    body: "No-shows a reminder would have caught. Leads one message would have closed. Follow-up fails when it runs on memory.",
   },
   {
     title: "Disconnected systems",
-    body: "The calendar doesn't talk to the CRM. The CRM doesn't talk to invoicing. Every gap between tools is a place where revenue falls through.",
+    body: "Calendar, CRM, invoicing — none of them talking. Every gap between tools is where revenue falls through.",
   },
 ];
 
 export const journey = [
-  { stage: "Lead", body: "An enquiry arrives — WhatsApp, web form, or phone." },
-  { stage: "Respond", body: "Answered in under 90 seconds, any hour, in your clinic's voice." },
-  { stage: "Book", body: "Qualified and booked straight into your calendar, with reminders set." },
-  { stage: "Operate", body: "No-show recovery, invoicing and payment follow-up run themselves." },
-  { stage: "Scale", body: "A website, voice agent and reactivation system compound the results." },
+  { stage: "Lead", body: "An enquiry arrives — WhatsApp, web, or phone." },
+  { stage: "Respond", body: "Answered in under 90 seconds, in your clinic's voice." },
+  { stage: "Book", body: "Qualified, booked into your calendar, reminders set." },
+  { stage: "Operate", body: "No-show recovery, invoicing and follow-up run themselves." },
+  { stage: "Scale", body: "Website, voice agent and reactivation compound the results." },
 ];
 
 export const industries = {
   primary: {
     name: "Aesthetic Clinics",
-    body: "Built first for Singapore aesthetic clinics: HSA-conscious conversation design, treatment-menu-aware booking, and deposit-friendly billing. The system never gives medical advice, never makes outcome claims, and hands anything clinical to your team immediately.",
+    body: "Built first for Singapore aesthetic clinics: HSA-conscious messaging, treatment-aware booking, deposit-friendly billing. Never gives medical advice — anything clinical goes straight to your team.",
   },
   secondary: [
     { name: "Psychology Clinics", body: "Sensitive, discreet intake and scheduling." },
@@ -116,11 +150,11 @@ export const industries = {
 export const howItWorks = [
   {
     step: "Discovery",
-    body: "A 30-minute call. We map your enquiry-to-payment flow and confirm the right package — no obligation.",
+    body: "A 30-minute call. We map your enquiry-to-payment flow and confirm the right package.",
   },
   {
     step: "Implementation",
-    body: "We build your system: WhatsApp AI trained on your services and tone, calendar, pipeline and billing configured.",
+    body: "We build it: WhatsApp AI trained on your services and tone, calendar, pipeline and billing configured.",
   },
   {
     step: "Testing",
@@ -128,11 +162,11 @@ export const howItWorks = [
   },
   {
     step: "Go Live",
-    body: "Your system goes live within 72 hours of your completed intake. From the first message, every enquiry is captured.",
+    body: "Live within 72 hours of intake. From the first message, every enquiry is captured.",
   },
   {
     step: "30-Day Optimisation",
-    body: "We monitor, tune, and report. At Day 30 we measure response time against the guarantee — proactively, so you never have to ask.",
+    body: "We monitor, tune, report. At Day 30 we measure response time against the guarantee — proactively.",
   },
 ];
 

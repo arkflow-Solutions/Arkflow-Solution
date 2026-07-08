@@ -1,28 +1,51 @@
-import { Check } from "lucide-react";
+import {
+  Check,
+  MessageSquare,
+  Users,
+  BarChart3,
+  CalendarCheck,
+  Receipt,
+  Globe,
+  Phone,
+  RefreshCw,
+  UserCheck,
+  ArrowUpRight,
+  Wrench,
+  Unlock,
+  Timer,
+} from "lucide-react";
 import { Container } from "@/components/ui/container";
 import { Section } from "@/components/ui/section";
 import { Eyebrow } from "@/components/ui/eyebrow";
-import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Reveal } from "@/components/motion/reveal";
-import { Tilt } from "@/components/motion/tilt";
-import { packages, packageTerms, guarantee } from "@/lib/content";
+import { TiltCard } from "@/components/motion/tilt-card";
+import {
+  packages,
+  packageTerms,
+  accents,
+  packageIncludes,
+  packageAssurances,
+} from "@/lib/content";
 
 /**
- * Package preview — copy and facts verbatim from the Canonical Package
- * Specification v1.0 (§10 matrix, §11 website copy). Operate is the
- * visually emphasised default: raised, blue hairline, and a faint
- * ambient light behind it — depth, not glow.
+ * Package preview — facts and pricing verbatim from the Canonical
+ * Package Specification v1.0. Presentation: each tier carries its own
+ * accent colour (emerald / violet / blue) plus pointer-driven 3D depth
+ * via TiltCard — a restrained ~8° tilt with parallax layers, a
+ * coloured aura, and a glare that follows the cursor. The feature
+ * detail lives in a scannable icon grid rather than dense prose.
  */
+
+const iconMap = {
+  MessageSquare, Users, BarChart3, CalendarCheck, Receipt,
+  Globe, Phone, RefreshCw, UserCheck,
+  ArrowUpRight, Wrench, Unlock, Timer,
+} as const;
+
 export function Packages() {
   return (
     <Section id="packages" className="hairline relative overflow-hidden">
-      {/* Ambient light pooled behind the emphasised card */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute left-1/2 top-1/2 -z-10 h-[640px] w-[640px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(26,60,255,0.07)_0%,transparent_65%)]"
-      />
-
       <Container>
         <Reveal className="text-center">
           <Eyebrow>Packages</Eyebrow>
@@ -30,91 +53,179 @@ export function Packages() {
             Three packages. One system. Pick your stage.
           </h2>
           <p className="mx-auto mt-5 max-w-prose text-lead text-[color:var(--text-secondary)]">
-            Every package builds on the one before it — nothing is ever taken
-            away as you grow, and upgrades carry no second implementation fee.
+            Every package builds on the one before it — nothing is taken away
+            as you grow, and upgrades carry no second setup fee.
           </p>
         </Reveal>
 
+        {/* Tier cards — coloured, with pointer-driven 3D depth */}
         <div className="mt-16 grid items-stretch gap-6 lg:grid-cols-3">
-          {packages.map((pkg, i) => (
-            <Reveal key={pkg.id} delay={i * 0.08} className="h-full">
-              <Tilt className="h-full">
-                <Card
+          {packages.map((pkg, i) => {
+            const accent = accents[pkg.accent as keyof typeof accents];
+            return (
+              <Reveal key={pkg.id} delay={i * 0.1} className="h-full">
+                <TiltCard
+                  glow={accent.glow}
                   emphasis={pkg.emphasis}
-                  className={`flex h-full flex-col ${pkg.emphasis ? "lg:-mt-4 lg:pb-10" : ""}`}
+                  className={pkg.emphasis ? "lg:-mt-4" : ""}
                 >
-                  <div className="flex items-center justify-between">
-                    <p className="font-mono text-eyebrow uppercase text-blue-soft">
-                      {pkg.name}
-                    </p>
-                    {"badge" in pkg && pkg.badge && (
-                      <span className="rounded-full bg-blue px-3 py-1 font-mono text-eyebrow uppercase text-white">
-                        {pkg.badge}
-                      </span>
+                  <div
+                    id={pkg.id}
+                    className={`relative flex h-full flex-col overflow-hidden rounded-card border bg-surface p-8 shadow-card transition-colors duration-300 ease-premium ${
+                      pkg.emphasis ? "lg:pb-10" : ""
+                    }`}
+                    style={{
+                      borderColor: pkg.emphasis
+                        ? accent.hex
+                        : "var(--border-subtle)",
+                      transformStyle: "preserve-3d",
+                    }}
+                  >
+                    <span
+                      aria-hidden
+                      className="absolute inset-x-0 top-0 h-[3px] rounded-t-card"
+                      style={{
+                        background: `linear-gradient(90deg, transparent, ${accent.hex}, transparent)`,
+                        transform: "translateZ(2px)",
+                      }}
+                    />
+                    {pkg.emphasis && (
+                      <span aria-hidden className="shimmer-sweep" />
                     )}
-                  </div>
 
-                  <h3 className="mt-4 text-subheading font-medium">
-                    {pkg.headline}
-                  </h3>
-
-                  <p className="mt-5 flex items-baseline gap-2">
-                    <span className="text-heading font-semibold">
-                      {pkg.price}
-                    </span>
-                    <span className="text-small text-[color:var(--text-tertiary)]">
-                      /month
-                    </span>
-                  </p>
-                  <p className="mt-2 text-small text-[color:var(--text-tertiary)]">
-                    {pkg.priceNote}
-                  </p>
-
-                  <ul className="mt-7 space-y-3">
-                    {pkg.features.map((f) => (
-                      <li
-                        key={f}
-                        className="flex gap-3 text-small text-[color:var(--text-secondary)]"
-                      >
-                        <Check
-                          size={16}
-                          className="mt-0.5 shrink-0 text-success"
-                          aria-hidden
-                        />
-                        {f}
-                      </li>
-                    ))}
-                  </ul>
-
-                  {/* Pinned to the bottom so buttons align across cards
-                      regardless of how long each package's copy runs. */}
-                  <div className="mt-auto pt-8">
-                    <Button
-                      href={`/packages#${pkg.id}`}
-                      variant={pkg.emphasis ? "primary" : "secondary"}
-                      className="w-full"
-                      withArrow={pkg.emphasis}
+                    <div
+                      className="lift-1 flex items-center justify-between"
+                      style={{ transformStyle: "preserve-3d" }}
                     >
-                      Explore {pkg.name}
-                    </Button>
+                      <p
+                        className="font-mono text-eyebrow uppercase"
+                        style={{ color: accent.hex }}
+                      >
+                        {pkg.name}
+                      </p>
+                      {"badge" in pkg && pkg.badge && (
+                        <span
+                          className="rounded-full px-3 py-1 font-mono text-eyebrow uppercase text-ink"
+                          style={{ backgroundColor: accent.hex }}
+                        >
+                          {pkg.badge}
+                        </span>
+                      )}
+                    </div>
+
+                    <h3 className="lift-1 mt-4 text-subheading font-medium">
+                      {pkg.headline}
+                    </h3>
+
+                    <p className="lift-2 mt-5 flex items-baseline gap-2">
+                      <span className="text-heading font-semibold">
+                        {pkg.price}
+                      </span>
+                      <span className="text-small text-[color:var(--text-tertiary)]">
+                        /month
+                      </span>
+                    </p>
+                    <p className="lift-1 mt-2 text-small text-[color:var(--text-tertiary)]">
+                      {pkg.priceNote}
+                    </p>
+
+                    <ul className="lift-1 mt-7 space-y-3">
+                      {pkg.features.map((f) => (
+                        <li
+                          key={f}
+                          className="flex gap-3 text-small text-[color:var(--text-secondary)]"
+                        >
+                          <Check
+                            size={16}
+                            className="mt-0.5 shrink-0"
+                            style={{ color: accent.hex }}
+                            aria-hidden
+                          />
+                          {f}
+                        </li>
+                      ))}
+                    </ul>
+
+                    <div className="lift-3 mt-auto pt-8">
+                      <Button
+                        href={`/packages#${pkg.id}`}
+                        variant={pkg.emphasis ? "primary" : "secondary"}
+                        className="w-full"
+                        withArrow={pkg.emphasis}
+                      >
+                        Explore {pkg.name}
+                      </Button>
+                    </div>
                   </div>
-                </Card>
-              </Tilt>
-            </Reveal>
-          ))}
+                </TiltCard>
+              </Reveal>
+            );
+          })}
         </div>
 
-        <Reveal delay={0.2}>
-          <div className="mx-auto mt-12 flex max-w-3xl flex-col items-center gap-2 text-center">
-            <p className="font-mono text-eyebrow uppercase text-[color:var(--text-tertiary)]">
-              {packageTerms.implementationFee}&ensp;·&ensp;
-              {packageTerms.minimumTerm}
-            </p>
-            <p className="mt-3 max-w-prose text-small text-[color:var(--text-secondary)]">
-              Every package is backed by the {guarantee.name}: {guarantee.summary}
-            </p>
+        {/* Terms line */}
+        <Reveal delay={0.15}>
+          <p className="mt-10 text-center font-mono text-eyebrow uppercase text-[color:var(--text-tertiary)]">
+            {packageTerms.implementationFee}&ensp;·&ensp;{packageTerms.minimumTerm}
+          </p>
+        </Reveal>
+
+        {/* What's included — icon grid replacing dense feature prose */}
+        <Reveal delay={0.05}>
+          <div className="mt-24">
+            <Eyebrow>What&apos;s included</Eyebrow>
+            <h3 className="mt-4 max-w-2xl text-subheading font-medium">
+              One connected system, switched on by tier
+            </h3>
           </div>
         </Reveal>
+        <div className="mt-10 grid gap-x-10 gap-y-8 sm:grid-cols-2 lg:grid-cols-3">
+          {packageIncludes.map((item, i) => {
+            const Icon = iconMap[item.icon as keyof typeof iconMap];
+            return (
+              <Reveal key={item.name} delay={Math.min(i * 0.04, 0.2)}>
+                <div className="group flex gap-4">
+                  <span className="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-[10px] border border-[color:var(--border-subtle)] bg-white/[0.02] transition-transform duration-300 ease-premium group-hover:-translate-y-1 group-hover:scale-105 group-hover:border-white/20">
+                    <Icon size={18} className="text-blue-soft" aria-hidden />
+                  </span>
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <h4 className="text-body font-medium text-white">
+                        {item.name}
+                      </h4>
+                      <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-[color:var(--text-tertiary)]">
+                        {item.tier}
+                      </span>
+                    </div>
+                    <p className="mt-1 text-small text-[color:var(--text-secondary)]">
+                      {item.body}
+                    </p>
+                  </div>
+                </div>
+              </Reveal>
+            );
+          })}
+        </div>
+
+        {/* Assurance strip */}
+        <div className="mt-20 grid gap-x-8 gap-y-8 border-t border-[color:var(--border-subtle)] pt-12 sm:grid-cols-2 lg:grid-cols-4">
+          {packageAssurances.map((a, i) => {
+            const Icon = iconMap[a.icon as keyof typeof iconMap];
+            return (
+              <Reveal key={a.title} delay={Math.min(i * 0.06, 0.24)}>
+                <div>
+                  <Icon size={20} className="text-blue-soft" aria-hidden />
+                  <h4 className="mt-4 text-body font-medium text-white">
+                    {a.title}
+                  </h4>
+                  <p className="mt-2 text-small text-[color:var(--text-secondary)]">
+                    {a.body}
+                  </p>
+                </div>
+              </Reveal>
+            );
+          })}
+        </div>
       </Container>
     </Section>
   );

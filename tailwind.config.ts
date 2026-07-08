@@ -25,6 +25,13 @@ const config: Config = {
         success: "#059669",
         warning: "#D97706",
         critical: "#DC2626",
+        // Tier accents — per-package identity on the pricing surface only
+        // (founder-approved, packages section). Not for general use.
+        tier: {
+          emerald: "#34D399",
+          violet: "#A78BFA",
+          blue: "#3B82F6",
+        },
       },
       fontFamily: {
         sans: ["var(--font-sans)", "Helvetica Neue", "system-ui", "sans-serif"],
