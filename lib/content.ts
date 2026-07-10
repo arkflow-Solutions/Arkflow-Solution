@@ -349,3 +349,83 @@ export const caseStudies = {
     "Published with the clinic's sign-off, or not at all",
   ],
 };
+
+/* ================= Expandable package detail panel =================
+   Drives the in-place "Explore" experience. One component consumes
+   this per tier. All facts canonical (Canonical Package Specification
+   v1.0); feature blurbs are outcome-focused one-liners, no invented
+   capabilities. `dashboard` selects the themed laptop illustration. */
+export const packageDetails = {
+  respond: {
+    id: "respond",
+    name: "ArkFlow Respond",
+    accent: "emerald",
+    headline: "Never lose another lead to a slow reply",
+    description:
+      "Every enquiry answered in under 90 seconds, day or night — qualified, captured, and waiting for you instead of gone to the clinic down the road.",
+    price: "S$688",
+    priceUnit: "/month",
+    implementationFee: "S$888 one-time implementation",
+    minimumTerm: "6-month minimum, then month-to-month",
+    guaranteeShort: "30-Day Response Guarantee",
+    coreOutcome: "Be found. Answer instantly. Never miss a lead.",
+    dashboard: "whatsapp",
+    features: [
+      { icon: "MessageSquare", title: "AI Receptionist", body: "Answers every WhatsApp enquiry instantly, in your clinic's voice." },
+      { icon: "Filter", title: "Lead Qualification", body: "Sorts and scores each enquiry before your team even opens it." },
+      { icon: "Users", title: "CRM Pipeline", body: "Every contact on one board — no lead trapped in a phone." },
+      { icon: "Clock", title: "Under 90 Seconds", body: "Replies land in seconds, any hour, every day of the year." },
+      { icon: "BarChart3", title: "Performance Report", body: "A monthly read on what came in and what converted." },
+      { icon: "ShieldCheck", title: "HSA-Aware", body: "Never gives medical advice; anything clinical goes to your team." },
+    ],
+  },
+  operate: {
+    id: "operate",
+    name: "ArkFlow Operate",
+    accent: "violet",
+    badge: "Most popular",
+    headline: "Run your operations on autopilot",
+    description:
+      "Enquiries answered, bookings filled, reminders sent, invoices chased — the daily admin runs itself while you do the work only you can do.",
+    price: "S$988",
+    priceUnit: "/month",
+    implementationFee: "S$888 one-time implementation",
+    minimumTerm: "6-month minimum, then month-to-month",
+    guaranteeShort: "30-Day Response Guarantee",
+    coreOutcome: "Automate the admin. Convert more. Save hours a week.",
+    dashboard: "crm",
+    features: [
+      { icon: "MessageSquare", title: "Everything in Respond", body: "The full instant-response and CRM foundation, included." },
+      { icon: "CalendarCheck", title: "BookingBot", body: "Booking, reschedules and reminders, synced to your calendar." },
+      { icon: "Receipt", title: "InvoiceFlow", body: "Invoices sent and chased automatically until they're paid." },
+      { icon: "BellRing", title: "No-Show Recovery", body: "Reminders and win-backs that quietly protect your calendar." },
+      { icon: "Workflow", title: "Connected Systems", body: "Enquiry, booking and billing talking to each other, not past each other." },
+      { icon: "BarChart3", title: "Monthly Reporting", body: "One clear view of response, bookings and collections." },
+    ],
+  },
+  scale: {
+    id: "scale",
+    name: "ArkFlow Scale",
+    accent: "blue",
+    headline: "Your whole business, online and answering 24/7",
+    description:
+      "A website that brings in enquiries, an AI receptionist that answers every call, and a system quietly bringing past customers back.",
+    price: "S$1,488",
+    priceUnit: "/month",
+    implementationFee: "S$888 one-time implementation",
+    minimumTerm: "6-month minimum, then month-to-month",
+    guaranteeShort: "30-Day Response Guarantee",
+    coreOutcome: "Systemise everything. Scale without chaos.",
+    dashboard: "website",
+    features: [
+      { icon: "Workflow", title: "Everything in Operate", body: "The full automation stack, carried forward." },
+      { icon: "Globe", title: "Professional Website", body: "A credible site that feeds enquiries into the same system." },
+      { icon: "Phone", title: "AI Voice Agent", body: "Every call answered in two rings; only the real ones reach you." },
+      { icon: "RefreshCw", title: "Reactivation", body: "Past customers brought back — revenue already earned once." },
+      { icon: "BarChart3", title: "Analytics Dashboard", body: "See enquiries, bookings and revenue in one place." },
+      { icon: "UserCheck", title: "Monthly Strategy Call", body: "A 30-minute working session on your numbers." },
+    ],
+  },
+} as const;
+
+export const packageDetailOrder = ["respond", "operate", "scale"] as const;
