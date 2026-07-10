@@ -1,7 +1,11 @@
+"use client";
+
 import { Container } from "@/components/ui/container";
 import { Section } from "@/components/ui/section";
 import { Button } from "@/components/ui/button";
 import { Reveal } from "@/components/motion/reveal";
+import { useCalendly } from "@/lib/use-calendly";
+import { contact } from "@/lib/content";
 
 export function CtaBand({
   title = "Find out what your business is leaking.",
@@ -10,6 +14,7 @@ export function CtaBand({
   title?: string;
   body?: string;
 }) {
+  const openCalendly = useCalendly(contact.call.href);
   return (
     <Section className="hairline">
       <Container className="text-center">
@@ -19,7 +24,7 @@ export function CtaBand({
             {body}
           </p>
           <div className="mt-9">
-            <Button href="/contact" size="large" withArrow>
+            <Button onClick={openCalendly} size="large" withArrow>
               Book Discovery Call
             </Button>
           </div>

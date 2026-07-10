@@ -24,7 +24,8 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PackageDashboard } from "@/components/home/package-dashboard";
-import { accents, packageDetails, packageDetailOrder } from "@/lib/content";
+import { accents, packageDetails, packageDetailOrder, contact } from "@/lib/content";
+import { useCalendly } from "@/lib/use-calendly";
 
 const iconMap = {
   MessageSquare, Filter, Users, Clock, BarChart3, ShieldCheck,
@@ -56,6 +57,7 @@ export function PackagePanel({
   onSwitch: (id: DetailId) => void;
 }) {
   const reduce = useReducedMotion();
+  const openCalendly = useCalendly(contact.call.href);
   const detail = openId ? packageDetails[openId] : null;
   const accent = detail
     ? accents[detail.accent as keyof typeof accents].hex
@@ -182,7 +184,7 @@ export function PackagePanel({
 
                     {/* CTA */}
                     <div className="mt-8">
-                      <Button href="/contact" size="large" withArrow>
+                      <Button onClick={openCalendly} size="large" withArrow>
                         Book Your Free Discovery Call
                       </Button>
                       <p className="mt-3 font-mono text-eyebrow uppercase text-[color:var(--text-tertiary)]">

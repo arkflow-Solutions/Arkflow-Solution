@@ -13,6 +13,8 @@ import { Container } from "@/components/ui/container";
 import { Button } from "@/components/ui/button";
 import { Eyebrow } from "@/components/ui/eyebrow";
 import { useInView } from "@/lib/use-in-view";
+import { useCalendly } from "@/lib/use-calendly";
+import { contact } from "@/lib/content";
 
 const HeroFlow = dynamic(() => import("@/components/three/hero-flow"), {
   ssr: false,
@@ -47,6 +49,7 @@ type Capture = { id: number; x: number; y: number };
 
 export function Hero() {
   const reduce = useReducedMotion();
+  const openCalendly = useCalendly(contact.call.href);
   const sectionRef = useRef<HTMLElement>(null);
   const { ref: gateRef, inView } = useInView<HTMLDivElement>();
   const [captures, setCaptures] = useState<Capture[]>([]);
@@ -142,7 +145,7 @@ export function Hero() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.9, delay: 0.52, ease }}
           >
-            <Button href="/contact" size="large" withArrow>
+            <Button onClick={openCalendly} size="large" withArrow>
               Book Discovery Call
             </Button>
             <Button href="#packages" variant="secondary" size="large">

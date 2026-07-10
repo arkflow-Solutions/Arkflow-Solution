@@ -8,6 +8,8 @@ import { cn } from "@/lib/utils";
 import { Container } from "@/components/ui/container";
 import { Button } from "@/components/ui/button";
 import { Wordmark } from "@/components/layout/wordmark";
+import { useCalendly } from "@/lib/use-calendly";
+import { contact } from "@/lib/content";
 
 const links = [
   { label: "Solutions", href: "/solutions" },
@@ -23,6 +25,7 @@ export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
+  const openCalendly = useCalendly(contact.call.href);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
@@ -78,7 +81,7 @@ export function Navbar() {
         </nav>
 
         <div className="hidden lg:block">
-          <Button href="/contact">Book Discovery Call</Button>
+          <Button onClick={openCalendly}>Book Discovery Call</Button>
         </div>
 
         <button
@@ -111,7 +114,13 @@ export function Navbar() {
               </Link>
             ))}
             <div className="px-3 pb-2 pt-3">
-              <Button href="/contact" className="w-full">
+              <Button
+                onClick={(e) => {
+                  setOpen(false);
+                  openCalendly(e);
+                }}
+                className="w-full"
+              >
                 Book Discovery Call
               </Button>
             </div>

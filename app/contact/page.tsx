@@ -7,6 +7,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Reveal } from "@/components/motion/reveal";
 import { PageHero } from "@/components/pages/page-hero";
+import { BookCallButton } from "@/components/pages/book-call-button";
 import { contact, guarantee } from "@/lib/content";
 
 export const metadata: Metadata = {

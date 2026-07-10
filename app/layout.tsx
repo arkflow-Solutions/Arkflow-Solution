@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import "./globals.css";
 import { fontSans, fontMono } from "@/lib/fonts";
 import { Navbar } from "@/components/layout/navbar";
@@ -44,6 +45,13 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" className={`${fontSans.variable} ${fontMono.variable}`}>
+      <head>
+        {/* Calendly popup widget styles — loaded once, site-wide */}
+        <link
+          href="https://assets.calendly.com/assets/external/widget.css"
+          rel="stylesheet"
+        />
+      </head>
       <body>
         <IntroVeil />
         <SmoothScroll />
@@ -57,6 +65,14 @@ export default function RootLayout({
         <main id="main">{children}</main>
         <Footer />
         <OrgJsonLd />
+        {/* Calendly popup widget script — every "Book Discovery Call"
+            button site-wide calls window.Calendly.initPopupWidget via
+            the useCalendly hook (lib/use-calendly.ts). Loaded once,
+            after the page becomes interactive. */}
+        <Script
+          src="https://assets.calendly.com/assets/external/widget.js"
+          strategy="afterInteractive"
+        />
       </body>
     </html>
   );

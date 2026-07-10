@@ -7,6 +7,8 @@ import { Container } from "@/components/ui/container";
 import { Section } from "@/components/ui/section";
 import { Button } from "@/components/ui/button";
 import { Reveal } from "@/components/motion/reveal";
+import { useCalendly } from "@/lib/use-calendly";
+import { contact } from "@/lib/content";
 
 const CtaFocus = dynamic(() => import("@/components/three/cta-focus"), {
   ssr: false,
@@ -14,6 +16,7 @@ const CtaFocus = dynamic(() => import("@/components/three/cta-focus"), {
 
 export function FinalCta() {
   const ref = useRef<HTMLElement>(null);
+  const openCalendly = useCalendly(contact.call.href);
   const reduce = useReducedMotion();
   const near = useInView(ref, { margin: "600px 0px" });
 
@@ -38,7 +41,7 @@ export function FinalCta() {
             or not you work with us.
           </p>
           <div className="mt-10">
-            <Button href="/contact" size="large">
+            <Button onClick={openCalendly} size="large">
               Book Discovery Call
             </Button>
           </div>
