@@ -14,6 +14,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import { motion, useReducedMotion } from "framer-motion";
 import {
   Globe,
@@ -27,9 +28,18 @@ import {
   Phone,
 } from "lucide-react";
 import { Reveal } from "@/components/motion/reveal";
+import { TiltCard } from "@/components/motion/tilt-card";
 import { Packages } from "@/components/home/packages";
+import { useInView } from "@/lib/use-in-view";
 import { useCalendly } from "@/lib/use-calendly";
 import { guarantee, caseStudies, contact } from "@/lib/content";
+
+/* The signature "living current" particle field (Three.js), loaded
+   client-only. It sits behind the hero as ambient 3D motion — the
+   current organises toward the pointer wherever it moves. */
+const HeroFlow = dynamic(() => import("@/components/three/hero-flow"), {
+  ssr: false,
+});
 
 /* Hero entrance — a calm, staggered rise. Words in the headline arrive
    one after another; the eyebrow, sub, CTAs and chips follow. */
@@ -56,9 +66,12 @@ const headlineWords: [string, boolean][] = [
 const styles = `
 .spine-home{--sp-line:var(--border-subtle);--sp-line2:var(--border-strong);overflow-x:hidden}
 .spine-home *{box-sizing:border-box}
-.sp-herowrap{position:relative}
+.sp-herowrap{position:relative;overflow:hidden}
 .sp-aura{position:absolute;inset:-140px -80px auto -80px;height:580px;background:radial-gradient(50% 50% at 32% 34%,rgba(26,60,255,.16),transparent 70%);pointer-events:none;z-index:0;will-change:transform;animation:sp-drift 15s ease-in-out infinite alternate}
 @keyframes sp-drift{0%{transform:translate3d(0,0,0) scale(1);opacity:.8}100%{transform:translate3d(7%,5%,0) scale(1.12);opacity:1}}
+/* Living-current 3D field + legibility veil */
+.sp-flow{position:absolute;inset:0;z-index:0;pointer-events:none}
+.sp-flow-veil{position:absolute;inset:0;z-index:0;pointer-events:none;background:linear-gradient(90deg,var(--ink) 0%,rgba(10,14,26,.5) 40%,transparent 68%),radial-gradient(ellipse 72% 62% at 52% 44%,transparent 42%,var(--ink) 96%)}
 .sp-word{display:inline-block;margin-right:.26em}
 .sp-wrap{max-width:80rem;margin:0 auto;padding:0 24px}
 @media(min-width:768px){.sp-wrap{padding:0 40px}}
@@ -162,6 +175,7 @@ const steps = [
 export function SpineHome() {
   const [active, setActive] = useState(0);
   const reduce = useReducedMotion();
+  const { ref: flowRef, inView } = useInView<HTMLDivElement>();
   const openCalendly = useCalendly(contact.call.href);
 
   useEffect(() => {
@@ -174,9 +188,15 @@ export function SpineHome() {
       <style>{styles}</style>
 
       {/* HERO */}
-      <header className="sp-wrap sp-herowrap">
+      <header className="sp-herowrap">
         <div className="sp-aura" aria-hidden />
-        <div className="sp-hero">
+        {!reduce && (
+          <div ref={flowRef} className="sp-flow" aria-hidden>
+            {inView && <HeroFlow />}
+          </div>
+        )}
+        <div className="sp-flow-veil" aria-hidden />
+        <div className="sp-wrap sp-hero">
           <motion.div
             variants={heroStagger}
             initial={reduce ? false : "hidden"}
@@ -219,10 +239,12 @@ export function SpineHome() {
             </motion.div>
           </motion.div>
 
-          <Reveal className="sp-spine">
-            <p className="sp-eb sp-dim" style={{ marginBottom: 8, color: "var(--text-tertiary)" }}>
-              The path, automated
-            </p>
+          <Reveal>
+            <TiltCard glow="rgba(26,60,255,0.18)">
+              <div className="sp-spine">
+                <p className="sp-eb sp-dim" style={{ marginBottom: 8, color: "var(--text-tertiary)" }}>
+                  The path, automated
+                </p>
             {spine.map((node, i) => {
               const Icon = node.icon;
               const on = i === active;
@@ -243,6 +265,8 @@ export function SpineHome() {
                 </div>
               );
             })}
+              </div>
+            </TiltCard>
           </Reveal>
         </div>
       </header>
