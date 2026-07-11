@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Check,
@@ -53,6 +53,64 @@ type DetailId = keyof typeof packageDetails;
 
 export function Packages() {
   const [openId, setOpenId] = useState<DetailId | null>(null);
+  // Ref to the shared detail panel's anchor, so we can scroll to it
+  // *after* the accordion has expanded.
+  const stageRef = useRef<HTMLDivElement>(null);
+  // Tracks whether the last open was triggered by an Explore click
+  // (which should scroll) versus a tier-switch inside the panel (which
+  // should not yank the viewport around).
+  const shouldScrollRef = useRef(false);
+
+  /**
+   * openPackage — single reusable entry point for the Explore buttons.
+   * Updates the active package (which expands that accordion and, via
+   * the single-openId model, collapses the others), then flags that a
+   * scroll should follow once the DOM has updated.
+   */
+  const openPackage = useCallback(
+    (id: DetailId) => {
+      // Clicking the already-open card's button closes it (toggle),
+      // and shouldn't scroll.
+      if (openId === id) {
+        setOpenId(null);
+        return;
+      }
+      shouldScrollRef.current = true;
+      setOpenId(id);
+    },
+    [openId]
+  );
+
+  // After openId changes and the panel has rendered/expanded, smoothly
+  // scroll the panel into view with an offset for the sticky navbar.
+  // rAF waits one frame so layout reflects the expanded accordion
+  // before we measure and scroll — no jump, no double animation.
+  useEffect(() => {
+    if (!openId || !shouldScrollRef.current) return;
+    shouldScrollRef.current = false;
+
+    const NAV_OFFSET = 88; // sticky nav height + breathing room
+
+    const raf = requestAnimationFrame(() => {
+      // second frame: the expand animation has begun and heights are
+      // resolving; scroll to the panel's top, offset for the nav.
+      requestAnimationFrame(() => {
+        const el = stageRef.current;
+        if (!el) return;
+        const top =
+          el.getBoundingClientRect().top + window.scrollY - NAV_OFFSET;
+        window.scrollTo({
+          top,
+          behavior: window.matchMedia("(prefers-reduced-motion: reduce)")
+            .matches
+            ? "auto"
+            : "smooth",
+        });
+      });
+    });
+
+    return () => cancelAnimationFrame(raf);
+  }, [openId]);
 
   return (
     <Section id="packages" className="hairline relative overflow-hidden">
@@ -167,9 +225,7 @@ export function Packages() {
 
                     <div className="lift-3 mt-auto pt-8">
                       <Button
-                        onClick={() =>
-                          setOpenId(isOpen ? null : (pkg.id as DetailId))
-                        }
+                        onClick={() => openPackage(pkg.id as DetailId)}
                         variant={
                           isOpen || pkg.emphasis ? "primary" : "secondary"
                         }
@@ -188,12 +244,15 @@ export function Packages() {
 
         {/* Shared stage — the in-place detail panel opens here, directly
             beneath the row of cards. Switching tiers cross-fades inside
-            it without collapsing. */}
-        <PackagePanel
-          openId={openId}
-          onClose={() => setOpenId(null)}
-          onSwitch={(id) => setOpenId(id)}
-        />
+            it without collapsing. The ref is the scroll target for the
+            Explore buttons; scroll-mt gives a sticky-nav offset. */}
+        <div ref={stageRef} className="scroll-mt-24">
+          <PackagePanel
+            openId={openId}
+            onClose={() => setOpenId(null)}
+            onSwitch={(id) => setOpenId(id)}
+          />
+        </div>
 
         {/* Terms line, "What's included" grid and the assurance strip
             collapse away while a detail panel is open — the panel
