@@ -30,14 +30,13 @@ import {
 import { Reveal } from "@/components/motion/reveal";
 import { TiltCard } from "@/components/motion/tilt-card";
 import { Packages } from "@/components/home/packages";
-import { useInView } from "@/lib/use-in-view";
 import { useCalendly } from "@/lib/use-calendly";
 import { guarantee, caseStudies, contact } from "@/lib/content";
 
-/* The signature "living current" particle field (Three.js), loaded
-   client-only. It sits behind the hero as ambient 3D motion — the
-   current organises toward the pointer wherever it moves. */
-const HeroFlow = dynamic(() => import("@/components/three/hero-flow"), {
+/* ArkFlow's page-wide living current — ONE persistent WebGL field fixed
+   behind the entire homepage, scroll-reactive so the whole page reads as
+   a single 3D space. Client-only; never mounted under reduced motion. */
+const SpatialField = dynamic(() => import("@/components/three/spatial-field"), {
   ssr: false,
 });
 
@@ -66,6 +65,10 @@ const headlineWords: [string, boolean][] = [
 const styles = `
 .spine-home{--sp-line:var(--border-subtle);--sp-line2:var(--border-strong);overflow-x:hidden}
 .spine-home *{box-sizing:border-box}
+/* page-wide 3D field layers */
+.sp-bg{position:fixed;inset:0;z-index:0;pointer-events:none}
+.sp-bg-veil{position:fixed;inset:0;z-index:0;pointer-events:none;background:linear-gradient(180deg,rgba(10,14,26,.35),transparent 20%,transparent 72%,rgba(10,14,26,.55))}
+.sp-content{position:relative;z-index:1}
 .sp-herowrap{position:relative;overflow:hidden}
 .sp-aura{position:absolute;inset:-140px -80px auto -80px;height:580px;background:radial-gradient(50% 50% at 32% 34%,rgba(26,60,255,.16),transparent 70%);pointer-events:none;z-index:0;will-change:transform;animation:sp-drift 15s ease-in-out infinite alternate}
 @keyframes sp-drift{0%{transform:translate3d(0,0,0) scale(1);opacity:.8}100%{transform:translate3d(7%,5%,0) scale(1.12);opacity:1}}
@@ -92,7 +95,7 @@ const styles = `
 @media(max-width:900px){.sp-hero{grid-template-columns:1fr;gap:40px;padding:128px 0 72px}}
 .sp-tags{display:flex;flex-wrap:wrap;gap:9px;margin-top:34px}
 .sp-tag{border:1px solid var(--sp-line);border-radius:8px;padding:7px 13px;font-size:13px;color:var(--text-secondary);background:rgba(255,255,255,.02)}
-.sp-spine{border:1px solid var(--sp-line);border-radius:20px;background:linear-gradient(180deg,rgba(255,255,255,.035),rgba(255,255,255,.008));padding:24px 24px 18px;position:relative;overflow:hidden}
+.sp-spine{border:1px solid var(--sp-line);border-radius:20px;background:linear-gradient(180deg,rgba(15,23,42,.62),rgba(15,23,42,.4));backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);padding:24px 24px 18px;position:relative;overflow:hidden}
 .sp-spine::before{content:"";position:absolute;left:47px;top:60px;bottom:32px;width:2px;background:linear-gradient(180deg,var(--blue-soft),rgba(59,130,246,.12))}
 .sp-node{display:flex;align-items:center;gap:16px;position:relative;padding:10px 0}
 .sp-badge{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;border:1px solid var(--sp-line2);background:var(--surface);flex-shrink:0;position:relative;z-index:1;transition:.4s}
@@ -107,10 +110,9 @@ const styles = `
 .sp-ic{width:46px;height:46px;border-radius:12px;border:1px solid var(--sp-line);display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.02);transition:.25s}
 .sp-row:hover .sp-ic{border-color:var(--blue-soft)}
 .sp-tier{font-family:var(--font-mono),monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--text-tertiary);align-self:center;white-space:nowrap}
-.sp-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--sp-line);border:1px solid var(--sp-line);border-radius:18px;overflow:hidden}
+.sp-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
 @media(max-width:760px){.sp-steps{grid-template-columns:1fr}}
-.sp-step{background:var(--ink);padding:36px 30px}
-.sp-step:hover{background:var(--surface)}
+.sp-step{background:linear-gradient(180deg,rgba(15,23,42,.58),rgba(15,23,42,.36));backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid var(--sp-line);border-radius:16px;padding:34px 30px;height:100%}
 .sp-stepn{font-family:var(--font-mono),monospace;font-size:13px;color:var(--blue-soft)}
 .sp-pk{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
 @media(max-width:820px){.sp-pk{grid-template-columns:1fr}}
@@ -122,10 +124,14 @@ const styles = `
 .sp-price{font-size:2.6rem;font-weight:600;letter-spacing:-.03em;color:#fff}
 .sp-plist{margin:20px 0 24px;display:flex;flex-direction:column;gap:11px}
 .sp-pli{display:flex;gap:10px;font-size:14px;color:var(--text-secondary);align-items:flex-start}
-.sp-guar{border:1px solid var(--sp-line);border-radius:18px;padding:34px 36px;display:flex;gap:26px;align-items:center;background:linear-gradient(120deg,rgba(26,60,255,.08),rgba(255,255,255,.01))}
+.sp-guar{border:1px solid var(--sp-line);border-radius:18px;padding:34px 36px;display:flex;gap:26px;align-items:center;background:linear-gradient(120deg,rgba(26,60,255,.18),rgba(15,23,42,.42));backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
 @media(max-width:680px){.sp-guar{flex-direction:column;text-align:center}}
 .sp-seal{width:62px;height:62px;border-radius:16px;border:1px solid var(--sp-line);background:rgba(255,255,255,.02);display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .sp-foot{margin-top:88px;padding-top:28px;border-top:1px solid var(--sp-line);display:flex;justify-content:space-between;flex-wrap:wrap;gap:14px}
+/* Final-CTA 3D convergence field */
+.sp-ctawrap{position:relative;overflow:hidden}
+.sp-ctafx{position:absolute;inset:0;z-index:0;opacity:.85;pointer-events:none}
+.sp-ctafx-veil{position:absolute;inset:0;background:radial-gradient(ellipse 62% 60% at 50% 46%,transparent 8%,var(--ink) 80%)}
 .sp-center{text-align:center}
 .sp-mx{margin-left:auto;margin-right:auto}
 `;
@@ -175,7 +181,6 @@ const steps = [
 export function SpineHome() {
   const [active, setActive] = useState(0);
   const reduce = useReducedMotion();
-  const { ref: flowRef, inView } = useInView<HTMLDivElement>();
   const openCalendly = useCalendly(contact.call.href);
 
   useEffect(() => {
@@ -187,16 +192,20 @@ export function SpineHome() {
     <div className="spine-home">
       <style>{styles}</style>
 
-      {/* HERO */}
-      <header className="sp-herowrap">
-        <div className="sp-aura" aria-hidden />
-        {!reduce && (
-          <div ref={flowRef} className="sp-flow" aria-hidden>
-            {inView && <HeroFlow />}
-          </div>
-        )}
-        <div className="sp-flow-veil" aria-hidden />
-        <div className="sp-wrap sp-hero">
+      {/* PAGE-WIDE 3D FIELD — fixed behind everything, evolves with scroll */}
+      {!reduce && (
+        <div className="sp-bg" aria-hidden>
+          <SpatialField />
+        </div>
+      )}
+      <div className="sp-bg-veil" aria-hidden />
+
+      <div className="sp-content">
+        {/* HERO */}
+        <header className="sp-herowrap">
+          <div className="sp-aura" aria-hidden />
+          <div className="sp-flow-veil" aria-hidden />
+          <div className="sp-wrap sp-hero">
           <motion.div
             variants={heroStagger}
             initial={reduce ? false : "hidden"}
@@ -327,16 +336,20 @@ export function SpineHome() {
             </h2>
           </Reveal>
           <div className="sp-steps" style={{ marginTop: 44 }}>
-            {steps.map((s) => (
-              <div key={s.title} className="sp-step">
-                <span className="sp-stepn">{s.n}</span>
-                <h3 className="sp-h3" style={{ marginTop: 18, fontSize: "1.4rem" }}>
-                  {s.title}
-                </h3>
-                <p className="sp-body" style={{ marginTop: 12 }}>
-                  {s.body}
-                </p>
-              </div>
+            {steps.map((s, i) => (
+              <Reveal key={s.title} delay={i * 0.08}>
+                <TiltCard glow="rgba(26,60,255,0.12)">
+                  <div className="sp-step">
+                    <span className="sp-stepn">{s.n}</span>
+                    <h3 className="sp-h3" style={{ marginTop: 18, fontSize: "1.4rem" }}>
+                      {s.title}
+                    </h3>
+                    <p className="sp-body" style={{ marginTop: 12 }}>
+                      {s.body}
+                    </p>
+                  </div>
+                </TiltCard>
+              </Reveal>
             ))}
           </div>
         </div>
@@ -352,19 +365,21 @@ export function SpineHome() {
       <section className="sp-sec">
         <div className="sp-wrap">
           <Reveal>
-            <div className="sp-guar">
-              <span className="sp-seal">
-                <ShieldCheck size={30} color="var(--blue-soft)" aria-hidden />
-              </span>
-              <div>
-                <h3 className="sp-h3" style={{ fontSize: "1.5rem" }}>
-                  The {guarantee.name}.
-                </h3>
-                <p className="sp-body" style={{ marginTop: 8, maxWidth: "62ch" }}>
-                  {guarantee.summary}
-                </p>
+            <TiltCard glow="rgba(26,60,255,0.16)">
+              <div className="sp-guar">
+                <span className="sp-seal">
+                  <ShieldCheck size={30} color="var(--blue-soft)" aria-hidden />
+                </span>
+                <div>
+                  <h3 className="sp-h3" style={{ fontSize: "1.5rem" }}>
+                    The {guarantee.name}.
+                  </h3>
+                  <p className="sp-body" style={{ marginTop: 8, maxWidth: "62ch" }}>
+                    {guarantee.summary}
+                  </p>
+                </div>
               </div>
-            </div>
+            </TiltCard>
           </Reveal>
         </div>
       </section>
@@ -393,7 +408,7 @@ export function SpineHome() {
         </div>
       </section>
 
-      {/* FINAL CTA */}
+      {/* FINAL CTA — the field converges here as you arrive */}
       <section className="sp-sec" id="book">
         <div className="sp-wrap sp-center">
           <Reveal>
@@ -426,6 +441,7 @@ export function SpineHome() {
           </div>
         </div>
       </section>
+      </div>
     </div>
   );
 }
