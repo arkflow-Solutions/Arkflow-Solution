@@ -14,6 +14,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { motion, useReducedMotion } from "framer-motion";
 import {
   Globe,
   MessageSquare,
@@ -22,17 +23,43 @@ import {
   Receipt,
   Heart,
   ArrowRight,
-  Check,
   ShieldCheck,
   Phone,
 } from "lucide-react";
 import { Reveal } from "@/components/motion/reveal";
+import { Packages } from "@/components/home/packages";
 import { useCalendly } from "@/lib/use-calendly";
-import { packages, guarantee, caseStudies, contact, accents } from "@/lib/content";
+import { guarantee, caseStudies, contact } from "@/lib/content";
+
+/* Hero entrance — a calm, staggered rise. Words in the headline arrive
+   one after another; the eyebrow, sub, CTAs and chips follow. */
+const heroStagger = {
+  hidden: {},
+  show: { transition: { staggerChildren: 0.07, delayChildren: 0.05 } },
+};
+const heroWords = {
+  hidden: {},
+  show: { transition: { staggerChildren: 0.06, delayChildren: 0.12 } },
+};
+const rise = {
+  hidden: { opacity: 0, y: 16 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } },
+};
+const headlineWords: [string, boolean][] = [
+  ["Turn", false],
+  ["enquiries", false],
+  ["into", false],
+  ["paying", true],
+  ["patients.", true],
+];
 
 const styles = `
-.spine-home{--sp-line:var(--border-subtle);--sp-line2:var(--border-strong);}
+.spine-home{--sp-line:var(--border-subtle);--sp-line2:var(--border-strong);overflow-x:hidden}
 .spine-home *{box-sizing:border-box}
+.sp-herowrap{position:relative}
+.sp-aura{position:absolute;inset:-140px -80px auto -80px;height:580px;background:radial-gradient(50% 50% at 32% 34%,rgba(26,60,255,.16),transparent 70%);pointer-events:none;z-index:0;will-change:transform;animation:sp-drift 15s ease-in-out infinite alternate}
+@keyframes sp-drift{0%{transform:translate3d(0,0,0) scale(1);opacity:.8}100%{transform:translate3d(7%,5%,0) scale(1.12);opacity:1}}
+.sp-word{display:inline-block;margin-right:.26em}
 .sp-wrap{max-width:80rem;margin:0 auto;padding:0 24px}
 @media(min-width:768px){.sp-wrap{padding:0 40px}}
 .sp-eb{font-family:var(--font-mono),monospace;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--blue-soft)}
@@ -48,7 +75,7 @@ const styles = `
 .sp-btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;height:52px;padding:0 26px;border-radius:11px;font-weight:500;font-size:15.5px;cursor:pointer;border:none;font-family:inherit;color:#fff;transition:.2s;text-decoration:none}
 .sp-btn-p{background:var(--blue)}.sp-btn-p:hover{background:var(--blue-soft);transform:translateY(-1px)}
 .sp-btn-s{background:transparent;border:1px solid var(--sp-line2);color:#fff}.sp-btn-s:hover{background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.3)}
-.sp-hero{display:grid;grid-template-columns:1.15fr .85fr;gap:56px;align-items:center;padding:150px 0 96px}
+.sp-hero{position:relative;z-index:1;display:grid;grid-template-columns:1.15fr .85fr;gap:56px;align-items:center;padding:150px 0 96px}
 @media(max-width:900px){.sp-hero{grid-template-columns:1fr;gap:40px;padding:128px 0 72px}}
 .sp-tags{display:flex;flex-wrap:wrap;gap:9px;margin-top:34px}
 .sp-tag{border:1px solid var(--sp-line);border-radius:8px;padding:7px 13px;font-size:13px;color:var(--text-secondary);background:rgba(255,255,255,.02)}
@@ -134,6 +161,7 @@ const steps = [
 
 export function SpineHome() {
   const [active, setActive] = useState(0);
+  const reduce = useReducedMotion();
   const openCalendly = useCalendly(contact.call.href);
 
   useEffect(() => {
@@ -146,35 +174,50 @@ export function SpineHome() {
       <style>{styles}</style>
 
       {/* HERO */}
-      <header className="sp-wrap">
+      <header className="sp-wrap sp-herowrap">
+        <div className="sp-aura" aria-hidden />
         <div className="sp-hero">
-          <div>
-            <p className="sp-eb">Revenue Operations · Singapore</p>
-            <h1 className="sp-kicker" style={{ marginTop: 22 }}>
-              Turn enquiries into{" "}
-              <span style={{ color: "var(--blue-soft)" }}>paying patients.</span>
-            </h1>
-            <p className="sp-sub" style={{ marginTop: 26, maxWidth: "38ch" }}>
+          <motion.div
+            variants={heroStagger}
+            initial={reduce ? false : "hidden"}
+            animate="show"
+          >
+            <motion.p variants={rise} className="sp-eb">
+              Revenue Operations · Singapore
+            </motion.p>
+            <motion.h1 variants={heroWords} className="sp-kicker" style={{ marginTop: 22 }}>
+              {headlineWords.map(([word, accent], idx) => (
+                <motion.span
+                  key={idx}
+                  variants={rise}
+                  className="sp-word"
+                  style={accent ? { color: "var(--blue-soft)" } : undefined}
+                >
+                  {word}
+                </motion.span>
+              ))}
+            </motion.h1>
+            <motion.p variants={rise} className="sp-sub" style={{ marginTop: 26, maxWidth: "38ch" }}>
               ArkFlow is the Revenue Operations partner for growing clinics. One
               managed system captures every enquiry, books it, and collects
               payment — so nothing slips through.
-            </p>
-            <div style={{ marginTop: 34, display: "flex", gap: 14, flexWrap: "wrap" }}>
+            </motion.p>
+            <motion.div variants={rise} style={{ marginTop: 34, display: "flex", gap: 14, flexWrap: "wrap" }}>
               <button className="sp-btn sp-btn-p" onClick={openCalendly}>
                 Book Discovery Call <ArrowRight size={17} aria-hidden />
               </button>
-              <Link className="sp-btn sp-btn-s" href="/packages">
+              <Link className="sp-btn sp-btn-s" href="#packages">
                 See Packages
               </Link>
-            </div>
-            <div className="sp-tags">
+            </motion.div>
+            <motion.div variants={rise} className="sp-tags">
               {["Response < 90 sec", "Live in 72 hours", "30-Day Response Guarantee"].map((t) => (
                 <span key={t} className="sp-tag">
                   {t}
                 </span>
               ))}
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
 
           <Reveal className="sp-spine">
             <p className="sp-eb sp-dim" style={{ marginBottom: 8, color: "var(--text-tertiary)" }}>
@@ -275,63 +318,11 @@ export function SpineHome() {
         </div>
       </section>
 
-      {/* PACKAGES */}
-      <section className="sp-sec" id="packages">
-        <div className="sp-wrap">
-          <Reveal>
-            <p className="sp-eb">Packages</p>
-            <h2 className="sp-h2" style={{ marginTop: 16 }}>
-              Pick your stage.
-            </h2>
-            <p className="sp-sub" style={{ marginTop: 14, maxWidth: "50ch" }}>
-              Fully managed · S$888 one-time setup · 6-month minimum. Every plan
-              backed by the 30-Day Response Guarantee.
-            </p>
-          </Reveal>
-          <div className="sp-pk" style={{ marginTop: 48 }}>
-            {packages.map((pkg, i) => {
-              const hex = accents[pkg.accent].hex;
-              const feat = pkg.emphasis;
-              return (
-                <Reveal key={pkg.id} delay={i * 0.07}>
-                  <div className={`sp-card${feat ? " feat" : ""}`}>
-                    {"badge" in pkg && pkg.badge && (
-                      <span className="sp-pbadge" style={{ background: hex }}>
-                        {pkg.badge}
-                      </span>
-                    )}
-                    <p className="sp-tname" style={{ color: hex }}>
-                      {pkg.name}
-                    </p>
-                    <p style={{ marginTop: 14, display: "flex", alignItems: "baseline", gap: 7 }}>
-                      <span className="sp-price">{pkg.price}</span>
-                      <span className="sp-sm sp-dim">/month</span>
-                    </p>
-                    <p className="sp-body" style={{ marginTop: 8 }}>
-                      {pkg.headline}
-                    </p>
-                    <div className="sp-plist">
-                      {pkg.features.map((f) => (
-                        <div key={f} className="sp-pli">
-                          <Check size={16} color="var(--blue-soft)" aria-hidden style={{ flexShrink: 0, marginTop: 2 }} />
-                          <span>{f}</span>
-                        </div>
-                      ))}
-                    </div>
-                    <Link
-                      className={`sp-btn ${feat ? "sp-btn-p" : "sp-btn-s"}`}
-                      href="/packages"
-                      style={{ marginTop: "auto", width: "100%" }}
-                    >
-                      Explore {pkg.name}
-                    </Link>
-                  </div>
-                </Reveal>
-              );
-            })}
-          </div>
-        </div>
-      </section>
+      {/* PACKAGES — the interactive shared-stage panel, in place.
+          Clicking Explore expands the detail panel right here on the
+          homepage (3D tilt cards + cross-fading tier panel), no page
+          hop. Self-contained canonical component from the packages page. */}
+      <Packages />
 
       {/* GUARANTEE */}
       <section className="sp-sec">
