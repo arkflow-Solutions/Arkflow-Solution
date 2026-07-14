@@ -25,7 +25,7 @@ export const packages = [
     price: "S$688",
     priceNote: "Live in 72 hours. Backed by the 30-Day Response Guarantee.",
     features: [
-      "Instant WhatsApp AI response",
+      "Unified Inbox — WhatsApp, IG, TikTok & more",
       "Lead qualification & CRM pipeline",
       "Monthly performance report",
     ],
@@ -77,7 +77,7 @@ export const accents = {
 /* "What's Included" — icon grid replacing dense feature prose.
    Every item uses canonical feature names and canonical tier scope. */
 export const packageIncludes = [
-  { icon: "MessageSquare", name: "Instant Response", tier: "All", body: "Every WhatsApp enquiry answered in under 90 seconds, in your voice." },
+  { icon: "MessageSquare", name: "Unified Inbox", tier: "All", body: "Every channel — WhatsApp, Instagram, TikTok, Messenger, Telegram, SMS, email — in one inbox, answered in under 90 seconds." },
   { icon: "Users", name: "CRM & Pipeline", tier: "All", body: "Every contact on one pipeline — no lead lives in a phone." },
   { icon: "BarChart3", name: "Performance Reporting", tier: "All", body: "A monthly report on what the system captured and converted." },
   { icon: "CalendarCheck", name: "BookingBot", tier: "Operate+", body: "Booking, reschedules and reminders, synced to your calendar." },
@@ -214,7 +214,7 @@ export const matrix = {
     { label: "Monthly price", values: ["S$688", "S$988", "S$1,488"] },
     { label: "Implementation fee", values: ["S$888", "S$888", "S$888"] },
     { label: "Minimum commitment", values: ["6 months", "6 months", "6 months"] },
-    { label: "Instant WhatsApp AI response", values: [true, true, true] },
+    { label: "Unified Inbox — every channel", values: [true, true, true] },
     { label: "Lead qualification & CRM pipeline", values: [true, true, true] },
     { label: "Booking automation (BookingBot)", values: [false, true, true] },
     { label: "Invoicing & collection (InvoiceFlow)", values: [false, true, true] },
@@ -248,7 +248,7 @@ export const boundaries = {
   includes: [
     "Managed Revenue Operations: capturing, converting and retaining the revenue you already generate",
     "Configuration and ongoing management of proven platforms into one outcome",
-    "Instant WhatsApp AI response and lead qualification on every tier",
+    "Unified Inbox across every channel — WhatsApp, Instagram, TikTok, Messenger, Telegram, SMS, email — with instant response and lead qualification on every tier",
     "Booking and invoicing automation from Operate",
     "A professional website, AI voice agent and reactivation on Scale",
     "Monthly performance reporting and monthly optimisation",
@@ -272,7 +272,7 @@ export const pricingPolicy = [
 ];
 
 export const solutions = [
-  { name: "Instant Response", tier: "All packages", body: "Every WhatsApp enquiry answered in under 90 seconds, day or night, in your clinic's voice — qualified, captured, and escalated to a human the moment it matters." },
+  { name: "Unified Inbox", tier: "All packages", body: "Every enquiry from every channel — WhatsApp, Instagram, TikTok, Facebook Messenger, Telegram, SMS and email — in one Team Inbox, answered in under 90 seconds, day or night, and escalated to a human the moment it matters." },
   { name: "CRM & Pipeline", tier: "All packages", body: "Every contact visible on one pipeline, from first message to treatment. No lead exists only in someone's phone." },
   { name: "BookingBot", tier: "Operate and above", body: "Booking, rescheduling and cancellation over WhatsApp, synced to your calendar — with confirmations, 24-hour and 2-hour reminders, and a no-show recovery sequence." },
   { name: "InvoiceFlow", tier: "Operate and above", body: "Invoices generated and delivered automatically on trigger, a three-message reminder chain, and an escalation to you at Day 15 — payment collected without a single chasing message from your team." },
@@ -373,7 +373,7 @@ export const packageDetails = {
     coreOutcome: "Be found. Answer instantly. Never miss a lead.",
     dashboard: "whatsapp",
     features: [
-      { icon: "MessageSquare", title: "AI Receptionist", body: "Answers every WhatsApp enquiry instantly, in your clinic's voice." },
+      { icon: "MessageSquare", title: "Unified Inbox", body: "Every channel — WhatsApp, Instagram, TikTok, Messenger, Telegram, SMS, email — answered instantly from one inbox, in your clinic's voice." },
       { icon: "Filter", title: "Lead Qualification", body: "Sorts and scores each enquiry before your team even opens it." },
       { icon: "Users", title: "CRM Pipeline", body: "Every contact on one board — no lead trapped in a phone." },
       { icon: "Clock", title: "Under 90 Seconds", body: "Replies land in seconds, any hour, every day of the year." },

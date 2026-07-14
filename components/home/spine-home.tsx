@@ -19,6 +19,13 @@ import { motion, useReducedMotion } from "framer-motion";
 import {
   Globe,
   MessageSquare,
+  MessageCircle,
+  Instagram,
+  Facebook,
+  Music2,
+  Send,
+  Mail,
+  Inbox,
   Users,
   CalendarCheck,
   Receipt,
@@ -110,6 +117,26 @@ const styles = `
 .sp-ic{width:46px;height:46px;border-radius:12px;border:1px solid var(--sp-line);display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.02);transition:.25s}
 .sp-row:hover .sp-ic{border-color:var(--blue-soft)}
 .sp-tier{font-family:var(--font-mono),monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--text-tertiary);align-self:center;white-space:nowrap}
+/* Unified Inbox showcase */
+.sp-omni{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center}
+@media(max-width:900px){.sp-omni{grid-template-columns:1fr;gap:36px}}
+.sp-chips{display:flex;flex-wrap:wrap;gap:11px;margin-top:28px}
+.sp-chan{display:inline-flex;align-items:center;gap:9px;padding:9px 14px;border-radius:12px;border:1px solid var(--sp-line);background:rgba(15,23,42,.5);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);font-size:14px;font-weight:500;color:#fff;transition:.25s}
+.sp-chan:hover{transform:translateY(-2px);border-color:var(--sp-line2)}
+.sp-chan-ic{display:flex;width:26px;height:26px;border-radius:7px;align-items:center;justify-content:center;flex-shrink:0}
+.sp-inbox{border:1px solid var(--sp-line2);border-radius:18px;background:linear-gradient(180deg,rgba(15,23,42,.75),rgba(15,23,42,.52));backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);overflow:hidden;box-shadow:0 30px 80px -30px rgba(0,0,0,.7)}
+.sp-inbox-hd{display:flex;align-items:center;justify-content:space-between;padding:15px 18px;border-bottom:1px solid var(--sp-line)}
+.sp-inbox-title{display:flex;align-items:center;gap:9px;font-weight:600;font-size:15px;color:#fff}
+.sp-badge-n{font-family:var(--font-mono),monospace;font-size:11px;letter-spacing:.1em;color:var(--blue-soft);border:1px solid rgba(59,130,246,.4);border-radius:999px;padding:3px 9px}
+.sp-conv{display:flex;align-items:center;gap:13px;padding:14px 18px;border-bottom:1px solid var(--sp-line);transition:background .4s}
+.sp-conv:last-child{border-bottom:0}
+.sp-conv.on{background:rgba(26,60,255,.1)}
+.sp-conv-av{position:relative;width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,#1e293b,#0f172a);border:1px solid var(--sp-line2);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.sp-conv-ch{position:absolute;right:-4px;bottom:-4px;width:19px;height:19px;border-radius:6px;display:flex;align-items:center;justify-content:center;border:2px solid var(--surface)}
+.sp-conv-main{display:flex;flex-direction:column;gap:2px;min-width:0;flex:1}
+.sp-conv-nm{display:block;font-size:14px;font-weight:600;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sp-conv-pv{display:block;font-size:13px;color:var(--text-tertiary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sp-conv-dot{width:8px;height:8px;border-radius:50%;background:var(--blue);flex-shrink:0;box-shadow:0 0 10px rgba(26,60,255,.8)}
 .sp-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
 @media(max-width:760px){.sp-steps{grid-template-columns:1fr}}
 .sp-step{background:linear-gradient(180deg,rgba(15,23,42,.58),rgba(15,23,42,.36));backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid var(--sp-line);border-radius:16px;padding:34px 30px;height:100%}
@@ -138,7 +165,7 @@ const styles = `
 
 const spine = [
   { icon: Globe, label: "Website", desc: "A visitor lands" },
-  { icon: MessageSquare, label: "Instant Response", desc: "Answered under 90 seconds" },
+  { icon: Inbox, label: "Unified Inbox", desc: "Every channel, one place" },
   { icon: Users, label: "CRM", desc: "Lead captured & qualified" },
   { icon: CalendarCheck, label: "BookingBot", desc: "Appointment booked" },
   { icon: Receipt, label: "InvoiceFlow", desc: "Payment collected" },
@@ -147,10 +174,10 @@ const spine = [
 
 const systems = [
   {
-    icon: MessageSquare,
-    title: "Instant Response",
+    icon: Inbox,
+    title: "Unified Inbox",
     tier: "All packages",
-    body: "Every WhatsApp enquiry answered in under 90 seconds, in your clinic's voice — qualified, captured, and escalated to a human the moment it matters.",
+    body: "Every enquiry from every channel — WhatsApp, Instagram, TikTok, Messenger, Telegram, SMS and email — in one Team Inbox, answered in under 90 seconds and escalated to a human the moment it matters.",
   },
   {
     icon: Users,
@@ -174,17 +201,45 @@ const systems = [
 
 const steps = [
   { n: "01", title: "Discover", body: "A 30-minute call to map your enquiry-to-payment flow and confirm the right package." },
-  { n: "02", title: "Build & Test", body: "We configure your WhatsApp AI, calendar, pipeline and billing, then test every flow against your real service menu — live within 72 hours of intake." },
+  { n: "02", title: "Build & Test", body: "We connect your channels into one inbox and configure your AI, calendar, pipeline and billing, then test every flow against your real service menu — live within 72 hours of intake." },
   { n: "03", title: "Optimise", body: "We monitor, tune and report, then measure response time against the guarantee at Day 30 — proactively." },
+];
+
+/* Channels that feed the Unified Inbox. Generic glyphs + brand tint +
+   name (no logo reproductions). TikTok/Telegram included per founder
+   direction — trim any that aren't connected yet. */
+type Glyph = typeof MessageCircle;
+const channels: [string, string, Glyph][] = [
+  ["WhatsApp", "#25D366", MessageCircle],
+  ["Instagram", "#E4405F", Instagram],
+  ["Messenger", "#0084FF", Facebook],
+  ["TikTok", "#FE2C55", Music2],
+  ["Telegram", "#229ED9", Send],
+  ["SMS", "#8B93A7", MessageSquare],
+  ["Email", "#A78BFA", Mail],
+];
+
+/* Illustrative Team Inbox rows — anonymised UI mock, not real clients. */
+const inboxRows: [string, string, string, Glyph][] = [
+  ["Jasmine L.", "Hi! Do you have availability this Friday?", "#E4405F", Instagram],
+  ["+65 8•••• 4021", "Can I reschedule my appointment?", "#25D366", MessageCircle],
+  ["m•••@gmail.com", "Following up on the quote you sent", "#A78BFA", Mail],
+  ["tiktok_user_88", "Saw your video — how much for the…", "#FE2C55", Music2],
 ];
 
 export function SpineHome() {
   const [active, setActive] = useState(0);
+  const [ibx, setIbx] = useState(0);
   const reduce = useReducedMotion();
   const openCalendly = useCalendly(contact.call.href);
 
   useEffect(() => {
     const t = setInterval(() => setActive((a) => (a + 1) % spine.length), 1400);
+    return () => clearInterval(t);
+  }, []);
+
+  useEffect(() => {
+    const t = setInterval(() => setIbx((n) => (n + 1) % inboxRows.length), 2200);
     return () => clearInterval(t);
   }, []);
 
@@ -290,6 +345,64 @@ export function SpineHome() {
               invoice.
             </p>
           </Reveal>
+        </div>
+      </section>
+
+      {/* UNIFIED INBOX SHOWCASE — every channel converges into one inbox */}
+      <section className="sp-sec" id="unified-inbox">
+        <div className="sp-wrap">
+          <div className="sp-omni">
+            <Reveal>
+              <p className="sp-eb">Unified Inbox</p>
+              <h2 className="sp-h2" style={{ marginTop: 16, maxWidth: "15ch" }}>
+                Every channel. One inbox.
+              </h2>
+              <p className="sp-sub" style={{ marginTop: 18, maxWidth: "46ch" }}>
+                WhatsApp, Instagram, TikTok, Messenger, Telegram, SMS and email —
+                every enquiry from every platform lands in one Team Inbox and gets
+                answered in under 90 seconds. Your team never switches tabs, and no
+                lead is ever missed.
+              </p>
+              <div className="sp-chips">
+                {channels.map(([name, color, Ic]) => (
+                  <span key={name} className="sp-chan">
+                    <span className="sp-chan-ic" style={{ background: `${color}22` }}>
+                      <Ic size={16} color={color} aria-hidden />
+                    </span>
+                    {name}
+                  </span>
+                ))}
+              </div>
+            </Reveal>
+
+            <Reveal delay={0.1}>
+              <TiltCard glow="rgba(26,60,255,0.16)">
+                <div className="sp-inbox">
+                  <div className="sp-inbox-hd">
+                    <span className="sp-inbox-title">
+                      <Inbox size={18} color="var(--blue-soft)" aria-hidden /> Team Inbox
+                    </span>
+                    <span className="sp-badge-n">4 UNREAD</span>
+                  </div>
+                  {inboxRows.map(([nm, pv, color, Ic], i) => (
+                    <div key={nm} className={`sp-conv${i === ibx ? " on" : ""}`}>
+                      <span className="sp-conv-av">
+                        <MessageSquare size={16} color="var(--text-tertiary)" aria-hidden />
+                        <span className="sp-conv-ch" style={{ background: color }}>
+                          <Ic size={10} color="#fff" aria-hidden />
+                        </span>
+                      </span>
+                      <span className="sp-conv-main">
+                        <span className="sp-conv-nm">{nm}</span>
+                        <span className="sp-conv-pv">{pv}</span>
+                      </span>
+                      {i === ibx && <span className="sp-conv-dot" />}
+                    </div>
+                  ))}
+                </div>
+              </TiltCard>
+            </Reveal>
+          </div>
         </div>
       </section>
 
