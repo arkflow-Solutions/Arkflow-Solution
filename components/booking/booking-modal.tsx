@@ -53,26 +53,26 @@ export function BookingModal() {
         aria-modal="true"
         aria-label="Book a discovery call"
         className="relative z-10 flex w-full max-w-[760px] flex-col overflow-hidden rounded-2xl border border-white/10 bg-white shadow-2xl"
-        style={{ maxHeight: "88vh" }}
+        style={{ height: "min(88vh, 860px)" }}
       >
         <button
           onClick={() => setOpen(false)}
           aria-label="Close"
-          className="absolute right-3 top-3 z-10 flex h-9 w-9 items-center justify-center rounded-full bg-black/5 text-ink transition-colors hover:bg-black/10"
+          className="absolute right-3 top-3 z-20 flex h-9 w-9 items-center justify-center rounded-full bg-black/5 text-ink transition-colors hover:bg-black/10"
         >
           <X size={18} aria-hidden />
         </button>
-        <div className="flex-1 overflow-y-auto">
-          <iframe
-            key={url}
-            id="arkflow-booking-iframe"
-            src={url}
-            title="ArkFlow — Book a discovery call"
-            className="w-full border-0"
-            style={{ minHeight: 680, width: "100%" }}
-            scrolling="no"
-          />
-        </div>
+        {/* iframe fills the fixed-height card and scrolls its own content,
+            so the whole booking form (incl. the submit button) is reachable
+            regardless of GHL's internal height. */}
+        <iframe
+          key={url}
+          id="arkflow-booking-iframe"
+          src={url}
+          title="ArkFlow — Book a discovery call"
+          className="w-full flex-1"
+          style={{ border: 0, minHeight: 0 }}
+        />
       </div>
     </div>
   );

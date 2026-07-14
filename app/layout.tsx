@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Script from "next/script";
 import "./globals.css";
 import { fontSans, fontMono } from "@/lib/fonts";
 import { Navbar } from "@/components/layout/navbar";
@@ -61,14 +60,6 @@ export default function RootLayout({
         <Footer />
         <OrgJsonLd />
         <BookingModal />
-        {/* GoHighLevel / LeadConnector booking widget resize script.
-            Every "Book Discovery Call" CTA opens <BookingModal />, which
-            embeds the booking widget (URL in lib/content.ts). Loaded once,
-            after the page becomes interactive. */}
-        <Script
-          src="https://link.msgsndr.com/js/form_embed.js"
-          strategy="afterInteractive"
-        />
       </body>
     </html>
   );
