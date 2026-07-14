@@ -4,6 +4,7 @@ import "./globals.css";
 import { fontSans, fontMono } from "@/lib/fonts";
 import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
+import { BookingModal } from "@/components/booking/booking-modal";
 import { SmoothScroll } from "@/components/motion/smooth-scroll";
 import { IntroVeil } from "@/components/motion/intro-veil";
 import { OrgJsonLd } from "@/components/seo/json-ld";
@@ -45,13 +46,7 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" className={`${fontSans.variable} ${fontMono.variable}`}>
-      <head>
-        {/* Calendly popup widget styles — loaded once, site-wide */}
-        <link
-          href="https://assets.calendly.com/assets/external/widget.css"
-          rel="stylesheet"
-        />
-      </head>
+      <head />
       <body>
         <IntroVeil />
         <SmoothScroll />
@@ -65,12 +60,13 @@ export default function RootLayout({
         <main id="main">{children}</main>
         <Footer />
         <OrgJsonLd />
-        {/* Calendly popup widget script — every "Book Discovery Call"
-            button site-wide calls window.Calendly.initPopupWidget via
-            the useCalendly hook (lib/use-calendly.ts). Loaded once,
+        <BookingModal />
+        {/* GoHighLevel / LeadConnector booking widget resize script.
+            Every "Book Discovery Call" CTA opens <BookingModal />, which
+            embeds the booking widget (URL in lib/content.ts). Loaded once,
             after the page becomes interactive. */}
         <Script
-          src="https://assets.calendly.com/assets/external/widget.js"
+          src="https://link.msgsndr.com/js/form_embed.js"
           strategy="afterInteractive"
         />
       </body>

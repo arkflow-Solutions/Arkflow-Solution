@@ -312,10 +312,10 @@ export const contact = {
   call: {
     title: "Book a discovery call",
     body: "Thirty minutes, no obligation. We map your enquiry-to-payment flow, run a Lead Response Audit on your current numbers, and show you exactly where revenue is slipping through — useful whether or not you work with us.",
-    // Live Calendly scheduling link — every "Book Discovery Call" CTA
-    // site-wide opens this via the Calendly popup widget (see
-    // lib/use-calendly.ts and app/layout.tsx for the script loader).
-    href: "https://calendly.com/kn-khairulnaim/new-meeting",
+    // Live GoHighLevel / LeadConnector booking widget — every "Book
+    // Discovery Call" CTA opens this in <BookingModal /> (see
+    // lib/use-calendly.ts and components/booking/booking-modal.tsx).
+    href: "https://api.leadconnectorhq.com/widget/booking/KusL0qfR1oz37ZonStXL",
   },
   whatsapp: {
     title: "WhatsApp us",
