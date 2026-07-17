@@ -28,6 +28,8 @@ import {
   Inbox,
   Cpu,
   Bell,
+  Star,
+  Share2,
   Users,
   CalendarCheck,
   Receipt,
@@ -176,6 +178,20 @@ const styles = `
 @keyframes sp-flowdown{0%{transform:translateY(0);opacity:0}8%{opacity:1}92%{opacity:1}100%{transform:translateY(400px);opacity:0}}
 .sp-node.on .sp-badge::after{content:"";position:absolute;inset:-4px;border-radius:14px;border:1px solid rgba(59,130,246,.5);animation:sp-ping 1.4s ease-out infinite;pointer-events:none}
 @keyframes sp-ping{0%{transform:scale(.9);opacity:.8}100%{transform:scale(1.3);opacity:0}}
+/* Phase 3 — living workflow band */
+.sp-wf-wrap{margin-top:52px;position:relative}
+.sp-wf{position:relative;display:flex;align-items:flex-start;justify-content:space-between;gap:8px;overflow-x:auto;padding:6px 2px 4px;scrollbar-width:none}
+.sp-wf::-webkit-scrollbar{display:none}
+.sp-wf-rail{position:absolute;left:26px;right:26px;top:32px;height:2px;background:var(--sp-line2);overflow:hidden;border-radius:2px}
+.sp-wf-rail::after{content:"";position:absolute;top:0;left:0;height:100%;width:20%;background:linear-gradient(90deg,transparent,var(--blue-soft),transparent);animation:sp-rail 2.8s linear infinite}
+@keyframes sp-rail{0%{transform:translateX(-120%)}100%{transform:translateX(560%)}}
+.sp-wf-node{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:11px;min-width:70px;flex:1}
+.sp-wf-ic{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;border:1px solid var(--sp-line);background:var(--surface);transition:border-color .35s,background .35s,box-shadow .35s,transform .35s}
+.sp-wf-node.lit .sp-wf-ic{border-color:var(--blue-soft);background:rgba(26,60,255,.12)}
+.sp-wf-node.on .sp-wf-ic{border-color:var(--blue-soft);background:rgba(26,60,255,.2);box-shadow:0 0 22px rgba(26,60,255,.42);transform:translateY(-3px)}
+.sp-wf-lb{font-size:12.5px;color:var(--text-tertiary);text-align:center;white-space:nowrap;transition:color .35s}
+.sp-wf-node.lit .sp-wf-lb{color:#fff}
+.sp-wf-done{display:inline-flex;align-items:center;gap:8px;margin-top:30px;padding:9px 16px;border-radius:999px;border:1px solid rgba(52,211,153,.4);background:rgba(52,211,153,.08);font-family:var(--font-mono),monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#34d399}
 `;
 
 const spine = [
@@ -243,9 +259,24 @@ const inboxRows: [string, string, string, Glyph][] = [
   ["tiktok_user_88", "Saw your video — how much for the…", "#FE2C55", Music2],
 ];
 
+/* End-to-end living workflow — the whole automated pipeline, first
+   touch to referral. */
+const workflow: [string, Glyph][] = [
+  ["Website", Globe],
+  ["Lead", Inbox],
+  ["AI Agent", Cpu],
+  ["CRM", Users],
+  ["Calendar", CalendarCheck],
+  ["WhatsApp", MessageCircle],
+  ["Invoice", Receipt],
+  ["Review", Star],
+  ["Referral", Share2],
+];
+
 export function SpineHome() {
   const [active, setActive] = useState(0);
   const [ibx, setIbx] = useState(0);
+  const [wf, setWf] = useState(0);
   const [tw, setTw] = useState(0);
   const [typed, setTyped] = useState("");
   const [del, setDel] = useState(false);
@@ -259,6 +290,16 @@ export function SpineHome() {
 
   useEffect(() => {
     const t = setInterval(() => setIbx((n) => (n + 1) % inboxRows.length), 2200);
+    return () => clearInterval(t);
+  }, []);
+
+  // Living workflow — advances one node at a time, holds on "complete",
+  // then loops.
+  useEffect(() => {
+    const t = setInterval(
+      () => setWf((w) => (w >= workflow.length ? 0 : w + 1)),
+      620
+    );
     return () => clearInterval(t);
   }, []);
 
@@ -486,6 +527,60 @@ export function SpineHome() {
               );
             })}
           </div>
+        </div>
+      </section>
+
+      {/* LIVING WORKFLOW — the full pipeline, data flowing through it */}
+      <section className="sp-sec" id="workflow">
+        <div className="sp-wrap">
+          <Reveal>
+            <p className="sp-eb">The engine</p>
+            <h2 className="sp-h2" style={{ marginTop: 16, maxWidth: "17ch" }}>
+              One workflow, end to end.
+            </h2>
+            <p className="sp-sub" style={{ marginTop: 14, maxWidth: "50ch" }}>
+              From first touch to referral, every step runs on the same connected
+              system — automatically, and without a task falling through.
+            </p>
+          </Reveal>
+
+          <Reveal delay={0.1}>
+            <div className="sp-wf-wrap">
+              <div className="sp-wf">
+                <span className="sp-wf-rail" aria-hidden />
+                {workflow.map(([label, Ic], i) => {
+                  const lit = i < wf;
+                  const on = i === wf - 1;
+                  return (
+                    <div
+                      key={label}
+                      className={`sp-wf-node${lit ? " lit" : ""}${on ? " on" : ""}`}
+                    >
+                      <span className="sp-wf-ic">
+                        <Ic
+                          size={22}
+                          aria-hidden
+                          color={lit ? "var(--blue-soft)" : "var(--platinum)"}
+                        />
+                      </span>
+                      <span className="sp-wf-lb">{label}</span>
+                    </div>
+                  );
+                })}
+              </div>
+              <div style={{ textAlign: "center" }}>
+                <span
+                  className="sp-wf-done"
+                  style={{
+                    opacity: wf >= workflow.length ? 1 : 0,
+                    transition: "opacity .4s",
+                  }}
+                >
+                  ✓ Automation complete
+                </span>
+              </div>
+            </div>
+          </Reveal>
         </div>
       </section>
 
