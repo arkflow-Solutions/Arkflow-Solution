@@ -26,10 +26,11 @@ import {
   Send,
   Mail,
   Inbox,
+  Cpu,
+  Bell,
   Users,
   CalendarCheck,
   Receipt,
-  Heart,
   ArrowRight,
   ShieldCheck,
   Phone,
@@ -53,20 +54,21 @@ const heroStagger = {
   hidden: {},
   show: { transition: { staggerChildren: 0.07, delayChildren: 0.05 } },
 };
-const heroWords = {
-  hidden: {},
-  show: { transition: { staggerChildren: 0.06, delayChildren: 0.12 } },
-};
 const rise = {
   hidden: { opacity: 0, y: 16 },
   show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } },
 };
-const headlineWords: [string, boolean][] = [
-  ["Turn", false],
-  ["enquiries", false],
-  ["into", false],
-  ["paying", true],
-  ["patients.", true],
+
+/* Industries the headline types through — clinic-forward first, then the
+   adjacent verticals ArkFlow serves. */
+const INDUSTRIES = [
+  "Aesthetic Clinics",
+  "Dental Clinics",
+  "Psychology Clinics",
+  "Medical Clinics",
+  "Insurance Advisors",
+  "Professional Services",
+  "Small Businesses",
 ];
 
 const styles = `
@@ -161,15 +163,29 @@ const styles = `
 .sp-ctafx-veil{position:absolute;inset:0;background:radial-gradient(ellipse 62% 60% at 50% 46%,transparent 8%,var(--ink) 80%)}
 .sp-center{text-align:center}
 .sp-mx{margin-left:auto;margin-right:auto}
+/* Phase 2 — typewriter headline + live automation flow */
+.sp-type{display:inline-block;min-height:1.05em}
+.sp-caret{display:inline-block;width:3px;height:.8em;margin-left:5px;background:var(--blue-soft);border-radius:1px;vertical-align:middle;animation:sp-blink 1s steps(1) infinite}
+@keyframes sp-blink{0%,50%{opacity:1}50.01%,100%{opacity:0}}
+.sp-flow-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.sp-flow-live{display:inline-flex;align-items:center;gap:7px;font-family:var(--font-mono),monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--blue-soft)}
+.sp-live-dot{width:7px;height:7px;border-radius:50%;background:var(--blue-soft);box-shadow:0 0 8px var(--blue-soft);animation:sp-livedot 1.4s ease-in-out infinite}
+@keyframes sp-livedot{0%,100%{opacity:1}50%{opacity:.3}}
+.sp-flow-done{display:inline-flex;align-items:center;gap:6px;font-family:var(--font-mono),monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#34d399}
+.sp-spine-pulse{position:absolute;left:49px;top:58px;width:2px;height:42px;border-radius:2px;background:linear-gradient(180deg,transparent,var(--blue-soft),transparent);box-shadow:0 0 10px rgba(59,130,246,.7);pointer-events:none;z-index:0;animation:sp-flowdown 2.6s linear infinite}
+@keyframes sp-flowdown{0%{transform:translateY(0);opacity:0}8%{opacity:1}92%{opacity:1}100%{transform:translateY(400px);opacity:0}}
+.sp-node.on .sp-badge::after{content:"";position:absolute;inset:-4px;border-radius:14px;border:1px solid rgba(59,130,246,.5);animation:sp-ping 1.4s ease-out infinite;pointer-events:none}
+@keyframes sp-ping{0%{transform:scale(.9);opacity:.8}100%{transform:scale(1.3);opacity:0}}
 `;
 
 const spine = [
-  { icon: Globe, label: "Website", desc: "A visitor lands" },
-  { icon: Inbox, label: "Unified Inbox", desc: "Every channel, one place" },
-  { icon: Users, label: "CRM", desc: "Lead captured & qualified" },
-  { icon: CalendarCheck, label: "BookingBot", desc: "Appointment booked" },
-  { icon: Receipt, label: "InvoiceFlow", desc: "Payment collected" },
-  { icon: Heart, label: "Patient", desc: "Booked & paying" },
+  { icon: Inbox, label: "New lead received", desc: "WhatsApp · IG · web" },
+  { icon: Cpu, label: "AI reads the enquiry", desc: "Intent + urgency scored" },
+  { icon: Users, label: "CRM updated", desc: "Lead captured & tagged" },
+  { icon: MessageCircle, label: "WhatsApp reply sent", desc: "In under 90 seconds" },
+  { icon: CalendarCheck, label: "Appointment booked", desc: "BookingBot" },
+  { icon: Receipt, label: "Invoice prepared", desc: "InvoiceFlow" },
+  { icon: Bell, label: "Follow-up scheduled", desc: "RenewalRadar" },
 ];
 
 const systems = [
@@ -230,6 +246,9 @@ const inboxRows: [string, string, string, Glyph][] = [
 export function SpineHome() {
   const [active, setActive] = useState(0);
   const [ibx, setIbx] = useState(0);
+  const [tw, setTw] = useState(0);
+  const [typed, setTyped] = useState("");
+  const [del, setDel] = useState(false);
   const reduce = useReducedMotion();
   const openCalendly = useCalendly(contact.call.href);
 
@@ -242,6 +261,30 @@ export function SpineHome() {
     const t = setInterval(() => setIbx((n) => (n + 1) % inboxRows.length), 2200);
     return () => clearInterval(t);
   }, []);
+
+  // Headline typewriter — types an industry, holds, deletes, advances.
+  useEffect(() => {
+    if (reduce) {
+      setTyped(INDUSTRIES[0]);
+      return;
+    }
+    const full = INDUSTRIES[tw];
+    let t: ReturnType<typeof setTimeout>;
+    if (!del) {
+      if (typed.length < full.length) {
+        t = setTimeout(() => setTyped(full.slice(0, typed.length + 1)), 55);
+      } else {
+        t = setTimeout(() => setDel(true), 1400);
+      }
+    } else if (typed.length > 0) {
+      t = setTimeout(() => setTyped(full.slice(0, typed.length - 1)), 30);
+    } else {
+      setDel(false);
+      setTw((n) => (n + 1) % INDUSTRIES.length);
+      return;
+    }
+    return () => clearTimeout(t);
+  }, [typed, del, tw, reduce]);
 
   return (
     <div className="spine-home">
@@ -269,17 +312,13 @@ export function SpineHome() {
             <motion.p variants={rise} className="sp-eb">
               Revenue Operations · Singapore
             </motion.p>
-            <motion.h1 variants={heroWords} className="sp-kicker" style={{ marginTop: 22 }}>
-              {headlineWords.map(([word, accent], idx) => (
-                <motion.span
-                  key={idx}
-                  variants={rise}
-                  className="sp-word"
-                  style={accent ? { color: "var(--blue-soft)" } : undefined}
-                >
-                  {word}
-                </motion.span>
-              ))}
+            <motion.h1 variants={rise} className="sp-kicker" style={{ marginTop: 22 }}>
+              Revenue systems for
+              <br />
+              <span className="sp-type">
+                <span style={{ color: "var(--blue-soft)" }}>{typed}</span>
+                <span className="sp-caret" aria-hidden />
+              </span>
             </motion.h1>
             <motion.p variants={rise} className="sp-sub" style={{ marginTop: 26, maxWidth: "38ch" }}>
               ArkFlow is the Revenue Operations partner for growing clinics. One
@@ -306,9 +345,20 @@ export function SpineHome() {
           <Reveal>
             <TiltCard glow="rgba(26,60,255,0.18)">
               <div className="sp-spine">
-                <p className="sp-eb sp-dim" style={{ marginBottom: 8, color: "var(--text-tertiary)" }}>
-                  The path, automated
-                </p>
+                <span className="sp-spine-pulse" aria-hidden />
+                <div className="sp-flow-hd">
+                  <span className="sp-eb sp-dim" style={{ color: "var(--text-tertiary)" }}>
+                    Live automation
+                  </span>
+                  {active === spine.length - 1 ? (
+                    <span className="sp-flow-done">Automation complete ✓</span>
+                  ) : (
+                    <span className="sp-flow-live">
+                      <span className="sp-live-dot" />
+                      Running
+                    </span>
+                  )}
+                </div>
             {spine.map((node, i) => {
               const Icon = node.icon;
               const on = i === active;
