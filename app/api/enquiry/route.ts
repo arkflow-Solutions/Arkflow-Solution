@@ -3,16 +3,12 @@ import { NextResponse } from "next/server";
 /**
  * Enquiry endpoint — modular and GoHighLevel-ready.
  *
- * The client never hardcodes a destination; it POSTs the enquiry here.
- * This route forwards to GoHighLevel (or any system) via an env var:
+ * Set GHL_WEBHOOK_URL (Vercel → Settings → Environment Variables) to the
+ * GoHighLevel Inbound Webhook URL and this route forwards each enquiry to
+ * it. No endpoints are hardcoded in the client.
  *
- *   GHL_WEBHOOK_URL   A GoHighLevel inbound webhook / form-submit URL.
- *                     (Set in Vercel → Project → Settings → Environment
- *                     Variables. No code change needed.)
- *
- * If no env var is set, the enquiry is accepted and logged so the whole
- * experience works in preview. Swap in the GHL API later by editing only
- * this file — the UI stays untouched.
+ * This version logs each step to the Vercel runtime logs (prefix
+ * "[enquiry]") so delivery can be verified end-to-end.
  */
 
 export const runtime = "nodejs";
@@ -22,10 +18,12 @@ export async function POST(req: Request) {
   try {
     data = await req.json();
   } catch {
+    console.log("[enquiry] bad JSON body");
     return NextResponse.json({ ok: false, error: "Invalid payload" }, { status: 400 });
   }
 
   const webhook = process.env.GHL_WEBHOOK_URL;
+  console.log("[enquiry] received. GHL_WEBHOOK_URL present:", Boolean(webhook));
 
   if (webhook) {
     try {
@@ -34,21 +32,31 @@ export async function POST(req: Request) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       });
+      const body = await res.text().catch(() => "");
+      console.log(
+        "[enquiry] forwarded to GHL. status:",
+        res.status,
+        "response:",
+        body.slice(0, 300)
+      );
       if (!res.ok) {
         return NextResponse.json(
           { ok: false, error: "Upstream rejected the enquiry" },
           { status: 502 }
         );
       }
-    } catch {
+    } catch (err) {
+      console.log("[enquiry] forward threw:", String(err));
       return NextResponse.json(
         { ok: false, error: "Could not reach the enquiry service" },
         { status: 502 }
       );
     }
   } else {
-    // No destination configured yet — accept so the UX works in preview.
-    console.log("[enquiry] received (no GHL_WEBHOOK_URL configured):", data);
+    console.log(
+      "[enquiry] NO GHL_WEBHOOK_URL configured — logging only:",
+      JSON.stringify(data).slice(0, 300)
+    );
   }
 
   return NextResponse.json({ ok: true });
