@@ -89,6 +89,12 @@ const TIMELINE = [
   ["30-Day Optimisation", "We tune, report, and measure against the guarantee at Day 30."],
 ];
 
+const BENEFITS: { icon: typeof Zap; text: string }[] = [
+  { icon: Zap, text: "A free Lead Response Audit on your real numbers." },
+  { icon: TrendingUp, text: "One recommended package — never a menu." },
+  { icon: ShieldCheck, text: `Backed by the ${guarantee.name}.` },
+];
+
 const STEPS = 6;
 
 type FormState = {
@@ -326,23 +332,16 @@ export function ContactExperience() {
               </p>
 
               <div style={{ marginTop: 30 }}>
-                {[
-                  [Zap, "A free Lead Response Audit on your real numbers."],
-                  [TrendingUp, "One recommended package — never a menu."],
-                  [ShieldCheck, `Backed by the ${guarantee.name}.`],
-                ].map(([Ic, text], i) => {
-                  const Icon = Ic as typeof Zap;
-                  return (
-                    <div className="cx-benefit" key={i}>
-                      <span className="cx-bic">
-                        <Icon size={18} className="text-blue-soft" aria-hidden />
-                      </span>
-                      <p className="cx-body" style={{ alignSelf: "center", color: "#fff" }}>
-                        {text as string}
-                      </p>
-                    </div>
-                  );
-                })}
+                {BENEFITS.map(({ icon: Icon, text }, i) => (
+                  <div className="cx-benefit" key={i}>
+                    <span className="cx-bic">
+                      <Icon size={18} className="text-blue-soft" aria-hidden />
+                    </span>
+                    <p className="cx-body" style={{ alignSelf: "center", color: "#fff" }}>
+                      {text}
+                    </p>
+                  </div>
+                ))}
               </div>
 
               <div className="cx-contacts">

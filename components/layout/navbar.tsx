@@ -26,7 +26,7 @@ const links = [
 const companyLinks = [
   { label: "Resources", href: "/resources", icon: BookOpen, desc: "Guides, field notes & client knowledge" },
   { label: "Testimonials", href: "/case-studies", icon: Star, desc: "Client stories — earned with sign-off" },
-  { label: "About & Contact", href: "/about", icon: Building2, desc: "Who we are and how to reach us" },
+  { label: "About & Contact", href: "/contact", icon: Building2, desc: "Who we are and how to reach us" },
 ];
 
 export function Navbar() {
