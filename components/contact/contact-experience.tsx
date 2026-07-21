@@ -27,8 +27,6 @@ import { TiltCard } from "@/components/motion/tilt-card";
 import { useCalendly } from "@/lib/use-calendly";
 import { contact, guarantee, faq } from "@/lib/content";
 
-/* Reuse the proven "living current" R3F field as the hero scene:
-   enquiries flowing through intelligent pathways toward ArkFlow. */
 const HeroFlow = dynamic(() => import("@/components/three/hero-flow"), {
   ssr: false,
 });
@@ -120,17 +118,13 @@ const EMPTY: FormState = {
 };
 
 async function submitEnquiry(payload: FormState) {
-  // Delivered to GoHighLevel via /api/enquiry (which forwards to the
-  // GHL_WEBHOOK_URL env var). Nothing is hardcoded here.
   const endpoint = process.env.NEXT_PUBLIC_ENQUIRY_ENDPOINT || "/api/enquiry";
   const res = await fetch(endpoint, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       ...payload,
-      // convenience fields for GHL contact mapping
       name: `${payload.firstName} ${payload.lastName}`.trim(),
-      full_name: `${payload.firstName} ${payload.lastName}`.trim(),
       help: payload.help.join(", "),
       source: "arkflow-contact",
     }),
@@ -396,7 +390,7 @@ export function ContactExperience() {
               </div>
             </Reveal>
 
-            {/* RIGHT — multi-step glass form, delivered to GoHighLevel */}
+            {/* RIGHT — multi-step glass form → GoHighLevel */}
             <Reveal delay={0.1}>
               <TiltCard glow="rgba(26,60,255,0.2)">
                 <div className="cx-form">

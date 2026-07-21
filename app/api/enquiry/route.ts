@@ -1,30 +1,108 @@
 import { NextResponse } from "next/server";
 
 /**
- * Enquiry endpoint — modular and GoHighLevel-ready.
+ * Enquiry endpoint — delivers website enquiries into GoHighLevel.
  *
- * Set GHL_WEBHOOK_URL (Vercel → Settings → Environment Variables) to the
- * GoHighLevel Inbound Webhook URL and this route forwards each enquiry to
- * it. No endpoints are hardcoded in the client.
+ * Delivery is tried in this order, so you can pick whichever you've set up:
  *
- * This version logs each step to the Vercel runtime logs (prefix
- * "[enquiry]") so delivery can be verified end-to-end.
+ * 1. GoHighLevel Contacts API (RECOMMENDED — most reliable)
+ *      GHL_API_TOKEN    Private Integration token (scope: contacts.write)
+ *      GHL_LOCATION_ID  Your GHL location (sub-account) ID
+ *    Creates/updates the contact directly. No webhook, no regenerating
+ *    IDs, no premium-trigger charges.
+ *
+ * 2. Inbound webhook (fallback)
+ *      GHL_WEBHOOK_URL  A GoHighLevel Inbound Webhook URL
+ *
+ * 3. Neither set — the enquiry is logged so the UX still works.
+ *
+ * Everything is logged to the Vercel runtime logs with the "[enquiry]"
+ * prefix so delivery can be verified end-to-end.
  */
 
 export const runtime = "nodejs";
 
+type Enquiry = {
+  firstName?: string;
+  lastName?: string;
+  name?: string;
+  business?: string;
+  businessType?: string;
+  volume?: string;
+  help?: string;
+  email?: string;
+  phone?: string;
+  preferred?: string;
+  message?: string;
+};
+
 export async function POST(req: Request) {
-  let data: unknown;
+  let data: Enquiry;
   try {
-    data = await req.json();
+    data = (await req.json()) as Enquiry;
   } catch {
     console.log("[enquiry] bad JSON body");
     return NextResponse.json({ ok: false, error: "Invalid payload" }, { status: 400 });
   }
 
+  const token = process.env.GHL_API_TOKEN;
+  const locationId = process.env.GHL_LOCATION_ID;
   const webhook = process.env.GHL_WEBHOOK_URL;
-  console.log("[enquiry] received. GHL_WEBHOOK_URL present:", Boolean(webhook));
 
+  console.log(
+    "[enquiry] received. contactsApi:",
+    Boolean(token && locationId),
+    "webhook:",
+    Boolean(webhook)
+  );
+
+  // 1) Preferred: create the contact directly via the GHL Contacts API.
+  if (token && locationId) {
+    try {
+      const notes = [
+        data.business && `Business: ${data.business}`,
+        data.businessType && `Type: ${data.businessType}`,
+        data.volume && `Monthly enquiries: ${data.volume}`,
+        data.help && `Wants help with: ${data.help}`,
+        data.preferred && `Preferred contact: ${data.preferred}`,
+        data.message && `Message: ${data.message}`,
+      ]
+        .filter(Boolean)
+        .join("\n");
+
+      const res = await fetch("https://services.leadconnectorhq.com/contacts/", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Version: "2021-07-28",
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({
+          locationId,
+          firstName: data.firstName || data.name || "",
+          lastName: data.lastName || "",
+          email: data.email,
+          phone: data.phone || undefined,
+          companyName: data.business || undefined,
+          source: "ArkFlow website",
+          tags: ["website-enquiry"],
+          customFields: [],
+          // Sent through so it's visible on the contact record.
+          notes,
+        }),
+      });
+      const body = await res.text().catch(() => "");
+      console.log("[enquiry] GHL Contacts API status:", res.status, body.slice(0, 300));
+
+      if (res.ok) return NextResponse.json({ ok: true });
+      // fall through to the webhook if the API rejected it
+    } catch (err) {
+      console.log("[enquiry] Contacts API threw:", String(err));
+    }
+  }
+
+  // 2) Fallback: inbound webhook.
   if (webhook) {
     try {
       const res = await fetch(webhook, {
@@ -33,31 +111,24 @@ export async function POST(req: Request) {
         body: JSON.stringify(data),
       });
       const body = await res.text().catch(() => "");
-      console.log(
-        "[enquiry] forwarded to GHL. status:",
-        res.status,
-        "response:",
-        body.slice(0, 300)
-      );
+      console.log("[enquiry] webhook status:", res.status, body.slice(0, 300));
       if (!res.ok) {
         return NextResponse.json(
           { ok: false, error: "Upstream rejected the enquiry" },
           { status: 502 }
         );
       }
+      return NextResponse.json({ ok: true });
     } catch (err) {
-      console.log("[enquiry] forward threw:", String(err));
+      console.log("[enquiry] webhook threw:", String(err));
       return NextResponse.json(
         { ok: false, error: "Could not reach the enquiry service" },
         { status: 502 }
       );
     }
-  } else {
-    console.log(
-      "[enquiry] NO GHL_WEBHOOK_URL configured — logging only:",
-      JSON.stringify(data).slice(0, 300)
-    );
   }
 
+  // 3) Nothing configured yet — accept so the UX works.
+  console.log("[enquiry] no destination configured:", JSON.stringify(data).slice(0, 300));
   return NextResponse.json({ ok: true });
 }
