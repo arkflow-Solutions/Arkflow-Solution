@@ -1,16 +1,9 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import dynamic from "next/dynamic";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import {
-  motion,
-  AnimatePresence,
-  useReducedMotion,
-} from "framer-motion";
-import {
-  ArrowRight,
-  ArrowLeft,
-  Check,
   MessageCircle,
   Mail,
   Linkedin,
@@ -22,12 +15,12 @@ import {
   TrendingUp,
   RefreshCw,
   ChevronDown,
-  Send,
 } from "lucide-react";
 import { Container } from "@/components/ui/container";
 import { Button } from "@/components/ui/button";
 import { Reveal } from "@/components/motion/reveal";
 import { TiltCard } from "@/components/motion/tilt-card";
+import { GHLContactForm } from "@/components/contact/GHLContactForm";
 import { useCalendly } from "@/lib/use-calendly";
 import { contact, guarantee, faq } from "@/lib/content";
 
@@ -41,26 +34,6 @@ const EASE = [0.22, 1, 0.36, 1] as const;
 
 // TODO(founder): replace with the real ArkFlow LinkedIn URL.
 const LINKEDIN_URL = "#";
-
-const BUSINESS_TYPES = [
-  "Aesthetic Clinic",
-  "Psychology Clinic",
-  "Dental Clinic",
-  "Medical Clinic",
-  "Property Agency",
-  "Professional Services",
-  "Other",
-];
-const VOLUMES = ["Under 50", "50–100", "100–300", "300+"];
-const HELP = [
-  "AI Receptionist",
-  "CRM",
-  "WhatsApp Automation",
-  "Website",
-  "Revenue Operations",
-  "Unsure",
-];
-const PREFERRED = ["WhatsApp", "Email", "Phone"];
 
 const OUTCOMES = [
   {
@@ -95,47 +68,6 @@ const BENEFITS: { icon: typeof Zap; text: string }[] = [
   { icon: ShieldCheck, text: `Backed by the ${guarantee.name}.` },
 ];
 
-const STEPS = 6;
-
-type FormState = {
-  name: string;
-  business: string;
-  businessType: string;
-  volume: string;
-  help: string[];
-  email: string;
-  phone: string;
-  preferred: string;
-  message: string;
-};
-
-const EMPTY: FormState = {
-  name: "",
-  business: "",
-  businessType: "",
-  volume: "",
-  help: [],
-  email: "",
-  phone: "",
-  preferred: "WhatsApp",
-  message: "",
-};
-
-async function submitEnquiry(payload: FormState) {
-  // Modular + GoHighLevel-ready. Point NEXT_PUBLIC_ENQUIRY_ENDPOINT
-  // straight at a GHL form URL, or leave it and use the /api/enquiry
-  // route (which forwards to GHL_WEBHOOK_URL). No endpoints hardcoded.
-  const endpoint =
-    process.env.NEXT_PUBLIC_ENQUIRY_ENDPOINT || "/api/enquiry";
-  const res = await fetch(endpoint, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ ...payload, source: "arkflow-contact" }),
-  });
-  if (!res.ok) throw new Error("submit failed");
-  return res.json().catch(() => ({}));
-}
-
 const styles = `
 .cx{position:relative;color:#fff}
 .cx-sec{padding:104px 0;border-top:1px solid var(--border-subtle);position:relative}
@@ -161,39 +93,6 @@ const styles = `
 .cx-crow:hover{border-color:var(--border-strong);transform:translateY(-2px)}
 .cx-crow .lbl{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-tertiary)}
 .cx-crow .val{font-size:14px;color:#fff;font-weight:500}
-/* glass form */
-.cx-form{position:relative;border:1px solid var(--border-strong);border-radius:22px;background:linear-gradient(180deg,rgba(15,23,42,.72),rgba(15,23,42,.5));backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);padding:30px;box-shadow:0 40px 120px -40px rgba(0,0,0,.8);overflow:hidden;min-height:460px;display:flex;flex-direction:column}
-.cx-form::before{content:"";position:absolute;inset:0 0 auto 0;height:1px;background:linear-gradient(90deg,transparent,rgba(59,130,246,.6),transparent)}
-.cx-prog{display:flex;align-items:center;gap:8px;margin-bottom:22px}
-.cx-dot{height:4px;flex:1;border-radius:2px;background:rgba(255,255,255,.1);overflow:hidden}
-.cx-dot span{display:block;height:100%;width:100%;background:var(--blue-soft);border-radius:2px;transform-origin:left;transition:transform .4s ease}
-.cx-q{font-size:1.35rem;font-weight:600;letter-spacing:-.02em;color:#fff;line-height:1.2}
-.cx-qs{font-size:13px;color:var(--text-tertiary);margin-top:6px}
-.cx-input{width:100%;margin-top:18px;height:52px;border-radius:12px;border:1px solid var(--border-subtle);background:rgba(255,255,255,.03);padding:0 16px;color:#fff;font-size:16px;font-family:inherit;outline:none;transition:.2s}
-.cx-input::placeholder{color:var(--text-tertiary)}
-.cx-input:focus{border-color:var(--blue-soft);box-shadow:0 0 0 3px rgba(59,130,246,.16);background:rgba(255,255,255,.05)}
-textarea.cx-input{height:auto;min-height:96px;padding:14px 16px;resize:vertical;line-height:1.5}
-.cx-opts{margin-top:18px;display:flex;flex-direction:column;gap:10px}
-.cx-opt{display:flex;align-items:center;gap:12px;width:100%;text-align:left;padding:14px 16px;border-radius:12px;border:1px solid var(--border-subtle);background:rgba(255,255,255,.02);color:var(--text-secondary);font-size:15px;font-family:inherit;cursor:pointer;transition:.18s}
-.cx-opt:hover{border-color:var(--border-strong);color:#fff;transform:translateX(2px)}
-.cx-opt.sel{border-color:var(--blue-soft);background:rgba(26,60,255,.14);color:#fff}
-.cx-opt-box{width:20px;height:20px;border-radius:6px;border:1px solid var(--border-strong);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:.18s}
-.cx-opt.sel .cx-opt-box{background:var(--blue-soft);border-color:var(--blue-soft)}
-.cx-grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:18px}
-@media(max-width:520px){.cx-grid2{grid-template-columns:1fr}}
-.cx-seg{display:flex;gap:8px;margin-top:10px}
-.cx-seg button{flex:1;padding:10px;border-radius:10px;border:1px solid var(--border-subtle);background:rgba(255,255,255,.02);color:var(--text-secondary);font-size:13px;font-family:inherit;cursor:pointer;transition:.18s}
-.cx-seg button.sel{border-color:var(--blue-soft);background:rgba(26,60,255,.14);color:#fff}
-.cx-nav{margin-top:auto;padding-top:24px;display:flex;align-items:center;justify-content:space-between;gap:12px}
-.cx-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:50px;padding:0 24px;border-radius:11px;font-weight:500;font-size:15px;font-family:inherit;cursor:pointer;border:none;color:#fff;transition:.2s}
-.cx-btn-p{background:var(--blue);flex:1}.cx-btn-p:hover{background:var(--blue-soft)}
-.cx-btn-p:disabled{opacity:.4;cursor:not-allowed}
-.cx-btn-g{background:transparent;border:1px solid var(--border-strong);color:var(--text-secondary);width:50px;padding:0}
-.cx-btn-g:hover{color:#fff;border-color:rgba(255,255,255,.3)}
-.cx-lbl{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-tertiary);margin:16px 0 0}
-/* success */
-.cx-done{text-align:center;margin:auto;padding:20px 0}
-.cx-ring{width:84px;height:84px;margin:0 auto;border-radius:50%;border:1px solid rgba(59,130,246,.4);display:flex;align-items:center;justify-content:center;background:rgba(26,60,255,.12);box-shadow:0 0 40px rgba(26,60,255,.4)}
 /* outcome + timeline + faq */
 .cx-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:52px}
 @media(max-width:860px){.cx-cards{grid-template-columns:1fr}}
@@ -216,63 +115,7 @@ textarea.cx-input{height:auto;min-height:96px;padding:14px 16px;resize:vertical;
 export function ContactExperience() {
   const reduce = useReducedMotion();
   const openCalendly = useCalendly(contact.call.href);
-  const [step, setStep] = useState(0);
-  const [form, setForm] = useState<FormState>(EMPTY);
-  const [submitting, setSubmitting] = useState(false);
-  const [error, setError] = useState("");
   const [openFaq, setOpenFaq] = useState<number | null>(0);
-
-  const set = (patch: Partial<FormState>) =>
-    setForm((f) => ({ ...f, ...patch }));
-
-  const toggleHelp = (item: string) =>
-    setForm((f) => ({
-      ...f,
-      help: f.help.includes(item)
-        ? f.help.filter((h) => h !== item)
-        : [...f.help, item],
-    }));
-
-  const canProceed = useMemo(() => {
-    switch (step) {
-      case 0:
-        return form.name.trim().length > 1;
-      case 1:
-        return form.business.trim().length > 0;
-      case 2:
-        return form.businessType !== "";
-      case 3:
-        return form.volume !== "";
-      case 4:
-        return form.help.length > 0;
-      case 5:
-        return /\S+@\S+\.\S+/.test(form.email);
-      default:
-        return true;
-    }
-  }, [step, form]);
-
-  const next = async () => {
-    if (!canProceed) return;
-    if (step < STEPS - 1) {
-      setStep((s) => s + 1);
-      return;
-    }
-    setSubmitting(true);
-    setError("");
-    try {
-      await submitEnquiry(form);
-      setStep(STEPS); // success
-    } catch {
-      setError(
-        "Something went wrong sending that. Please try again, or WhatsApp us."
-      );
-    } finally {
-      setSubmitting(false);
-    }
-  };
-
-  const back = () => setStep((s) => Math.max(0, s - 1));
 
   const faqs = faq.slice(0, 6);
 
@@ -396,243 +239,9 @@ export function ContactExperience() {
               </div>
             </Reveal>
 
-            {/* RIGHT — multi-step glass form */}
+            {/* RIGHT — GoHighLevel survey. Submissions handled entirely by GHL. */}
             <Reveal delay={0.1}>
-              <TiltCard glow="rgba(26,60,255,0.2)">
-                <div className="cx-form">
-                  {step < STEPS && (
-                    <div className="cx-prog" aria-hidden>
-                      {Array.from({ length: STEPS }).map((_, i) => (
-                        <span className="cx-dot" key={i}>
-                          <span
-                            style={{
-                              transform: `scaleX(${i < step ? 1 : i === step ? 0.5 : 0})`,
-                            }}
-                          />
-                        </span>
-                      ))}
-                    </div>
-                  )}
-
-                  <AnimatePresence mode="wait">
-                    <motion.div
-                      key={step}
-                      initial={reduce ? { opacity: 0 } : { opacity: 0, x: 24 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      exit={reduce ? { opacity: 0 } : { opacity: 0, x: -24 }}
-                      transition={{ duration: 0.32, ease: EASE }}
-                      style={{ display: "flex", flexDirection: "column", flex: 1 }}
-                    >
-                      {step === 0 && (
-                        <div>
-                          <p className="cx-q">What&apos;s your name?</p>
-                          <p className="cx-qs">So we know who we&apos;re speaking with.</p>
-                          <input
-                            className="cx-input"
-                            placeholder="Jane Tan"
-                            value={form.name}
-                            autoFocus
-                            onChange={(e) => set({ name: e.target.value })}
-                            onKeyDown={(e) => e.key === "Enter" && next()}
-                          />
-                        </div>
-                      )}
-
-                      {step === 1 && (
-                        <div>
-                          <p className="cx-q">What&apos;s your business called?</p>
-                          <p className="cx-qs">The name above the door.</p>
-                          <input
-                            className="cx-input"
-                            placeholder="Radiance Aesthetics"
-                            value={form.business}
-                            autoFocus
-                            onChange={(e) => set({ business: e.target.value })}
-                            onKeyDown={(e) => e.key === "Enter" && next()}
-                          />
-                        </div>
-                      )}
-
-                      {step === 2 && (
-                        <div>
-                          <p className="cx-q">What kind of business is it?</p>
-                          <p className="cx-qs">Pick the closest fit.</p>
-                          <div className="cx-opts">
-                            {BUSINESS_TYPES.map((t) => (
-                              <button
-                                key={t}
-                                type="button"
-                                className={`cx-opt${form.businessType === t ? " sel" : ""}`}
-                                onClick={() => set({ businessType: t })}
-                              >
-                                <span className="cx-opt-box">
-                                  {form.businessType === t && <Check size={13} color="#fff" />}
-                                </span>
-                                {t}
-                              </button>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-
-                      {step === 3 && (
-                        <div>
-                          <p className="cx-q">How many enquiries a month?</p>
-                          <p className="cx-qs">A rough number is fine.</p>
-                          <div className="cx-opts">
-                            {VOLUMES.map((v) => (
-                              <button
-                                key={v}
-                                type="button"
-                                className={`cx-opt${form.volume === v ? " sel" : ""}`}
-                                onClick={() => set({ volume: v })}
-                              >
-                                <span className="cx-opt-box">
-                                  {form.volume === v && <Check size={13} color="#fff" />}
-                                </span>
-                                {v}
-                              </button>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-
-                      {step === 4 && (
-                        <div>
-                          <p className="cx-q">What would you like help with?</p>
-                          <p className="cx-qs">Choose as many as apply.</p>
-                          <div className="cx-opts">
-                            {HELP.map((h) => {
-                              const on = form.help.includes(h);
-                              return (
-                                <button
-                                  key={h}
-                                  type="button"
-                                  className={`cx-opt${on ? " sel" : ""}`}
-                                  onClick={() => toggleHelp(h)}
-                                >
-                                  <span className="cx-opt-box">
-                                    {on && <Check size={13} color="#fff" />}
-                                  </span>
-                                  {h}
-                                </button>
-                              );
-                            })}
-                          </div>
-                        </div>
-                      )}
-
-                      {step === 5 && (
-                        <div>
-                          <p className="cx-q">Where should we reach you?</p>
-                          <p className="cx-qs">We&apos;ll follow up within 4 hours.</p>
-                          <div className="cx-grid2">
-                            <input
-                              className="cx-input"
-                              style={{ marginTop: 0 }}
-                              placeholder="Email *"
-                              type="email"
-                              value={form.email}
-                              onChange={(e) => set({ email: e.target.value })}
-                            />
-                            <input
-                              className="cx-input"
-                              style={{ marginTop: 0 }}
-                              placeholder="Phone"
-                              value={form.phone}
-                              onChange={(e) => set({ phone: e.target.value })}
-                            />
-                          </div>
-                          <p className="cx-lbl">Preferred contact</p>
-                          <div className="cx-seg">
-                            {PREFERRED.map((p) => (
-                              <button
-                                key={p}
-                                type="button"
-                                className={form.preferred === p ? "sel" : ""}
-                                onClick={() => set({ preferred: p })}
-                              >
-                                {p}
-                              </button>
-                            ))}
-                          </div>
-                          <textarea
-                            className="cx-input"
-                            placeholder="Anything you'd like us to know? (optional)"
-                            value={form.message}
-                            onChange={(e) => set({ message: e.target.value })}
-                          />
-                          {error && (
-                            <p style={{ color: "#f87171", fontSize: 13, marginTop: 12 }}>
-                              {error}
-                            </p>
-                          )}
-                        </div>
-                      )}
-
-                      {step === STEPS && (
-                        <div className="cx-done">
-                          <motion.div
-                            className="cx-ring"
-                            initial={{ scale: 0.6, opacity: 0 }}
-                            animate={{ scale: 1, opacity: 1 }}
-                            transition={{ duration: 0.6, ease: EASE }}
-                          >
-                            <motion.span
-                              initial={{ scale: 0 }}
-                              animate={{ scale: 1 }}
-                              transition={{ delay: 0.25, duration: 0.4, ease: EASE }}
-                            >
-                              <Check size={34} className="text-blue-soft" />
-                            </motion.span>
-                          </motion.div>
-                          <h3 className="cx-h3" style={{ marginTop: 22 }}>
-                            Thank you.
-                          </h3>
-                          <p className="cx-body" style={{ marginTop: 10, maxWidth: "34ch", marginInline: "auto" }}>
-                            Your enquiry has entered the ArkFlow Revenue Engine.
-                            We&apos;ll be in touch shortly.
-                          </p>
-                          <div style={{ marginTop: 22, display: "flex", justifyContent: "center" }}>
-                            <Button onClick={openCalendly} withArrow>
-                              Book your call now
-                            </Button>
-                          </div>
-                        </div>
-                      )}
-                    </motion.div>
-                  </AnimatePresence>
-
-                  {step < STEPS && (
-                    <div className="cx-nav">
-                      {step > 0 ? (
-                        <button className="cx-btn cx-btn-g" onClick={back} aria-label="Back">
-                          <ArrowLeft size={18} aria-hidden />
-                        </button>
-                      ) : (
-                        <span />
-                      )}
-                      <button
-                        className="cx-btn cx-btn-p"
-                        onClick={next}
-                        disabled={!canProceed || submitting}
-                      >
-                        {submitting
-                          ? "Sending…"
-                          : step === STEPS - 1
-                          ? "Submit enquiry"
-                          : "Continue"}
-                        {!submitting &&
-                          (step === STEPS - 1 ? (
-                            <Send size={17} aria-hidden />
-                          ) : (
-                            <ArrowRight size={17} aria-hidden />
-                          ))}
-                      </button>
-                    </div>
-                  )}
-                </div>
-              </TiltCard>
+              <GHLContactForm />
             </Reveal>
           </div>
         </Container>
