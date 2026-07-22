@@ -86,7 +86,14 @@ export async function POST(req: Request) {
           phone: data.phone || undefined,
           companyName: data.business || undefined,
           source: "ArkFlow website",
-          tags: ["website-enquiry"],
+          // Tags drive the GoHighLevel workflow: it enrols on
+          // "website-enquiry", and the confirmation branch reads the
+          // "prefers-*" tag to decide WhatsApp vs Email.
+          tags: [
+            "website-enquiry",
+            "hot-lead",
+            `prefers-${(data.preferred || "email").toLowerCase()}`,
+          ],
           customFields: [],
           // Sent through so it's visible on the contact record.
           notes,
