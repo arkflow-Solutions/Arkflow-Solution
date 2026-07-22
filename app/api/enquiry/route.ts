@@ -58,26 +58,16 @@ export async function POST(req: Request) {
 
   // 1) Preferred: create the contact directly via the GHL Contacts API.
   if (token && locationId) {
+    const ghlHeaders = {
+      Authorization: `Bearer ${token}`,
+      Version: "2021-07-28",
+      "Content-Type": "application/json",
+      Accept: "application/json",
+    };
     try {
-      const notes = [
-        data.business && `Business: ${data.business}`,
-        data.businessType && `Type: ${data.businessType}`,
-        data.volume && `Monthly enquiries: ${data.volume}`,
-        data.help && `Wants help with: ${data.help}`,
-        data.preferred && `Preferred contact: ${data.preferred}`,
-        data.message && `Message: ${data.message}`,
-      ]
-        .filter(Boolean)
-        .join("\n");
-
       const res = await fetch("https://services.leadconnectorhq.com/contacts/", {
         method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          Version: "2021-07-28",
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
+        headers: ghlHeaders,
         body: JSON.stringify({
           locationId,
           firstName: data.firstName || data.name || "",
@@ -94,15 +84,44 @@ export async function POST(req: Request) {
             "hot-lead",
             `prefers-${(data.preferred || "email").toLowerCase()}`,
           ],
-          customFields: [],
-          // Sent through so it's visible on the contact record.
-          notes,
         }),
       });
       const body = await res.text().catch(() => "");
-      console.log("[enquiry] GHL Contacts API status:", res.status, body.slice(0, 300));
+      console.log("[enquiry] GHL Contacts API status:", res.status, body.slice(0, 400));
 
-      if (res.ok) return NextResponse.json({ ok: true });
+      if (res.ok) {
+        // Attach the enquiry details as a Note (separate endpoint —
+        // create-contact does not accept notes inline). Best-effort:
+        // never fail the request if the note step has an issue.
+        try {
+          const parsed = JSON.parse(body) as { contact?: { id?: string } };
+          const contactId = parsed.contact?.id;
+          const noteText = [
+            data.business && `Business: ${data.business}`,
+            data.businessType && `Type: ${data.businessType}`,
+            data.volume && `Monthly enquiries: ${data.volume}`,
+            data.help && `Wants help with: ${data.help}`,
+            data.preferred && `Preferred contact: ${data.preferred}`,
+            data.message && `Message: ${data.message}`,
+          ]
+            .filter(Boolean)
+            .join("\n");
+          if (contactId && noteText) {
+            const noteRes = await fetch(
+              `https://services.leadconnectorhq.com/contacts/${contactId}/notes`,
+              {
+                method: "POST",
+                headers: ghlHeaders,
+                body: JSON.stringify({ body: noteText }),
+              }
+            );
+            console.log("[enquiry] GHL note status:", noteRes.status);
+          }
+        } catch (noteErr) {
+          console.log("[enquiry] note step skipped:", String(noteErr));
+        }
+        return NextResponse.json({ ok: true });
+      }
       // fall through to the webhook if the API rejected it
     } catch (err) {
       console.log("[enquiry] Contacts API threw:", String(err));
