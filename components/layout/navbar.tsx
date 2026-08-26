@@ -8,25 +8,24 @@ import { cn } from "@/lib/utils";
 import { Container } from "@/components/ui/container";
 import { Button } from "@/components/ui/button";
 import { Wordmark } from "@/components/layout/wordmark";
-import { useCalendly } from "@/lib/use-calendly";
+import { useBooking } from "@/lib/use-booking";
 import { contact } from "@/lib/content";
 
-/** Top-level primary navigation. */
+/** Top-level primary navigation. Approved sitemap — no "Industries"
+ *  menu: /aesthetic-clinics is the only vertical page at Stage 1. */
 const links = [
+  { label: "How it works", href: "/how-it-works" },
   { label: "Solutions", href: "/solutions" },
   { label: "Packages", href: "/packages" },
-  { label: "Industries", href: "/industries" },
 ];
 
-/** "Company" grouping — surfaced as a dropdown on desktop and an
- *  indented sub-group inside the mobile menu. Testimonials points to
- *  /case-studies, which holds the honest "earned with founding clinics,
- *  published with sign-off" content (no fabricated proof). About &
- *  Contact are combined into one entry pointing to /about. */
+/** "Company" grouping — a dropdown on desktop, an indented sub-group in
+ *  the mobile menu. /case-studies stays deliberately empty until there
+ *  is something real to put in it. */
 const companyLinks = [
-  { label: "Resources", href: "/resources", icon: BookOpen, desc: "Guides, field notes & client knowledge" },
-  { label: "Testimonials", href: "/case-studies", icon: Star, desc: "Client stories — earned with sign-off" },
-  { label: "About & Contact", href: "/contact", icon: Building2, desc: "Who we are and how to reach us" },
+  { label: "Aesthetic clinics", href: "/aesthetic-clinics", icon: BookOpen, desc: "Our current commercial focus" },
+  { label: "Case studies", href: "/case-studies", icon: Star, desc: "Published once they are earned" },
+  { label: "About & contact", href: "/contact", icon: Building2, desc: "Who we are and how to reach us" },
 ];
 
 export function Navbar() {
@@ -35,7 +34,7 @@ export function Navbar() {
   const [company, setCompany] = useState(false);
   const companyRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
-  const openCalendly = useCalendly(contact.call.href);
+  const openBooking = useBooking(contact.call.href);
 
   const companyActive = companyLinks.some((l) => l.href === pathname);
 
@@ -189,7 +188,7 @@ export function Navbar() {
         </nav>
 
         <div className="hidden lg:block">
-          <Button onClick={openCalendly}>Book Discovery Call</Button>
+          <Button onClick={openBooking}>Book Discovery Call</Button>
         </div>
 
         <button
@@ -246,7 +245,7 @@ export function Navbar() {
               <Button
                 onClick={(e) => {
                   setOpen(false);
-                  openCalendly(e);
+                  openBooking(e);
                 }}
                 className="w-full"
               >

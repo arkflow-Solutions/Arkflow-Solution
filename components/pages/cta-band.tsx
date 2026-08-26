@@ -4,7 +4,7 @@ import { Container } from "@/components/ui/container";
 import { Section } from "@/components/ui/section";
 import { Button } from "@/components/ui/button";
 import { Reveal } from "@/components/motion/reveal";
-import { useCalendly } from "@/lib/use-calendly";
+import { useBooking } from "@/lib/use-booking";
 import { contact } from "@/lib/content";
 
 export function CtaBand({
@@ -14,7 +14,7 @@ export function CtaBand({
   title?: string;
   body?: string;
 }) {
-  const openCalendly = useCalendly(contact.call.href);
+  const openBooking = useBooking(contact.call.href);
   return (
     <Section className="hairline">
       <Container className="text-center">
@@ -24,7 +24,7 @@ export function CtaBand({
             {body}
           </p>
           <div className="mt-9">
-            <Button onClick={openCalendly} size="large" withArrow>
+            <Button onClick={openBooking} size="large" withArrow>
               Book Discovery Call
             </Button>
           </div>

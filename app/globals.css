@@ -307,3 +307,234 @@
   .lift-1, .lift-2, .lift-3 { transform: none; }
   .shimmer-sweep::after { animation: none; display: none; }
 }
+
+/* ============================================================
+   The whole car — blueprint section
+   Amendment 3 (v1.1): motion that carries meaning is permitted.
+   The travelling light IS the explanation of connected
+   architecture, not decoration.
+   ============================================================ */
+
+@layer components {
+  .bp-svg {
+    width: 100%;
+    height: auto;
+    display: block;
+    overflow: visible;
+    fill: none;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  /* Measurement grid — the paper, not the drawing */
+  .bp-grid path {
+    stroke: rgba(209, 213, 219, 0.07);
+    stroke-width: 1;
+    stroke-dasharray: 2 10;
+  }
+
+  /* The vehicle itself: quiet, constant, never highlighted */
+  .bp-chassis path {
+    stroke: rgba(209, 213, 219, 0.5);
+    stroke-width: 1.5;
+  }
+  .bp-chassis .bp-crease {
+    stroke: rgba(209, 213, 219, 0.28);
+    stroke-width: 1;
+  }
+  .bp-chassis .bp-datum {
+    stroke: rgba(209, 213, 219, 0.16);
+    stroke-width: 1;
+    stroke-dasharray: 1 9;
+  }
+
+  /* Addressable parts — dimmed until selected */
+  .bp-part {
+    stroke: rgba(209, 213, 219, 0.5);
+    stroke-width: 1.5;
+    opacity: 0.28;
+    transition:
+      opacity 420ms cubic-bezier(0.22, 1, 0.36, 1),
+      stroke 420ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .bp-part .bp-fill {
+    fill: transparent;
+    stroke: none;
+    transition: fill 420ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .bp-part .bp-solid {
+    fill: rgba(209, 213, 219, 0.5);
+    stroke: none;
+  }
+  .bp-part .bp-road {
+    stroke-width: 1.5;
+  }
+
+  .bp-part--on {
+    opacity: 1;
+    stroke: var(--blue);
+    filter: drop-shadow(0 0 7px rgba(26, 60, 255, 0.55));
+  }
+  .bp-part--on .bp-fill {
+    fill: rgba(26, 60, 255, 0.09);
+  }
+  .bp-part--on .bp-solid {
+    fill: var(--blue);
+  }
+
+  /* Ambient flow */
+  .bp-flow-guide {
+    stroke: rgba(26, 60, 255, 0.10);
+    stroke-width: 1;
+  }
+  .bp-flow {
+    stroke: var(--blue);
+    stroke-width: 2.5;
+    stroke-dasharray: 3 1100;
+    filter: drop-shadow(0 0 6px rgba(26, 60, 255, 0.9));
+    animation: bp-flow 9s linear infinite;
+  }
+  @keyframes bp-flow {
+    from { stroke-dashoffset: 1103; }
+    to { stroke-dashoffset: 0; }
+  }
+
+  /* Part index (desktop) */
+  .bp-row {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 14px 0 14px 18px;
+    border-left: 1px solid var(--border-subtle);
+    transition:
+      border-color 420ms cubic-bezier(0.22, 1, 0.36, 1),
+      padding-left 420ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .bp-row:hover { border-left-color: var(--border-strong); }
+  .bp-row--on {
+    border-left-color: var(--blue);
+    padding-left: 24px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bp-flow { animation: none; opacity: 0; }
+}
+
+/* ============================================================
+   Homepage v2 — lightweight ambient system (replaces WebGL)
+   ============================================================ */
+
+@layer components {
+  /* Convergence field: channels entering, converging on one point */
+  .af-herofield {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.55;
+    mask-image: radial-gradient(120% 90% at 70% 40%, #000 25%, transparent 78%);
+    -webkit-mask-image: radial-gradient(120% 90% at 70% 40%, #000 25%, transparent 78%);
+  }
+  .af-herofield svg {
+    width: 100%;
+    height: 100%;
+    fill: none;
+  }
+  .af-hf-lines path {
+    stroke: rgba(26, 60, 255, 0.28);
+    stroke-width: 1;
+  }
+  .af-hf-nodes circle {
+    fill: rgba(209, 213, 219, 0.35);
+  }
+  .af-hf-core {
+    fill: var(--blue);
+    animation: af-core 4.5s ease-in-out infinite;
+  }
+  @keyframes af-core {
+    0%, 100% { opacity: 0.45; r: 5; }
+    50%      { opacity: 1;    r: 7; }
+  }
+
+  /* Rail: a hairline carrying a single travelling light */
+  .af-rail {
+    position: relative;
+    height: 1px;
+    width: 100%;
+    background: var(--border-subtle);
+    overflow: hidden;
+  }
+  .af-rail__pulse {
+    position: absolute;
+    top: 0;
+    left: -25%;
+    height: 1px;
+    width: 25%;
+    background: linear-gradient(90deg, transparent, var(--blue), transparent);
+    animation: af-rail 5s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+  }
+  @keyframes af-rail {
+    to { left: 100%; }
+  }
+
+  /* Journey stages: marker rail down the left */
+  .af-stage {
+    display: grid;
+    grid-template-columns: 24px 1fr;
+    gap: 24px;
+  }
+  .af-stage__marker {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    padding-top: 6px;
+  }
+  .af-stage__dot {
+    height: 7px;
+    width: 7px;
+    flex: none;
+    border-radius: 9999px;
+    background: var(--blue);
+    box-shadow: 0 0 0 4px rgba(26, 60, 255, 0.12);
+  }
+  .af-stage__line {
+    position: absolute;
+    top: 18px;
+    bottom: -6px;
+    width: 1px;
+    background: var(--border-subtle);
+  }
+
+  /* Package tier: accent hairline across the top edge */
+  .af-tier::before {
+    opacity: 0.7;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .af-hf-core { animation: none; }
+  .af-rail__pulse { animation: none; opacity: 0; }
+}
+
+/* ============================================================
+   3D scenes — v1.2. Labels rendered as DOM through drei <Html>
+   so they stay crisp and selectable rather than baked to texture.
+   ============================================================ */
+
+@layer components {
+  .af-entry-label {
+    display: block;
+    white-space: nowrap;
+    font-family: var(--font-mono), ui-monospace, monospace;
+    font-size: 0.6875rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    text-shadow: 0 1px 6px rgba(10, 14, 26, 0.9);
+    transition: opacity 400ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .af-scene {
+    position: absolute;
+    inset: 0;
+  }
+}

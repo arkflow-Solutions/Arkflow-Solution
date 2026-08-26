@@ -1,7 +1,6 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import dynamic from "next/dynamic";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import {
   ArrowRight,
@@ -24,12 +23,9 @@ import { Container } from "@/components/ui/container";
 import { Button } from "@/components/ui/button";
 import { Reveal } from "@/components/motion/reveal";
 import { TiltCard } from "@/components/motion/tilt-card";
-import { useCalendly } from "@/lib/use-calendly";
+import { ConvergenceField } from "@/components/motion/convergence-field";
+import { useBooking } from "@/lib/use-booking";
 import { contact, guarantee, faq } from "@/lib/content";
-
-const HeroFlow = dynamic(() => import("@/components/three/hero-flow"), {
-  ssr: false,
-});
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
@@ -60,7 +56,7 @@ const OUTCOMES = [
   {
     icon: Zap,
     title: "Never lose another lead",
-    body: "Every enquiry answered in under 90 seconds, on every channel. The messages you miss today become booked appointments.",
+    body: "Every enquiry answered on every channel, designed to reply in under 90 seconds. The messages you miss today become booked appointments.",
   },
   {
     icon: RefreshCw,
@@ -212,7 +208,7 @@ textarea.cx-input{height:auto;min-height:96px;padding:14px 16px;resize:vertical;
 
 export function ContactExperience() {
   const reduce = useReducedMotion();
-  const openCalendly = useCalendly(contact.call.href);
+  const openBooking = useBooking(contact.call.href);
   const [step, setStep] = useState(0);
   const [form, setForm] = useState<FormState>(EMPTY);
   const [submitting, setSubmitting] = useState(false);
@@ -278,7 +274,7 @@ export function ContactExperience() {
       <section className="cx-hero">
         {!reduce && (
           <div className="cx-hero-fx" aria-hidden>
-            <HeroFlow />
+            <ConvergenceField />
           </div>
         )}
         <div className="cx-hero-veil" aria-hidden />
@@ -298,7 +294,7 @@ export function ContactExperience() {
               useful whether or not you work with us.
             </p>
             <div style={{ marginTop: 34, display: "flex", gap: 14, flexWrap: "wrap" }}>
-              <Button onClick={openCalendly} size="large" withArrow>
+              <Button onClick={openBooking} size="large" withArrow>
                 Book Discovery Call
               </Button>
               <Button href="#enquiry" variant="secondary" size="large">
@@ -339,14 +335,16 @@ export function ContactExperience() {
               </div>
 
               <div className="cx-contacts">
-                <a className="cx-crow" href={contact.whatsapp.href}>
-                  <MessageCircle size={18} className="text-blue-soft" aria-hidden />
-                  <span>
-                    <span className="lbl">WhatsApp</span>
-                    <br />
-                    <span className="val">Message us</span>
-                  </span>
-                </a>
+                {contact.whatsapp.href && (
+                  <a className="cx-crow" href={contact.whatsapp.href}>
+                    <MessageCircle size={18} className="text-blue-soft" aria-hidden />
+                    <span>
+                      <span className="lbl">WhatsApp</span>
+                      <br />
+                      <span className="val">Message us</span>
+                    </span>
+                  </a>
+                )}
                 <a className="cx-crow" href={`mailto:${contact.email.address}`}>
                   <Mail size={18} className="text-blue-soft" aria-hidden />
                   <span>
@@ -602,7 +600,7 @@ export function ContactExperience() {
                             We&apos;ll be in touch shortly.
                           </p>
                           <div style={{ marginTop: 22, display: "flex", justifyContent: "center" }}>
-                            <Button onClick={openCalendly} withArrow>
+                            <Button onClick={openBooking} withArrow>
                               Book your call now
                             </Button>
                           </div>
@@ -762,7 +760,7 @@ export function ContactExperience() {
                 you exactly where revenue is slipping through.
               </p>
               <div style={{ marginTop: 30, display: "flex", justifyContent: "center" }}>
-                <Button onClick={openCalendly} size="large" withArrow>
+                <Button onClick={openBooking} size="large" withArrow>
                   Book Your Free Discovery Call
                 </Button>
               </div>

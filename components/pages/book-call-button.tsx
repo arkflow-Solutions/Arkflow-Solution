@@ -1,14 +1,14 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { useCalendly } from "@/lib/use-calendly";
+import { useBooking } from "@/lib/use-booking";
 import { contact } from "@/lib/content";
 
 /**
- * BookCallButton — the one place that actually opens the Calendly
- * popup. Pulled into its own client component so server-rendered pages
- * (like /contact, which exports `metadata` and must stay a server
- * component) can still trigger the widget.
+ * BookCallButton — opens the ArkFlow booking modal (GoHighLevel
+ * booking widget). Kept as its own client component so server-rendered
+ * pages (like /contact, which exports `metadata` and must stay a server
+ * component) can still trigger it.
  */
 export function BookCallButton({
   className,
@@ -21,9 +21,9 @@ export function BookCallButton({
   withArrow?: boolean;
   children?: React.ReactNode;
 }) {
-  const openCalendly = useCalendly(contact.call.href);
+  const openBooking = useBooking(contact.call.href);
   return (
-    <Button onClick={openCalendly} className={className} size={size} withArrow={withArrow}>
+    <Button onClick={openBooking} className={className} size={size} withArrow={withArrow}>
       {children}
     </Button>
   );

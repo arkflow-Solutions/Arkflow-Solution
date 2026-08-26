@@ -1,3 +1,5 @@
+import { WHATSAPP_URL } from "@/lib/site";
+
 /**
  * ArkFlow homepage content — single source of truth for copy.
  *
@@ -21,9 +23,8 @@ export const packages = [
     name: "Respond",
     headline: "Never lose another lead to a slow reply",
     // Approved website copy — Canonical Package Specification §11
-    copy: "Your marketing brings people to your door. ArkFlow makes sure not one of them walks away because no one answered. Every enquiry — midnight, Sunday, mid-treatment — gets a helpful, on-brand reply in under 90 seconds, every day of the year. The lead is qualified, captured, and waiting for you, instead of gone to the clinic down the road.",
-    price: "S$688",
-    priceNote: "Live in 72 hours. Backed by the 30-Day Response Guarantee.",
+    copy: "Your marketing brings people to your door. ArkFlow makes sure not one of them walks away because no one answered. Every enquiry — midnight, Sunday, mid-treatment — is designed to get a helpful, on-brand reply in under 90 seconds, every day of the year. The lead is qualified, captured, and waiting for you, instead of gone to the clinic down the road.",
+    priceNote: "Core system live in 72 hours. Backed by the 30-Day Response Guarantee.",
     features: [
       "Unified Inbox — WhatsApp, IG, TikTok & more",
       "Lead qualification & CRM pipeline",
@@ -38,7 +39,6 @@ export const packages = [
     badge: "Most popular",
     headline: "Run your operations on autopilot",
     copy: "The enquiries get answered, the bookings fill themselves in, the reminders go out, and the invoices chase themselves — while you do the work only you can do. No more manual confirmations. No more preventable no-shows. No more chasing payment over WhatsApp.",
-    price: "S$988",
     priceNote: "Everything in Respond, plus booking and billing that run themselves.",
     features: [
       "Everything in Respond",
@@ -52,13 +52,12 @@ export const packages = [
     id: "scale",
     name: "Scale",
     headline: "Your whole business, online and answering 24/7",
-    copy: "A website that actually brings in enquiries — not a brochure that just sits there. An AI receptionist that answers every call in two rings, books the appointment, and only interrupts you when it truly matters. And a system quietly bringing your past customers back.",
-    price: "S$1,488",
-    priceNote: "Website live within 10 business days.",
+    copy: "A website that actually brings in enquiries — not a brochure that just sits there. An AI receptionist designed to answer within two rings, book the appointment, and only interrupt you when it truly matters. And a system quietly bringing your past customers back.",
+    priceNote: "Everything in Operate, plus website and Voice AI.",
     features: [
       "Everything in Operate",
       "Professional website & AI Voice Agent",
-      "Past-customer reactivation & monthly strategy call",
+      "Monthly strategy call",
     ],
     emphasis: false,
     accent: "blue",
@@ -77,27 +76,26 @@ export const accents = {
 /* "What's Included" — icon grid replacing dense feature prose.
    Every item uses canonical feature names and canonical tier scope. */
 export const packageIncludes = [
-  { icon: "MessageSquare", name: "Unified Inbox", tier: "All", body: "Every channel — WhatsApp, Instagram, TikTok, Messenger, Telegram, SMS, email — in one inbox, answered in under 90 seconds." },
+  { icon: "MessageSquare", name: "Unified Inbox", tier: "All", body: "Every channel — WhatsApp, Instagram, TikTok, Messenger, Telegram, SMS, email — in one inbox, designed to reply in under 90 seconds." },
   { icon: "Users", name: "CRM & Pipeline", tier: "All", body: "Every contact on one pipeline — no lead lives in a phone." },
   { icon: "BarChart3", name: "Performance Reporting", tier: "All", body: "A monthly report on what the system captured and converted." },
   { icon: "CalendarCheck", name: "BookingBot", tier: "Operate+", body: "Booking, reschedules and reminders, synced to your calendar." },
   { icon: "Receipt", name: "InvoiceFlow", tier: "Operate+", body: "Invoices sent and chased automatically until paid." },
   { icon: "Globe", name: "Professional Website", tier: "Scale", body: "A credible site that feeds enquiries into the same system." },
-  { icon: "Phone", name: "AI Voice Agent", tier: "Scale", body: "Every call answered in two rings; only the real ones reach you." },
-  { icon: "RefreshCw", name: "Reactivation", tier: "Scale", body: "Past customers brought back — revenue already earned once." },
+  { icon: "Phone", name: "AI Voice Agent", tier: "Scale", body: "Designed to answer within two rings; only the calls that need you reach you." },
+  { icon: "RefreshCw", name: "Reactivation", tier: "Operate and above", body: "Past customers brought back — revenue already earned once." },
   { icon: "UserCheck", name: "Strategy Call", tier: "Scale", body: "A monthly 30-minute working session on your numbers." },
 ];
 
 /* Reassurance strip — canonical facts, stated as four quiet promises. */
 export const packageAssurances = [
   { icon: "ArrowUpRight", title: "Upgrade anytime", body: "Start anywhere, move up as you grow — no second setup fee." },
-  { icon: "Wrench", title: "One-time setup", body: "S$888 covers building and testing your system, once." },
+  { icon: "Wrench", title: "One-time setup", body: "Building and testing your system happens once, not every time you grow." },
   { icon: "Unlock", title: "No long lock-in", body: "6-month minimum, then month-to-month on 30 days' notice." },
   { icon: "Timer", title: "30-Day Response Guarantee", body: "Under 90 seconds within 30 days, or your first month is refunded." },
 ];
 
 export const packageTerms = {
-  implementationFee: "S$888 one-time implementation fee",
   minimumTerm: "6-month minimum, then month-to-month",
   support: "WhatsApp-first support, 4-hour business-hours response",
 };
@@ -127,10 +125,10 @@ export const problems = [
 
 export const journey = [
   { stage: "Lead", body: "An enquiry arrives — WhatsApp, web, or phone." },
-  { stage: "Respond", body: "Answered in under 90 seconds, in your clinic's voice." },
+  { stage: "Respond", body: "Designed to answer in under 90 seconds, in your own voice." },
   { stage: "Book", body: "Qualified, booked into your calendar, reminders set." },
   { stage: "Operate", body: "No-show recovery, invoicing and follow-up run themselves." },
-  { stage: "Scale", body: "Website, voice agent and reactivation compound the results." },
+  { stage: "Scale", body: "Website and voice agent compound the results." },
 ];
 
 export const industries = {
@@ -138,12 +136,14 @@ export const industries = {
     name: "Aesthetic Clinics",
     body: "Built first for Singapore aesthetic clinics: HSA-conscious messaging, treatment-aware booking, deposit-friendly billing. Never gives medical advice — anything clinical goes straight to your team.",
   },
-  secondary: [
-    { name: "Psychology Clinics", body: "Sensitive, discreet intake and scheduling." },
-    { name: "Dental Clinics", body: "Recall, reminders and treatment-plan follow-up." },
-    { name: "Medical Clinics", body: "High-volume enquiry triage and booking." },
-    { name: "Property Agencies", body: "Instant response for time-critical listings." },
-    { name: "Professional Services", body: "Consult booking and invoice collection." },
+  /* CONCEPTUAL ONLY — Founder Bible S1.5/S1.11: Stage 1 is Singapore
+     aesthetic clinics. These illustrate how the architecture adapts.
+     They are NOT verticals ArkFlow currently sells to or has deployed
+     for. Do not add logos, results or client references here. */
+  conceptual: [
+    { name: "Pet grooming", body: "A short, predictable cycle that depends on the customer rebooking on schedule." },
+    { name: "Car detailing", body: "Every job qualified before it can be quoted; most loss sits between quote and booking." },
+    { name: "Salons", body: "High repeat frequency, and a calendar that empties quietly without recall." },
   ],
 };
 
@@ -177,7 +177,7 @@ export const faq = [
   },
   {
     q: "What's the minimum commitment?",
-    a: "Six months on every package, then month-to-month with 30 days' notice. There's a one-time S$888 implementation fee that covers the real work of building and testing your system — it's never a profit centre, and it's waived when you upgrade between packages.",
+    a: "Six months on every package, then month-to-month with 30 days' notice. There is a one-time implementation that covers the real work of building and testing your system — it is never a profit centre, and it is waived when you upgrade between packages.",
   },
   {
     q: "How fast can we go live?",
@@ -211,16 +211,16 @@ export const matrix = {
   columns: ["Respond", "Operate", "Scale"],
   defaultColumn: "Operate",
   rows: [
-    { label: "Monthly price", values: ["S$688", "S$988", "S$1,488"] },
-    { label: "Implementation fee", values: ["S$888", "S$888", "S$888"] },
     { label: "Minimum commitment", values: ["6 months", "6 months", "6 months"] },
     { label: "Unified Inbox — every channel", values: [true, true, true] },
     { label: "Lead qualification & CRM pipeline", values: [true, true, true] },
     { label: "Booking automation (BookingBot)", values: [false, true, true] },
     { label: "Invoicing & collection (InvoiceFlow)", values: [false, true, true] },
     { label: "Professional website", values: [false, false, true] },
-    { label: "AI Voice Agent", values: [false, "Add-on +S$400", true] },
-    { label: "Past-customer reactivation", values: [false, false, true] },
+    { label: "AI Voice Agent", values: [false, false, true] },
+    { label: "Past-customer reactivation (RenewalRadar)", values: [false, true, true] },
+    { label: "Personalised recall — birthday & last visit", values: [true, true, true] },
+    { label: "Ad source tracking — Meta, Google, TikTok", values: [true, true, true] },
     { label: "Monthly performance report", values: [true, true, true] },
     { label: "Monthly strategy call", values: [false, false, "30 min"] },
     { label: "Support", values: ["WhatsApp · 4-hr", "WhatsApp · 4-hr", "WhatsApp · 4-hr"] },
@@ -238,7 +238,7 @@ export const upgradeRules = {
   ],
   changes: [
     "The monthly price moves to the new tier from the next billing cycle.",
-    "The new tier's capabilities switch on — booking and invoicing for Operate; website, voice and reactivation for Scale.",
+    "The new tier's capabilities switch on — booking, invoicing and reactivation for Operate; website and voice for Scale.",
     "Reporting expands to cover the new systems.",
   ],
   noFee: "No new implementation fee is ever charged on an upgrade, and there is no re-onboarding.",
@@ -250,7 +250,7 @@ export const boundaries = {
     "Configuration and ongoing management of proven platforms into one outcome",
     "Unified Inbox across every channel — WhatsApp, Instagram, TikTok, Messenger, Telegram, SMS, email — with instant response and lead qualification on every tier",
     "Booking and invoicing automation from Operate",
-    "A professional website, AI voice agent and reactivation on Scale",
+    "Past-customer reactivation on Operate and above; a professional website and AI voice agent on Scale",
     "Monthly performance reporting and monthly optimisation",
     "Vertical-specific configuration within a fixed tier scope",
   ],
@@ -264,34 +264,22 @@ export const boundaries = {
 };
 
 export const pricingPolicy = [
-  { term: "Payment", detail: "Monthly subscription in advance via Stripe. The implementation fee is invoiced once, before configuration begins — payment is acceptance." },
+  { term: "How pricing works", detail: "Every ArkFlow system is configured around how your business actually operates, so we quote rather than publish a list. The discovery call establishes what you need; the quotation follows from it." },
+  { term: "Payment", detail: "Monthly subscription in advance via Stripe. Implementation is invoiced once, before configuration begins — payment is acceptance." },
   { term: "Minimum term", detail: "Six months on every package, then month-to-month." },
   { term: "Cancellation", detail: "After the minimum, either party may end the engagement with 30 days' written notice. Your data is handled per the data processing agreement on exit." },
-  { term: "Implementation fee", detail: "S$888, one-time, non-refundable — it covers the real work of building and testing your system, and is never a profit centre. Waived on upgrades." },
-  { term: "Upgrades", detail: "New tier price applies from the next billing cycle. No new fee, no re-onboarding, minimum term not reset." },
+  { term: "Implementation", detail: "One-time and non-refundable — it covers the real work of building and testing your system, and is never a profit centre. Waived when you upgrade." },
+  { term: "Upgrades", detail: "The new level applies from the next billing cycle. No new implementation, no re-onboarding, minimum term not reset." },
 ];
 
 export const solutions = [
-  { name: "Unified Inbox", tier: "All packages", body: "Every enquiry from every channel — WhatsApp, Instagram, TikTok, Facebook Messenger, Telegram, SMS and email — in one Team Inbox, answered in under 90 seconds, day or night, and escalated to a human the moment it matters." },
+  { name: "Unified Inbox", tier: "All packages", body: "Every enquiry from every channel — WhatsApp, Instagram, TikTok, Facebook Messenger, Telegram, SMS and email — in one Team Inbox, designed to be answered in under 90 seconds, day or night, and escalated to a human the moment it matters." },
   { name: "CRM & Pipeline", tier: "All packages", body: "Every contact visible on one pipeline, from first message to treatment. No lead exists only in someone's phone." },
   { name: "BookingBot", tier: "Operate and above", body: "Booking, rescheduling and cancellation over WhatsApp, synced to your calendar — with confirmations, 24-hour and 2-hour reminders, and a no-show recovery sequence." },
   { name: "InvoiceFlow", tier: "Operate and above", body: "Invoices generated and delivered automatically on trigger, a three-message reminder chain, and an escalation to you at Day 15 — payment collected without a single chasing message from your team." },
   { name: "Professional Website", tier: "Scale", body: "A fast, credible website built to produce enquiries and feed them straight into the same system — live within 10 business days." },
-  { name: "AI Voice Agent", tier: "Scale · add-on for Operate", body: "Every call answered in two rings, questions handled, appointments booked — and only the calls that truly need you reach you. Available to Operate as a +S$400/month add-on." },
-  { name: "Reactivation", tier: "Scale", body: "A system quietly bringing past customers back — the cheapest revenue any business can win, because it was already earned once." },
-];
-
-export const industryDetails = [
-  {
-    name: "Aesthetic Clinics", primary: true,
-    pains: ["Enquiries arrive on WhatsApp at all hours — each new patient is worth thousands over time", "No-shows on consultations quietly erase marketing spend", "HSA advertising guidelines make generic chatbots a liability"],
-    fit: "Our first and deepest vertical. HSA-conscious conversation design, treatment-menu-aware booking, deposit-friendly billing. The system never gives medical advice, never makes outcome claims, and hands anything clinical to your team immediately.",
-  },
-  { name: "Psychology Clinics", primary: false, pains: ["Sensitive first contact", "Discreet scheduling"], fit: "Careful, private intake with human escalation as the default posture." },
-  { name: "Dental Clinics", primary: false, pains: ["Recall discipline", "Treatment-plan follow-up"], fit: "Recall, reminders and plan follow-up that run without front-desk effort." },
-  { name: "Medical Clinics", primary: false, pains: ["High enquiry volume", "Triage load"], fit: "High-volume enquiry triage and booking without a bigger front desk." },
-  { name: "Property Agencies", primary: false, pains: ["Time-critical listings", "Response speed wins mandates"], fit: "Instant response when minutes decide which agent gets the viewing." },
-  { name: "Professional Services", primary: false, pains: ["Consult scheduling", "Invoice chasing"], fit: "Consult booking and collection for firms that bill for their time." },
+  { name: "AI Voice Agent", tier: "Scale", body: "Designed to answer within two rings — questions handled, appointments booked, and only the calls that truly need you reaching you. Included with Scale." },
+  { name: "Reactivation", tier: "Operate and above", body: "A system quietly bringing past customers back — the cheapest revenue any business can win, because it was already earned once." },
 ];
 
 export const about = {
@@ -314,14 +302,17 @@ export const contact = {
     body: "Thirty minutes, no obligation. We map your enquiry-to-payment flow, run a Lead Response Audit on your current numbers, and show you exactly where revenue is slipping through — useful whether or not you work with us.",
     // Live GoHighLevel / LeadConnector booking widget — every "Book
     // Discovery Call" CTA opens this in <BookingModal /> (see
-    // lib/use-calendly.ts and components/booking/booking-modal.tsx).
+    // lib/use-booking.ts and components/booking/booking-modal.tsx).
     href: "https://api.leadconnectorhq.com/widget/booking/KusL0qfR1oz37ZonStXL",
   },
+  /* PENDING — no verified WhatsApp number. `href` reads from
+     WHATSAPP_URL in lib/site.ts, which is null until the founder
+     supplies one. While null, every WhatsApp affordance hides itself
+     rather than shipping a dead link. Do not invent a number. */
   whatsapp: {
     title: "WhatsApp us",
     body: "The fastest way to reach us — the same channel we build on. Business-hours replies within 4 hours.",
-    // CURRENT IMPLEMENTATION — replace with the live wa.me number
-    href: "https://wa.me/6500000000",
+    href: WHATSAPP_URL,
   },
   email: { title: "Email", address: "hello@arkflow.sg" },
   base: "Singapore · SGT business hours",
@@ -364,10 +355,7 @@ export const packageDetails = {
     accent: "emerald",
     headline: "Never lose another lead to a slow reply",
     description:
-      "Every enquiry answered in under 90 seconds, day or night — qualified, captured, and waiting for you instead of gone to the clinic down the road.",
-    price: "S$688",
-    priceUnit: "/month",
-    implementationFee: "S$888 one-time implementation",
+      "Every enquiry answered fast, day or night — qualified, captured, and waiting for you instead of gone to the clinic down the road.",
     minimumTerm: "6-month minimum, then month-to-month",
     guaranteeShort: "30-Day Response Guarantee",
     coreOutcome: "Be found. Answer instantly. Never miss a lead.",
@@ -376,7 +364,7 @@ export const packageDetails = {
       { icon: "MessageSquare", title: "Unified Inbox", body: "Every channel — WhatsApp, Instagram, TikTok, Messenger, Telegram, SMS, email — answered instantly from one inbox, in your clinic's voice." },
       { icon: "Filter", title: "Lead Qualification", body: "Sorts and scores each enquiry before your team even opens it." },
       { icon: "Users", title: "CRM Pipeline", body: "Every contact on one board — no lead trapped in a phone." },
-      { icon: "Clock", title: "Under 90 Seconds", body: "Replies land in seconds, any hour, every day of the year." },
+      { icon: "Clock", title: "Under 90 Seconds", body: "The response-time standard the 30-Day Response Guarantee is measured against." },
       { icon: "BarChart3", title: "Performance Report", body: "A monthly read on what came in and what converted." },
       { icon: "ShieldCheck", title: "HSA-Aware", body: "Never gives medical advice; anything clinical goes to your team." },
     ],
@@ -389,9 +377,6 @@ export const packageDetails = {
     headline: "Run your operations on autopilot",
     description:
       "Enquiries answered, bookings filled, reminders sent, invoices chased — the daily admin runs itself while you do the work only you can do.",
-    price: "S$988",
-    priceUnit: "/month",
-    implementationFee: "S$888 one-time implementation",
     minimumTerm: "6-month minimum, then month-to-month",
     guaranteeShort: "30-Day Response Guarantee",
     coreOutcome: "Automate the admin. Convert more. Save hours a week.",
@@ -411,10 +396,7 @@ export const packageDetails = {
     accent: "blue",
     headline: "Your whole business, online and answering 24/7",
     description:
-      "A website that brings in enquiries, an AI receptionist that answers every call, and a system quietly bringing past customers back.",
-    price: "S$1,488",
-    priceUnit: "/month",
-    implementationFee: "S$888 one-time implementation",
+      "A website that brings in enquiries, an AI receptionist for inbound calls, and a system quietly bringing past customers back.",
     minimumTerm: "6-month minimum, then month-to-month",
     guaranteeShort: "30-Day Response Guarantee",
     coreOutcome: "Systemise everything. Scale without chaos.",
@@ -422,7 +404,7 @@ export const packageDetails = {
     features: [
       { icon: "Workflow", title: "Everything in Operate", body: "The full automation stack, carried forward." },
       { icon: "Globe", title: "Professional Website", body: "A credible site that feeds enquiries into the same system." },
-      { icon: "Phone", title: "AI Voice Agent", body: "Every call answered in two rings; only the real ones reach you." },
+      { icon: "Phone", title: "AI Voice Agent", body: "Designed to answer within two rings; only the calls that need you reach you." },
       { icon: "RefreshCw", title: "Reactivation", body: "Past customers brought back — revenue already earned once." },
       { icon: "BarChart3", title: "Analytics Dashboard", body: "See enquiries, bookings and revenue in one place." },
       { icon: "UserCheck", title: "Monthly Strategy Call", body: "A 30-minute working session on your numbers." },

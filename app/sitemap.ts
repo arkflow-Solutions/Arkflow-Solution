@@ -1,16 +1,28 @@
 import type { MetadataRoute } from "next";
+import { SITE_URL } from "@/lib/site";
 
-const BASE = "https://arkflow.sg";
-
+/**
+ * Approved sitemap. /industries, /resources and /styleguide are retired.
+ * /aesthetic-clinics is the only dedicated vertical page at Stage 1.
+ */
 export default function sitemap(): MetadataRoute.Sitemap {
   const routes = [
-    "", "/packages", "/solutions", "/industries",
-    "/case-studies", "/about", "/resources", "/contact",
+    "",
+    "/how-it-works",
+    "/solutions",
+    "/aesthetic-clinics",
+    "/packages",
+    "/case-studies",
+    "/about",
+    "/contact",
+    "/privacy",
+    "/terms",
   ];
   return routes.map((path) => ({
-    url: `${BASE}${path}`,
+    url: `${SITE_URL}${path}`,
     lastModified: new Date(),
     changeFrequency: path === "" ? "weekly" : "monthly",
-    priority: path === "" ? 1 : path === "/packages" ? 0.9 : 0.7,
+    priority:
+      path === "" ? 1 : ["/packages", "/aesthetic-clinics"].includes(path) ? 0.9 : 0.7,
   }));
 }

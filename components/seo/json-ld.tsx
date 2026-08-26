@@ -1,54 +1,42 @@
-import { packages, faq } from "@/lib/content";
+import { SITE_URL } from "@/lib/site";
+import { COMPANY, CONTACT_EMAIL, CONTACT_PHONE } from "@/lib/site";
 
-const BASE = "https://arkflow.sg";
-
-/** Organization + OfferCatalog — rendered site-wide from the layout. */
+/**
+ * Organization structured data.
+ *
+ * AMENDMENT 2: there is deliberately NO Product/Offer schema here.
+ * ArkFlow quotes rather than publishes a price list, and emitting
+ * `price` / `priceCurrency` in JSON-LD would publish the price list in
+ * the page source. Do not reintroduce an Offer block.
+ */
 export function OrgJsonLd() {
   const data = {
     "@context": "https://schema.org",
-    "@type": "ProfessionalService",
-    name: "ArkFlow Solutions",
-    url: BASE,
+    "@type": "Organization",
+    name: COMPANY.legalName,
+    alternateName: COMPANY.shortName,
+    url: SITE_URL,
     description:
-      "Revenue Operations partner for Singapore clinics and service businesses. AI systems that answer every enquiry in under 90 seconds, keep calendars full, and collect payment.",
+      "ArkFlow designs, connects and operates the digital architecture behind service businesses — from first enquiry through booking, payment and repeat customer.",
+    logo: `${SITE_URL}/brand/arkflow-logo-lockup.png`,
     areaServed: { "@type": "Country", name: "Singapore" },
     address: { "@type": "PostalAddress", addressCountry: "SG" },
-    slogan: "Smarter Systems. Lower Costs. Better Results.",
-    hasOfferCatalog: {
-      "@type": "OfferCatalog",
-      name: "ArkFlow Packages",
-      itemListElement: packages.map((p) => ({
-        "@type": "Offer",
-        name: `ArkFlow ${p.name}`,
-        description: p.headline,
-        priceSpecification: {
-          "@type": "UnitPriceSpecification",
-          price: p.price.replace("S$", "").replace(",", ""),
-          priceCurrency: "SGD",
-          unitText: "MONTH",
-        },
-      })),
+    contactPoint: {
+      "@type": "ContactPoint",
+      contactType: "sales",
+      email: CONTACT_EMAIL,
+      telephone: CONTACT_PHONE,
+      areaServed: "SG",
+      availableLanguage: ["en"],
     },
+    knowsAbout: [
+      "Revenue Operations",
+      "Customer enquiry management",
+      "Appointment booking systems",
+      "Customer retention",
+    ],
   };
-  return (
-    <script
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }}
-    />
-  );
-}
 
-/** FAQPage — rendered on the home page only. */
-export function FaqJsonLd() {
-  const data = {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    mainEntity: faq.map((f) => ({
-      "@type": "Question",
-      name: f.q,
-      acceptedAnswer: { "@type": "Answer", text: f.a },
-    })),
-  };
   return (
     <script
       type="application/ld+json"

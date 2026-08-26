@@ -124,14 +124,6 @@ export function PackagesCardsInteractive() {
                   <h2 className="lift-1 mt-4 text-subheading font-medium">
                     {pkg.headline}
                   </h2>
-                  <p className="lift-2 mt-5 flex items-baseline gap-2">
-                    <span className="text-heading font-semibold">
-                      {pkg.price}
-                    </span>
-                    <span className="text-small text-[color:var(--text-tertiary)]">
-                      /month
-                    </span>
-                  </p>
                   {/* Approved copy — Canonical Package Specification §11 */}
                   <p className="lift-1 mt-5 text-body text-[color:var(--text-secondary)]">
                     {pkg.copy}
@@ -146,7 +138,7 @@ export function PackagesCardsInteractive() {
                       className="w-full"
                       withArrow={pkg.emphasis && !isOpen}
                     >
-                      {isOpen ? `Close ${pkg.name}` : `Start with ${pkg.name}`}
+                      {isOpen ? `Close ${pkg.name}` : `Explore ${pkg.name}`}
                     </Button>
                   </div>
                 </div>

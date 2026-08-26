@@ -1,4 +1,3 @@
-import type { Metadata } from "next";
 import { Check } from "lucide-react";
 import { Container } from "@/components/ui/container";
 import { Section } from "@/components/ui/section";
@@ -8,11 +7,15 @@ import { PageHero } from "@/components/pages/page-hero";
 import { CtaBand } from "@/components/pages/cta-band";
 import { caseStudies } from "@/lib/content";
 
-export const metadata: Metadata = {
-  title: "Case Studies",
+import { buildMetadata } from "@/lib/seo";
+
+export const metadata = buildMetadata({
+  title: "Case studies",
   description:
-    "ArkFlow case studies publish with real, client-approved numbers — and the first ones are being earned right now with founding clinics.",
-};
+    "ArkFlow publishes client results only once they exist and the client has approved them. This page is where the first ones will appear.",
+  path: "/case-studies",
+});
+
 
 export default function CaseStudiesPage() {
   return (

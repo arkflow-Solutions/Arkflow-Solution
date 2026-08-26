@@ -1,22 +1,31 @@
 /**
  * Packages page content — sourced from the Canonical Package
  * Specification v1.0 (§6 Upgrade Rules, §7 Boundaries, §9 Pricing
- * Policy, §10 Package Matrix). Do not edit without founder sign-off.
+ * Policy, §10 Package Matrix), as amended by AMENDMENTS-v1.1.
+ *
+ * AMENDMENT 2 — no price, implementation fee or discount appears on any
+ * public surface. §09 and §10 remain canonical INTERNALLY; they are not
+ * published. Do not reintroduce a price row.
+ * AMENDMENT 1 — AI Voice Agent is Scale-only. The Operate add-on is gone.
+ * AMENDMENT 6 — RenewalRadar is Operate and above, no longer Scale-only.
+ * AMENDMENTS 5 & 7 — ad-source tracking and personalised recall on all levels.
+ *
+ * Do not edit without founder sign-off.
  */
 
 export const matrix = {
   columns: ["Respond", "Operate", "Scale"] as const,
   rows: [
-    { label: "Monthly price", values: ["S$688", "S$988", "S$1,488"] },
-    { label: "Implementation fee", values: ["S$888", "S$888", "S$888"] },
     { label: "Minimum commitment", values: ["6 months", "6 months", "6 months"] },
     { label: "Instant WhatsApp AI response", values: ["Included", "Included", "Included"] },
     { label: "Lead qualification & CRM pipeline", values: ["Included", "Included", "Included"] },
     { label: "Booking automation (BookingBot)", values: ["—", "Included", "Included"] },
     { label: "Invoicing & collection (InvoiceFlow)", values: ["—", "Included", "Included"] },
     { label: "Professional website", values: ["—", "—", "Included"] },
-    { label: "AI Voice Agent", values: ["—", "Add-on +S$400", "Included"] },
-    { label: "Past-customer reactivation", values: ["—", "—", "Included"] },
+    { label: "AI Voice Agent", values: ["—", "—", "Included"] },
+    { label: "Past-customer reactivation (RenewalRadar)", values: ["—", "Included", "Included"] },
+    { label: "Personalised recall — birthday & last visit", values: ["Included", "Included", "Included"] },
+    { label: "Ad source tracking — Meta, Google, TikTok", values: ["Included", "Included", "Included"] },
     { label: "Monthly performance report", values: ["Included", "Included", "Included"] },
     { label: "Monthly strategy call", values: ["—", "—", "30 min"] },
     { label: "Support", values: ["WhatsApp · 4-hr", "WhatsApp · 4-hr", "WhatsApp · 4-hr"] },
@@ -26,9 +35,14 @@ export const matrix = {
 
 export const pricingPolicy = [
   {
+    term: "How pricing works",
+    detail:
+      "Every ArkFlow system is configured around how your business actually operates, so we quote rather than publish a list. The discovery call establishes what you need; the quotation follows from it.",
+  },
+  {
     term: "Payment terms",
     detail:
-      "Invoiced on the 1st of each month, due within 7 days. Paid by Stripe card link or PayNow Corporate.",
+      "Invoiced monthly on the 1st, due within 7 days. Paid by Stripe card link or PayNow Corporate.",
   },
   {
     term: "Minimum commitment",
@@ -38,22 +52,17 @@ export const pricingPolicy = [
   {
     term: "Upgrades",
     detail:
-      "Additive and frictionless: you keep everything you rely on and the next layer switches on. No re-onboarding, no second implementation fee. The new price applies from the next billing cycle.",
+      "Additive and frictionless: you keep everything you rely on and the next layer switches on. No re-onboarding, and no second implementation. Upgrades are triggered by evidence in your own numbers, never by a calendar.",
   },
   {
-    term: "Standard discounts",
+    term: "Rate changes",
     detail:
-      "Annual prepayment: 8%. Multi-location: 15% for 3 or more locations. These are the only two — the monthly fee is never discounted to close a deal.",
-  },
-  {
-    term: "Price changes",
-    detail:
-      "Increases apply to new clients only — never retroactively. Existing clients receive 90 days' written notice before any change affects a renewal.",
+      "Any change applies to new clients at signing only — never retroactively. Existing clients receive 90 days' written notice before a change affects a renewal.",
   },
   {
     term: "Cancellation",
     detail:
-      "After the 6-month minimum, either party may end the engagement with 30 days' written notice. The implementation fee is non-refundable; the monthly fee is refundable only under the guarantee.",
+      "After the 6-month minimum, either party may end the engagement with 30 days' written notice. The implementation is non-refundable; the monthly fee is refundable only under the 30-Day Response Guarantee.",
   },
 ];
 

@@ -8,8 +8,8 @@ import { contact } from "@/lib/content";
  * BookingModal — a site-wide modal that embeds the GoHighLevel /
  * LeadConnector booking widget. Mounted once in app/layout.tsx.
  *
- * Every "Book Discovery Call" CTA calls useCalendly() (see
- * lib/use-calendly.ts), which dispatches "arkflow:open-booking". This
+ * Every "Book Discovery Call" CTA calls useBooking() (see
+ * lib/use-booking.ts), which dispatches "arkflow:open-booking". This
  * modal listens for that event and opens with the booking widget URL
  * from lib/content.ts (contact.call.href). The GHL resize script
  * (link.msgsndr.com/js/form_embed.js) is loaded once in the layout.

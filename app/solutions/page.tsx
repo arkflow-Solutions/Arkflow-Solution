@@ -1,4 +1,3 @@
-import type { Metadata } from "next";
 import Link from "next/link";
 import { Container } from "@/components/ui/container";
 import { Section } from "@/components/ui/section";
@@ -6,42 +5,103 @@ import { Eyebrow } from "@/components/ui/eyebrow";
 import { Reveal } from "@/components/motion/reveal";
 import { PageHero } from "@/components/pages/page-hero";
 import { CtaBand } from "@/components/pages/cta-band";
-import { solutions } from "@/lib/content";
+import { solutionSections } from "@/lib/solutions-content";
 
-export const metadata: Metadata = {
+import { buildMetadata } from "@/lib/seo";
+
+export const metadata = buildMetadata({
   title: "Solutions",
   description:
-    "The systems inside ArkFlow — instant response, BookingBot, InvoiceFlow, website, AI voice agent and reactivation — and the packages that carry them.",
-};
+    "The layers inside an ArkFlow system — unified inbox, AI assistants, booking and payments, automation, CRM and reporting — and which package carries each one.",
+  path: "/solutions",
+});
 
+
+/**
+ * One page, six anchored sections (approved sitemap). Deliberately not
+ * six thin pages: with no case studies behind them yet, six shallow
+ * pages would be weaker for a reader and for search.
+ */
 export default function SolutionsPage() {
   return (
     <>
       <PageHero
         eyebrow="Solutions"
         title="One connected system, layer by layer."
-        lead="These are the systems inside every ArkFlow deployment. They're never sold as software — each is a layer of one connected outcome: enquiry to booking to payment, without leaks. Packages decide which layers are on."
+        lead="None of these is sold as software. Each is a layer of one outcome — enquiry to booking to payment to the visit after that. Which layers are switched on is a packages question."
       />
 
-      <Section className="hairline !pt-16">
-        <Container>
-          <div className="grid gap-x-10 gap-y-14 md:grid-cols-2">
-            {solutions.map((sys, i) => (
-              <Reveal key={sys.name} delay={Math.min(i * 0.05, 0.2)}>
-                <div className="border-t border-[color:var(--border-subtle)] pt-6">
-                  <div className="flex flex-wrap items-baseline justify-between gap-2">
-                    <h2 className="text-subheading font-medium">{sys.name}</h2>
-                    <p className="font-mono text-eyebrow uppercase text-blue-soft">{sys.tier}</p>
+      {/* Anchor nav */}
+      <Container>
+        <nav
+          aria-label="Sections"
+          className="flex flex-wrap gap-x-6 gap-y-3 border-y border-[color:var(--border-subtle)] py-5"
+        >
+          {solutionSections.map((s) => (
+            <Link
+              key={s.id}
+              href={`#${s.id}`}
+              className="font-mono text-eyebrow uppercase text-[color:var(--text-tertiary)] transition-colors hover:text-blue-soft"
+            >
+              {s.nav}
+            </Link>
+          ))}
+        </nav>
+      </Container>
+
+      {solutionSections.map((s) => (
+        <Section key={s.id} id={s.id} className="hairline scroll-mt-24">
+          <Container>
+            <Reveal>
+              <Eyebrow>{s.eyebrow}</Eyebrow>
+              <h2 className="mt-6 max-w-3xl text-heading font-semibold">
+                {s.title}
+              </h2>
+              <p className="mt-6 max-w-prose text-lead text-[color:var(--text-secondary)]">
+                {s.lead}
+              </p>
+            </Reveal>
+
+            <div className="mt-14 space-y-px overflow-hidden rounded-card border border-[color:var(--border-subtle)]">
+              {s.items.map((item, i) => (
+                <Reveal key={item.name} delay={i * 0.04} className="bg-surface/60">
+                  <div className="grid gap-4 p-7 md:grid-cols-[260px_1fr] md:p-8">
+                    <div>
+                      <h3 className="text-body font-medium text-white">
+                        {item.name}
+                      </h3>
+                      <p className="mt-2 font-mono text-eyebrow uppercase text-blue-soft">
+                        {item.tier}
+                      </p>
+                    </div>
+                    <p className="max-w-prose text-body text-[color:var(--text-secondary)]">
+                      {item.body}
+                    </p>
                   </div>
-                  <p className="mt-4 text-body text-[color:var(--text-secondary)]">{sys.body}</p>
-                </div>
+                </Reveal>
+              ))}
+            </div>
+
+            {s.note && (
+              <Reveal className="mt-8">
+                <p className="max-w-prose text-small text-[color:var(--text-tertiary)]">
+                  {s.note}
+                </p>
               </Reveal>
-            ))}
-          </div>
-          <Reveal delay={0.25}>
-            <p className="mt-16 text-body text-[color:var(--text-secondary)]">
+            )}
+          </Container>
+        </Section>
+      ))}
+
+      <Section className="hairline !py-16">
+        <Container>
+          <Reveal>
+            <p className="max-w-prose text-body text-[color:var(--text-secondary)]">
               Which layers your business needs is a packages question —{" "}
-              <Link href="/packages" className="text-blue-soft underline-offset-4 hover:underline">
+              <Link
+                href="/packages"
+                className="text-blue-soft underline-offset-4 hover:underline"
+              >
                 see how Respond, Operate and Scale carry them
               </Link>
               .

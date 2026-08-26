@@ -2,13 +2,15 @@ import Link from "next/link";
 import { Container } from "@/components/ui/container";
 import { Wordmark } from "@/components/layout/wordmark";
 
+/* Approved sitemap only. There is no "Industries" column: listing
+   verticals ArkFlow does not serve would breach Stage 1 discipline
+   (Founder Bible S1.5 / S1.11). */
 const columns = [
   {
     heading: "Company",
     links: [
       { label: "About", href: "/about" },
-      { label: "Case Studies", href: "/case-studies" },
-      { label: "Resources", href: "/resources" },
+      { label: "Case studies", href: "/case-studies" },
       { label: "Contact", href: "/contact" },
     ],
   },
@@ -21,12 +23,12 @@ const columns = [
     ],
   },
   {
-    heading: "Industries",
+    heading: "Solutions",
     links: [
-      { label: "Aesthetic Clinics", href: "/industries#aesthetic" },
-      { label: "Dental & Medical", href: "/industries#medical" },
-      { label: "Psychology", href: "/industries#psychology" },
-      { label: "Property & Professional", href: "/industries#professional" },
+      { label: "How it works", href: "/how-it-works" },
+      { label: "Unified inbox", href: "/solutions#inbox" },
+      { label: "Booking & payments", href: "/solutions#booking" },
+      { label: "Aesthetic clinics", href: "/aesthetic-clinics" },
     ],
   },
 ];
@@ -65,9 +67,14 @@ export function Footer() {
         </div>
         <div className="hairline mt-14 flex flex-col justify-between gap-4 pt-8 text-small text-[color:var(--text-tertiary)] md:flex-row">
           <p>© {new Date().getFullYear()} ArkFlow Solutions Pte Ltd. Singapore.</p>
-          <p className="font-mono text-eyebrow uppercase">
-            Smarter Systems. Lower Costs. Better Results.
-          </p>
+          <nav aria-label="Legal" className="flex gap-6">
+            <Link href="/privacy" className="transition-colors hover:text-white">
+              Privacy
+            </Link>
+            <Link href="/terms" className="transition-colors hover:text-white">
+              Terms
+            </Link>
+          </nav>
         </div>
       </Container>
     </footer>

@@ -25,7 +25,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { PackageDashboard } from "@/components/home/package-dashboard";
 import { accents, packageDetails, packageDetailOrder, contact } from "@/lib/content";
-import { useCalendly } from "@/lib/use-calendly";
+import { useBooking } from "@/lib/use-booking";
 
 const iconMap = {
   MessageSquare, Filter, Users, Clock, BarChart3, ShieldCheck,
@@ -57,7 +57,7 @@ export function PackagePanel({
   onSwitch: (id: DetailId) => void;
 }) {
   const reduce = useReducedMotion();
-  const openCalendly = useCalendly(contact.call.href);
+  const openBooking = useBooking(contact.call.href);
   const detail = openId ? packageDetails[openId] : null;
   const accent = detail
     ? accents[detail.accent as keyof typeof accents].hex
@@ -168,13 +168,10 @@ export function PackagePanel({
                       {detail.description}
                     </p>
 
-                    {/* Price + facts */}
-                    <div className="mt-8 flex items-baseline gap-2">
-                      <span className="text-display font-semibold">{detail.price}</span>
-                      <span className="text-body text-[color:var(--text-tertiary)]">{detail.priceUnit}</span>
-                    </div>
-                    <ul className="mt-5 space-y-2.5">
-                      {[detail.implementationFee, detail.minimumTerm, detail.guaranteeShort].map((f) => (
+                    {/* Commercial facts. AMENDMENT 2: no price on any
+                        public surface — the quotation CTA replaces it. */}
+                    <ul className="mt-8 space-y-2.5">
+                      {[detail.minimumTerm, detail.guaranteeShort].map((f) => (
                         <li key={f} className="flex items-center gap-2.5 text-small text-[color:var(--text-secondary)]">
                           <span className="h-1.5 w-1.5 shrink-0 rounded-full" style={{ background: accent }} />
                           {f}
@@ -184,7 +181,7 @@ export function PackagePanel({
 
                     {/* CTA */}
                     <div className="mt-8">
-                      <Button onClick={openCalendly} size="large" withArrow>
+                      <Button onClick={openBooking} size="large" withArrow>
                         Book Your Free Discovery Call
                       </Button>
                       <p className="mt-3 font-mono text-eyebrow uppercase text-[color:var(--text-tertiary)]">

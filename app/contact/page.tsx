@@ -1,18 +1,14 @@
-import type { Metadata } from "next";
 import { ContactExperience } from "@/components/contact/contact-experience";
 
-export const metadata: Metadata = {
-  title: "Contact — Let's build your revenue engine",
+import { buildMetadata } from "@/lib/seo";
+
+export const metadata = buildMetadata({
+  title: "Contact & Lead Response Audit",
   description:
-    "Start an enquiry or book a 30-minute discovery call with ArkFlow. A free Lead Response Audit on your own numbers, one recommended package, backed by the 30-Day Response Guarantee.",
-  alternates: { canonical: "/contact" },
-  openGraph: {
-    title: "Contact ArkFlow — Every great automation starts with one conversation",
-    description:
-      "Two minutes to enter the queue for a free Lead Response Audit. Book a discovery call with ArkFlow.",
-    url: "https://arkflow.sg/contact",
-  },
-};
+    "Book a discovery call or request a free Lead Response Audit on your own numbers. One recommended package, backed by the 30-Day Response Guarantee.",
+  path: "/contact",
+});
+
 
 export default function ContactPage() {
   return <ContactExperience />;

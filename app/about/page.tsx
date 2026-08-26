@@ -1,4 +1,3 @@
-import type { Metadata } from "next";
 import { Container } from "@/components/ui/container";
 import { Section } from "@/components/ui/section";
 import { Eyebrow } from "@/components/ui/eyebrow";
@@ -7,11 +6,15 @@ import { PageHero } from "@/components/pages/page-hero";
 import { CtaBand } from "@/components/pages/cta-band";
 import { about } from "@/lib/content";
 
-export const metadata: Metadata = {
-  title: "About",
+import { buildMetadata } from "@/lib/seo";
+
+export const metadata = buildMetadata({
+  title: "About ArkFlow",
   description:
-    "ArkFlow is a Singapore Revenue Operations company. Why we exist, how we think, and why the risk sits with us.",
-};
+    "ArkFlow Solutions Pte Ltd is a Singapore Revenue Operations company. Why we exist, how we think, and why the risk sits with us.",
+  path: "/about",
+});
+
 
 export default function AboutPage() {
   return (

@@ -7,35 +7,45 @@ import { BookingModal } from "@/components/booking/booking-modal";
 import { SmoothScroll } from "@/components/motion/smooth-scroll";
 import { IntroVeil } from "@/components/motion/intro-veil";
 import { OrgJsonLd } from "@/components/seo/json-ld";
+import { SITE_URL } from "@/lib/site";
+
+/**
+ * Site metadata.
+ *
+ * Positioning: the ARCHITECTURE is for service businesses; the current
+ * COMMERCIAL FOCUS is Singapore aesthetic clinics. Both, distinctly.
+ * Response and delivery figures are stated as commitments — never as
+ * achieved performance (there is no client data to support that yet).
+ */
+const DESCRIPTION =
+  "ArkFlow designs, connects and operates the digital architecture behind service businesses — enquiry to booking to payment to repeat customer. Currently focused on Singapore aesthetic clinics.";
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://arkflow.sg"),
+  metadataBase: new URL(SITE_URL),
   title: {
-    default: "ArkFlow — Revenue Operations for Singapore Clinics",
+    default: "ArkFlow — Revenue Operations for Singapore service businesses",
     template: "%s — ArkFlow",
   },
-  description:
-    "ArkFlow is a Revenue Operations partner for Singapore aesthetic and medical clinics. AI systems that answer every enquiry in under 90 seconds, keep your calendar full, and collect payment without chasing.",
+  description: DESCRIPTION,
   keywords: [
     "Revenue Operations Singapore",
-    "clinic automation Singapore",
-    "WhatsApp AI response",
-    "aesthetic clinic booking system",
+    "connected business systems Singapore",
+    "appointment booking automation",
+    "aesthetic clinic enquiry system",
   ],
+  alternates: { canonical: "/" },
   openGraph: {
     type: "website",
     locale: "en_SG",
-    url: "https://arkflow.sg",
+    url: SITE_URL,
     siteName: "ArkFlow",
-    title: "ArkFlow — Never lose another lead, booking, or invoice.",
-    description:
-      "Revenue Operations for Singapore service businesses. Response < 90 sec · Live in 72 hours · 30-Day Response Guarantee.",
+    title: "ArkFlow — Revenue Operations for Singapore service businesses",
+    description: DESCRIPTION,
   },
   twitter: {
     card: "summary_large_image",
-    title: "ArkFlow — Revenue Operations for Singapore Clinics",
-    description:
-      "Never lose another lead, booking, or invoice. Response < 90 sec · Live in 72 hours · 30-Day Response Guarantee.",
+    title: "ArkFlow — Revenue Operations for Singapore service businesses",
+    description: DESCRIPTION,
   },
   robots: { index: true, follow: true },
 };
