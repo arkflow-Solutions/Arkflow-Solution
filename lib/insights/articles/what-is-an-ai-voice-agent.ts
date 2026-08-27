@@ -51,6 +51,18 @@ export const article: Article = {
       ],
     },
     {
+      type: "flow",
+      caption:
+        "A call handled end to end. The escalation branch matters more than the automation: the agent should hand over the moment it stops being useful.",
+      steps: [
+        { label: "Call arrives", note: "Line already engaged" },
+        { label: "Answered", note: "Second ring" },
+        { label: "Intent identified", note: "New enquiry" },
+        { label: "Booked or escalated", note: "Live calendar, or a person" },
+        { label: "Recorded", note: "Into the same CRM as every other channel" },
+      ],
+    },
+    {
       type: "callout",
       title: "The part that matters most",
       text: "The handover. An agent that transfers well is useful. One that traps a caller who needed a person does more damage than the missed call would have.",

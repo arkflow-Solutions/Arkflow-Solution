@@ -99,3 +99,69 @@ is removed, the tier identity is not.
   detail and it renders wherever the byline appears.
 - **Seven remaining articles (§44)** — three seeded properly rather than
   ten generated thinly, per your own instruction.
+
+---
+
+# Diagrams and images
+
+Four visual block types. Drop them into an article's `blocks` array
+anywhere a paragraph would go.
+
+## `flow` — a process chain
+
+The workhorse. Enquiry → reply → qualify → book. Row on desktop, stacked
+on mobile. Mark a step `state: "loss"` and it renders dashed and struck
+through, which is how the speed-to-lead article shows an enquiry dying.
+
+```ts
+{
+  type: "flow",
+  caption: "Optional line beneath",
+  steps: [
+    { label: "Enquiry arrives", note: "8:40pm, Friday" },
+    { label: "Waits", note: "Nobody is watching", state: "loss" },
+  ],
+}
+```
+
+## `compare` — before and after
+
+Two columns. Set `tone: "loss"` on the weaker side. Used in the clinic
+article to contrast the usual reply with the one that converts.
+
+## `metrics` — figures at display size
+
+```ts
+{
+  type: "metrics",
+  note: "Illustrative arithmetic — planning assumptions, not client results.",
+  items: [{ value: "S$4,000", label: "Monthly value of..." }],
+}
+```
+
+**`note` is required by the type system.** A metrics block will not
+compile without it, and the verify script fails the build if it is filled
+with something empty. This is deliberate: a large number with no
+provenance line is the single easiest way to accidentally publish a
+performance claim you cannot evidence.
+
+## `image` — real files
+
+Put files in `/public/insights/`. `alt`, `width` and `height` are
+required — alt for screen readers and Google, dimensions so the page does
+not shift while loading. Images lazy-load automatically.
+
+## What not to use
+
+- **Stock photography.** Generic clinic and smiling-team photos read as
+  filler and imply clients that do not exist. The verify script rejects
+  Unsplash, Pexels, Shutterstock, Getty and iStock references outright.
+- **GoHighLevel screenshots.** Locked against (§5). Any interface shown
+  must be an ArkFlow-branded illustration, labelled as one — the same
+  pattern as the unified inbox mockup on the homepage.
+- **Customer data, even blurred.** Blur is reversible often enough that
+  it is a bad habit to start.
+
+Diagrams beat images here for a practical reason: they stay sharp at any
+size, weigh nothing, inherit the design system automatically, and can be
+edited as text rather than reopened in a design tool.

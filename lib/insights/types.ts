@@ -34,7 +34,52 @@ export type Block =
   | { type: "callout"; title?: string; text: string }
   | { type: "quote"; text: string }
   | { type: "steps"; items: { label: string; text: string }[] }
-  | { type: "table"; head: string[]; rows: string[][] };
+  | { type: "table"; head: string[]; rows: string[][] }
+  /* ------------------------------------------------------ visual blocks */
+  /**
+   * A process chain: enquiry -> reply -> qualify -> book. The workhorse
+   * diagram. Renders as a row on desktop, a vertical stack on mobile.
+   */
+  | {
+      type: "flow";
+      caption?: string;
+      steps: { label: string; note?: string; state?: "normal" | "loss" }[];
+    }
+  /** Two-column before/after. `loss` styling marks the failing side. */
+  | {
+      type: "compare";
+      caption?: string;
+      left: { title: string; items: string[]; tone?: "loss" | "normal" };
+      right: { title: string; items: string[]; tone?: "loss" | "normal" };
+    }
+  /**
+   * A row of figures.
+   *
+   * GOVERNANCE: `note` is REQUIRED, not optional. Every number shown at
+   * display size must carry its own provenance line — "Illustrative", or
+   * the source. This is enforced by the type system precisely because an
+   * unlabelled big number is the easiest way to accidentally publish a
+   * performance claim.
+   */
+  | {
+      type: "metrics";
+      note: string;
+      caption?: string;
+      items: { value: string; label: string }[];
+    }
+  /**
+   * A real image. `alt` and dimensions are required — alt for
+   * accessibility, dimensions so the browser reserves space and the page
+   * does not shift while loading.
+   */
+  | {
+      type: "image";
+      src: string;
+      alt: string;
+      width: number;
+      height: number;
+      caption?: string;
+    };
 
 export type Faq = { q: string; a: string };
 
@@ -79,12 +124,30 @@ export function readingMinutes(blocks: Block[]): number {
   let words = 0;
   for (const b of blocks) {
     if ("text" in b && b.text) words += b.text.split(/\s+/).length;
-    if ("items" in b) {
+    if ("items" in b && Array.isArray(b.items)) {
       for (const it of b.items) {
-        words += (typeof it === "string" ? it : `${it.label} ${it.text}`).split(
-          /\s+/
-        ).length;
+        const text =
+          typeof it === "string"
+            ? it
+            : [
+                "label" in it ? it.label : "",
+                "text" in it ? it.text : "",
+                "note" in it ? it.note : "",
+                "value" in it ? it.value : "",
+              ]
+                .filter(Boolean)
+                .join(" ");
+        words += text.split(/\s+/).length;
       }
+    }
+    if (b.type === "compare") {
+      words += [...b.left.items, ...b.right.items].join(" ").split(/\s+/).length;
+    }
+    if (b.type === "flow") {
+      words += b.steps
+        .map((s) => `${s.label} ${s.note ?? ""}`)
+        .join(" ")
+        .split(/\s+/).length;
     }
     if (b.type === "table") {
       words += b.rows.flat().join(" ").split(/\s+/).length;

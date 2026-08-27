@@ -125,6 +125,27 @@ for (const f of articleFiles) {
 if (!dead)
   ok(`${articleFiles.length} article(s), all with an onward destination`);
 
+/* 8 — no stock photography or unlabelled figures in articles */
+console.log("\n[8] article visuals");
+let visualIssues = 0;
+for (const f of source.filter((f) => f.includes("lib/insights/articles/"))) {
+  const a = read(f);
+  // Every metrics block must carry its provenance note. The type system
+  // requires the field; this catches it being filled with nothing.
+  for (const m of a.matchAll(/type: "metrics"[\s\S]{0,200}?note:\s*"([^"]*)"/g)) {
+    if (m[1].trim().length < 10) {
+      bad(`${f} has a metrics block with no meaningful provenance note`);
+      visualIssues++;
+    }
+  }
+  // Images must not be sourced from stock libraries.
+  if (/unsplash|pexels|shutterstock|gettyimages|istockphoto/i.test(a)) {
+    bad(`${f} references a stock photo library`);
+    visualIssues++;
+  }
+}
+if (!visualIssues) ok("figures labelled, no stock imagery referenced");
+
 console.log(
   fail.length
     ? `\n${fail.length} check(s) failed — do not deploy.\n`

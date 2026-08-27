@@ -52,6 +52,32 @@ export const article: Article = {
       text: "The clinics that convert best do not publish a price list. They give a defensible range with the reason attached — a band, what moves a case within it, and an invitation to be assessed properly. It respects the clinical reality while giving the patient something concrete to hold.",
     },
     {
+      type: "compare",
+      caption:
+        "The same enquiry, the same clinic, the same treatment. The difference is entirely in what happens in the first ten minutes.",
+      left: {
+        title: "What usually happens",
+        tone: "loss",
+        items: [
+          "Message arrives at 10pm and is seen the next morning",
+          "Reply asks the patient to call during opening hours",
+          "The price question is deflected entirely",
+          "No booking offered, so nothing is scheduled",
+          "No second message if the patient goes quiet",
+        ],
+      },
+      right: {
+        title: "What converts",
+        items: [
+          "Answered within minutes, on the channel they used",
+          "The specific concern acknowledged by name",
+          "An honest range, with what moves a case within it",
+          "Two concrete consultation times offered",
+          "A follow-up if there is no reply in 48 hours",
+        ],
+      },
+    },
+    {
       type: "h2",
       id: "gap-three",
       text: "Gap three — the consultation that is booked but not confirmed",

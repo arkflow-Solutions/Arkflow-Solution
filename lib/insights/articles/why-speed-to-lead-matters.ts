@@ -34,6 +34,18 @@ export const article: Article = {
       text: "The business that replies first gets to frame the conversation. It answers the questions before a competitor does, it books the slot while the customer still has the calendar open, and it becomes the reference point everyone else is compared against. The second business to reply is not competing on quality. It is competing against a decision that has already started forming.",
     },
     {
+      type: "flow",
+      caption:
+        "The enquiry does not fail at the sale. It fails at the second step, before anyone has had a chance to sell anything.",
+      steps: [
+        { label: "Enquiry arrives", note: "8:40pm, Friday" },
+        { label: "Waits", note: "Nobody is watching the inbox", state: "loss" },
+        { label: "Competitor replies", note: "Within minutes", state: "loss" },
+        { label: "You reply", note: "Monday, 9:15am", state: "loss" },
+        { label: "Already decided", note: "Consultation booked elsewhere", state: "loss" },
+      ],
+    },
+    {
       type: "callout",
       title: "The uncomfortable part",
       text: "A slow reply does not usually lose the customer to a better business. It loses them to a faster one.",
@@ -89,6 +101,17 @@ export const article: Article = {
           label: "Look at the median and the worst 20%",
           text: "The median tells you the normal experience. The worst fifth tells you what your marketing spend is actually funding.",
         },
+      ],
+    },
+    {
+      type: "metrics",
+      note: "Illustrative arithmetic — planning assumptions, not ArkFlow client results. Substitute your own figures.",
+      caption:
+        "A worked example: 60 enquiries a month, a quarter arriving outside working hours, a 30% conversion rate and a S$800 average customer value.",
+      items: [
+        { value: "15", label: "Enquiries a month arriving when nobody is available to answer" },
+        { value: "~5", label: "That would have converted at your normal rate" },
+        { value: "S$4,000", label: "Monthly value of the enquiries you already paid to generate" },
       ],
     },
     {

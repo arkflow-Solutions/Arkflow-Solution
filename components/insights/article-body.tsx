@@ -2,6 +2,12 @@ import Link from "next/link";
 import type { Article, Block } from "@/lib/insights/types";
 import { toc } from "@/lib/insights/types";
 import { authors, categoryBySlug } from "@/lib/insights/categories";
+import {
+  FlowDiagram,
+  CompareDiagram,
+  MetricsDiagram,
+  ArticleImage,
+} from "@/components/insights/diagrams";
 
 /** Renders one content block. Deliberately plain — reading comfort over effect. */
 function RenderBlock({ block }: { block: Block }) {
@@ -138,6 +144,14 @@ function RenderBlock({ block }: { block: Block }) {
           </table>
         </div>
       );
+    case "flow":
+      return <FlowDiagram block={block} />;
+    case "compare":
+      return <CompareDiagram block={block} />;
+    case "metrics":
+      return <MetricsDiagram block={block} />;
+    case "image":
+      return <ArticleImage block={block} />;
   }
 }
 
