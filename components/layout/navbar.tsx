@@ -17,6 +17,7 @@ const links = [
   { label: "How it works", href: "/how-it-works" },
   { label: "Solutions", href: "/solutions" },
   { label: "Packages", href: "/packages" },
+  { label: "Insights", href: "/insights" },
 ];
 
 /** "Company" grouping — a dropdown on desktop, an indented sub-group in

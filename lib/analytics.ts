@@ -36,10 +36,29 @@ export type ArkFlowEvent =
   | 'calculator_input_change'
   | 'calculator_result_view'
   | 'calculator_to_audit_click'
-  // Content
+  // Content — ArkFlow Intelligence
+  | 'article_view'
+  | 'article_50_percent'
+  | 'article_complete'
+  | 'article_card_click'
+  | 'solution_view'
   | 'industry_cta_click'
   | 'case_study_view'
   | 'trust_page_view'
+  // Packages
+  | 'package_expand'
+  // Conversion — canonical names
+  | 'lead_response_audit_click'
+  | 'lead_response_audit_submit'
+  | 'discovery_call_click'
+  | 'discovery_call_booked'
+  | 'cta_secondary_click'
+  // Lead magnets
+  | 'lead_magnet_view'
+  | 'lead_magnet_submit'
+  // Social — outbound, tracked so the ecosystem loop is measurable
+  | 'instagram_click'
+  | 'facebook_click'
   // Footer / closing
   | 'cta_final_click'
 
@@ -58,7 +77,15 @@ type EventParams = {
   field?: string
   /** Ordinal step in a multi-step flow. */
   step?: number
+  /** Article slug — a public URL segment, never an identifier. */
+  slug?: string
+  /** Insights category slug. */
+  category?: string
+  /** Funnel level: discovery | problem | intent. */
+  level?: string
 }
+
+import { readCampaign } from '@/lib/social'
 
 declare global {
   interface Window {
@@ -88,7 +115,10 @@ function stripPii(params: EventParams): Record<string, unknown> {
 export function track(event: ArkFlowEvent, params: EventParams = {}): void {
   if (typeof window === 'undefined') return
 
-  const payload = stripPii(params)
+  // Campaign attribution rides on every event so the social -> article ->
+  // audit journey can be reconstructed. UTM fields only: readCampaign()
+  // never returns arbitrary query parameters.
+  const payload = { ...stripPii(params), ...readCampaign() }
 
   try {
     if (typeof window.gtag === 'function') {

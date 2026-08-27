@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Container } from "@/components/ui/container";
 import { Wordmark } from "@/components/layout/wordmark";
+import { activeSocials } from "@/lib/social";
 
 /* Approved sitemap only. There is no "Industries" column: listing
    verticals ArkFlow does not serve would breach Stage 1 discipline
@@ -29,6 +30,7 @@ const columns = [
       { label: "Unified inbox", href: "/solutions#inbox" },
       { label: "Booking & payments", href: "/solutions#booking" },
       { label: "Aesthetic clinics", href: "/aesthetic-clinics" },
+      { label: "ArkFlow Intelligence", href: "/insights" },
     ],
   },
 ];
@@ -44,6 +46,24 @@ export function Footer() {
               Revenue Operations for Singapore service businesses. Capture,
               convert and retain more revenue.
             </p>
+            {/* Verified profiles only — see lib/social.ts. A profile with
+                no confirmed URL renders nothing rather than a dead link. */}
+            {activeSocials.length > 0 && (
+              <ul className="mt-6 flex gap-5">
+                {activeSocials.map((s) => (
+                  <li key={s.id}>
+                    <a
+                      href={s.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-small text-platinum transition-colors hover:text-white"
+                    >
+                      {s.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
           {columns.map((col) => (
             <div key={col.heading}>

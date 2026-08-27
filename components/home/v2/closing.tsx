@@ -10,6 +10,7 @@ import { Reveal } from "@/components/motion/reveal";
 import { Button } from "@/components/ui/button";
 import { BookingButton, SectionHead } from "@/components/home/v2/shared";
 import { packages, howWeWork, faq, finalCta } from "@/lib/home-content";
+import { PackageCards } from "@/components/home/package-cards";
 import { cn } from "@/lib/utils";
 
 /* ======================================================= 13 · PACKAGES
@@ -34,53 +35,7 @@ export function Packages() {
           lead={packages.lead}
         />
 
-        <div className="mt-16 grid gap-6 lg:grid-cols-3">
-          {packages.tiers.map((t, i) => (
-            <Reveal key={t.name} delay={i * 0.06}>
-              <div
-                className={cn(
-                  "af-tier relative h-full rounded-card border bg-surface/60 p-8",
-                  "before:absolute before:left-0 before:right-0 before:top-0 before:h-px before:content-['']",
-                  accentRing[t.accent],
-                  "badge" in t
-                    ? "border-blue/40"
-                    : "border-[color:var(--border-subtle)]"
-                )}
-              >
-                <div className="flex items-baseline justify-between gap-3">
-                  <h3 className="text-subheading font-medium">{t.name}</h3>
-                  {"badge" in t && (
-                    <span className="rounded-button border border-blue/50 px-3 py-1 font-mono text-[0.6875rem] uppercase tracking-wider text-blue-soft">
-                      {t.badge}
-                    </span>
-                  )}
-                </div>
-
-                <p className="mt-4 text-body font-medium text-white">
-                  {t.promise}
-                </p>
-                <p className="mt-3 text-small text-[color:var(--text-secondary)]">
-                  {t.body}
-                </p>
-
-                <ul className="mt-8 space-y-2.5">
-                  {t.includes.map((inc) => (
-                    <li
-                      key={inc}
-                      className="flex gap-3 text-small text-[color:var(--text-tertiary)]"
-                    >
-                      <span
-                        aria-hidden
-                        className="mt-2 h-px w-3 shrink-0 bg-blue-soft"
-                      />
-                      {inc}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </Reveal>
-          ))}
-        </div>
+        <PackageCards />
 
         <Reveal className="mt-8">
           <p className="text-small text-[color:var(--text-tertiary)]">

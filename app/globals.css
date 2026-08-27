@@ -509,11 +509,88 @@
   .af-tier::before {
     opacity: 0.7;
   }
+
+  /* ----------------------------------------------------------------
+     LED tier border.
+
+     A single conic gradient rotating behind the card, masked to the
+     1px border ring. One compositor-driven property (rotation of a
+     pseudo-element), so it does not repaint the card contents.
+
+     Restraint is deliberate: low opacity at rest, slightly brighter
+     on hover, one accent hue per tier and no hue cycling. It should
+     read as powered infrastructure, not RGB gaming trim.
+     ---------------------------------------------------------------- */
+  .af-led {
+    position: relative;
+    isolation: isolate;
+  }
+  .af-led::after {
+    content: "";
+    position: absolute;
+    inset: -1px;
+    z-index: -1;
+    border-radius: inherit;
+    padding: 1px;
+    background: conic-gradient(
+      from var(--af-led-angle, 0deg),
+      transparent 0deg,
+      transparent 200deg,
+      var(--af-led-hue, var(--blue)) 300deg,
+      color-mix(in srgb, var(--af-led-hue, var(--blue)) 60%, white) 330deg,
+      var(--af-led-hue, var(--blue)) 345deg,
+      transparent 360deg
+    );
+    /* Mask to the ring only, so the gradient never sits behind text. */
+    -webkit-mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    mask-composite: exclude;
+    opacity: 0.45;
+    animation: af-led-spin 7s linear infinite;
+    transition: opacity 0.4s ease;
+  }
+  .af-led:hover::after,
+  .af-led:focus-within::after {
+    opacity: 0.85;
+  }
+  .af-led[data-featured="true"]::after {
+    opacity: 0.65;
+  }
+}
+
+@property --af-led-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes af-led-spin {
+  to {
+    --af-led-angle: 360deg;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .af-hf-core { animation: none; }
   .af-rail__pulse { animation: none; opacity: 0; }
+
+  /* LED border: static illuminated edge, no rotation. The accent
+     remains visible so the tier still reads as distinguished — the
+     motion is removed, not the meaning. */
+  .af-led::after {
+    animation: none;
+    background: linear-gradient(
+      180deg,
+      var(--af-led-hue, var(--blue)),
+      transparent 70%
+    );
+    opacity: 0.5;
+  }
 }
 
 /* ============================================================

@@ -1,28 +1,58 @@
 import type { MetadataRoute } from "next";
 import { SITE_URL } from "@/lib/site";
+import { articles } from "@/lib/insights";
+import { categories } from "@/lib/insights/categories";
 
 /**
  * Approved sitemap. /industries, /resources and /styleguide are retired.
  * /aesthetic-clinics is the only dedicated vertical page at Stage 1.
+ *
+ * Insights routes are derived from the article registry, so publishing an
+ * article adds it to the sitemap automatically — there is no second list
+ * to keep in sync and therefore no way for an article to be unreachable.
  */
 export default function sitemap(): MetadataRoute.Sitemap {
-  const routes = [
+  const staticRoutes = [
     "",
     "/how-it-works",
     "/solutions",
     "/aesthetic-clinics",
     "/packages",
+    "/insights",
     "/case-studies",
     "/about",
     "/contact",
     "/privacy",
     "/terms",
   ];
-  return routes.map((path) => ({
+
+  const now = new Date();
+
+  const pages: MetadataRoute.Sitemap = staticRoutes.map((path) => ({
     url: `${SITE_URL}${path}`,
-    lastModified: new Date(),
-    changeFrequency: path === "" ? "weekly" : "monthly",
+    lastModified: now,
+    changeFrequency: path === "" || path === "/insights" ? "weekly" : "monthly",
     priority:
-      path === "" ? 1 : ["/packages", "/aesthetic-clinics"].includes(path) ? 0.9 : 0.7,
+      path === ""
+        ? 1
+        : ["/packages", "/aesthetic-clinics", "/insights"].includes(path)
+          ? 0.9
+          : 0.7,
   }));
+
+  const pillars: MetadataRoute.Sitemap = categories.map((c) => ({
+    url: `${SITE_URL}/insights/${c.slug}`,
+    lastModified: now,
+    changeFrequency: "weekly",
+    priority: 0.8,
+  }));
+
+  const posts: MetadataRoute.Sitemap = articles.map((a) => ({
+    url: `${SITE_URL}/insights/${a.category}/${a.slug}`,
+    lastModified: new Date(a.updated ?? a.published),
+    changeFrequency: "monthly",
+    priority: 0.8,
+  }));
+
+  return [...pages, ...pillars, ...posts];
 }

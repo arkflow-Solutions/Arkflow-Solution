@@ -95,6 +95,36 @@ if (site.includes("ark-flow-sg.vercel.app")) {
   bad("lib/site.ts does not point at www.arkflowsolutions.com");
 } else ok("SITE_URL resolves to the production domain");
 
+/* 6 — no unverified social URL is rendered */
+console.log("\n[6] social profiles");
+const social = read("lib/social.ts");
+const hardcoded = source
+  .filter((f) => !f.includes("lib/social.ts") && !f.startsWith("scripts/"))
+  .filter((f) => /facebook\.com|instagram\.com/.test(read(f)));
+if (hardcoded.length) {
+  for (const f of hardcoded)
+    bad(`${f} hardcodes a social URL — route it through lib/social.ts`);
+} else ok("social URLs come only from lib/social.ts");
+if (/id: "facebook"[\s\S]{0,200}url: "/.test(social)) {
+  ok("Facebook URL supplied");
+} else {
+  console.log("  note Facebook URL still pending — link is hidden, not broken");
+}
+
+/* 7 — every article routes somewhere */
+console.log("\n[7] articles have an onward path");
+const articleFiles = source.filter((f) => f.includes("lib/insights/articles/"));
+let dead = 0;
+for (const f of articleFiles) {
+  const a = read(f);
+  if (!/solution:\s*\{[\s\S]{0,400}href:/.test(a)) {
+    bad(`${f} has no solution link — articles must not dead-end`);
+    dead++;
+  }
+}
+if (!dead)
+  ok(`${articleFiles.length} article(s), all with an onward destination`);
+
 console.log(
   fail.length
     ? `\n${fail.length} check(s) failed — do not deploy.\n`

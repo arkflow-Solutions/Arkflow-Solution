@@ -1,5 +1,6 @@
 import { SITE_URL } from "@/lib/site";
 import { COMPANY, CONTACT_EMAIL, CONTACT_PHONE } from "@/lib/site";
+import { sameAs } from "@/lib/social";
 
 /**
  * Organization structured data.
@@ -19,6 +20,9 @@ export function OrgJsonLd() {
     description:
       "ArkFlow designs, connects and operates the digital architecture behind service businesses — from first enquiry through booking, payment and repeat customer.",
     logo: `${SITE_URL}/brand/arkflow-logo-lockup.png`,
+    // Verified profiles only. An unconfirmed URL here is a false claim
+    // of identity, so sameAs is omitted entirely when the list is empty.
+    ...(sameAs.length ? { sameAs } : {}),
     areaServed: { "@type": "Country", name: "Singapore" },
     address: { "@type": "PostalAddress", addressCountry: "SG" },
     contactPoint: {

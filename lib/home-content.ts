@@ -478,6 +478,12 @@ export const packages = {
         "Personalised birthday and recall messages",
         "Ad source tracking and reporting",
       ],
+      detail: {
+        who: "Businesses whose enquiries arrive faster than anyone can answer them — evenings, weekends, and mid-appointment.",
+        problem: "Enquiries land across six channels and get answered whenever somebody is free. The ones that arrive at the wrong moment go cold before anyone sees them.",
+        system: "Every channel lands in one inbox. The first reply goes out immediately, qualifies the enquiry and records it against a customer. Follow-up runs on a schedule rather than on memory.",
+        changes: "Nobody is watching six inboxes. The question \"did anyone reply to that?\" stops being asked.",
+      },
     },
     {
       name: "Operate",
@@ -491,6 +497,12 @@ export const packages = {
         "Invoicing and payment follow-up",
         "Past-customer reactivation (RenewalRadar)",
       ],
+      detail: {
+        who: "Businesses that are getting the leads but losing the hours — where admin has quietly become somebody's full-time job.",
+        problem: "Confirmations, reminders, no-show follow-up, invoice chasing and rebooking all depend on a person remembering. When the week is busy, they are the first things to slip.",
+        system: "Booking and rescheduling run against a live calendar with staged reminders. Invoices issue on the right trigger and chase themselves. Past customers are invited back on their own interval.",
+        changes: "The administrative layer stops competing with the customer in the room for your team's attention.",
+      },
     },
     {
       name: "Scale",
@@ -503,6 +515,12 @@ export const packages = {
         "AI Voice Agent",
         "Monthly strategy call",
       ],
+      detail: {
+        who: "Businesses ready to run the whole acquisition and retention system on one architecture, including the phone.",
+        problem: "Calls go unanswered while the team is on other calls or with customers, and the website is a brochure rather than an entry point into the system.",
+        system: "Everything in Operate, plus a website built as part of the system and a voice agent that answers, qualifies and books — handing over to a person the moment it should.",
+        changes: "Every entry point — search, social, message and phone — ends up in the same place, and a monthly strategy call turns the reporting into decisions.",
+      },
     },
   ],
   terms: "Six-month minimum on every level, then month-to-month. One implementation, whichever level you start on.",

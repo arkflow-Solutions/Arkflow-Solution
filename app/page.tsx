@@ -8,6 +8,7 @@ import {
   Faq,
   FinalCta,
 } from "@/components/home/v2/closing";
+import { InsightsStrip } from "@/components/home/insights-strip";
 
 /**
  * Homepage — nine sections.
@@ -22,7 +23,7 @@ import {
  *  2 Commitment strip *      7 Packages + guarantee + Stage 1 focus
  *  3 The problem             8 How we work
  *  4 The whole car           9 FAQ + final CTA
- *  5 Six-stage journey
+ *  5 Six-stage journey        10 From ArkFlow Intelligence (3 cards)
  *
  *  * renders inside Hero3D.
  *
@@ -48,6 +49,7 @@ export default function HomePage() {
       <UnifiedInbox />
       <Packages />
       <HowWeWork />
+      <InsightsStrip />
       <Faq />
       <FinalCta />
     </>
