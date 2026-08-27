@@ -1,0 +1,103 @@
+#!/usr/bin/env node
+/**
+ * Pre-deploy verification. Run before every push: `npm run verify`.
+ *
+ * Exists because two failures shipped that a typecheck alone did not stop:
+ *
+ *  1. A test stub for `lib/fonts.ts` was committed in place of the real
+ *     Google Fonts loader. It compiled and built cleanly — it would simply
+ *     have deployed the site with no typography.
+ *  2. `components/home/v2/capabilities.tsx` was deleted locally but not in
+ *     the GitHub repo (uploading files through the web UI adds and
+ *     overwrites, it never deletes). The stale file imported four exports
+ *     that no longer exist and broke the Vercel build.
+ *
+ * Checks 3 and 4 guard the governance rules that must never regress.
+ */
+
+import { readFileSync, readdirSync, statSync } from "node:fs";
+import { join } from "node:path";
+
+const fail = [];
+const ok = (m) => console.log(`  ok   ${m}`);
+const bad = (m) => {
+  fail.push(m);
+  console.log(`  FAIL ${m}`);
+};
+
+function walk(dir, out = []) {
+  for (const entry of readdirSync(dir)) {
+    if (entry === "node_modules" || entry === ".next" || entry === ".git") continue;
+    const p = join(dir, entry);
+    if (statSync(p).isDirectory()) walk(p, out);
+    else out.push(p);
+  }
+  return out;
+}
+
+const files = walk(".");
+const source = files.filter((f) => /\.(ts|tsx)$/.test(f));
+const read = (f) => readFileSync(f, "utf8");
+
+/* 1 — the real font loader is in place, not a build stub */
+console.log("\n[1] fonts");
+const fonts = read("lib/fonts.ts");
+if (fonts.includes("stub") || !fonts.includes("next/font/google")) {
+  bad("lib/fonts.ts is a stub — restore the Inter / JetBrains_Mono loader");
+} else ok("real Google Fonts loader present");
+
+/* 2 — no source file imports a name its module no longer exports */
+console.log("\n[2] orphaned imports from lib/home-content");
+const exported = new Set(
+  [...read("lib/home-content.ts").matchAll(/export const (\w+)/g)].map((m) => m[1])
+);
+let orphans = 0;
+for (const f of source) {
+  const m = read(f).match(/import \{([^}]+)\} from "@\/lib\/home-content"/);
+  if (!m) continue;
+  for (const name of m[1].split(",").map((s) => s.trim()).filter(Boolean)) {
+    if (!exported.has(name)) {
+      bad(`${f} imports "${name}" which home-content no longer exports`);
+      orphans++;
+    }
+  }
+}
+if (!orphans) ok("every home-content import resolves");
+
+/* 3 — no price on any public surface (Amendment 2) */
+console.log("\n[3] governance: no published pricing");
+const PRICE = /\bS?\$\s?(688|988|1,?488|888)\b|\b(688|988|1,?488)\s*(\/|per\s)?\s*(month|mo)\b/i;
+let leaks = 0;
+for (const f of source.filter((f) => !f.startsWith("scripts/"))) {
+  if (PRICE.test(read(f))) {
+    bad(`${f} appears to contain a published price`);
+    leaks++;
+  }
+}
+if (!leaks) ok("no price found in any source file");
+
+/* 4 — the Stage 1 disclosure still renders on the homepage */
+console.log("\n[4] governance: Stage 1 disclosure");
+const hc = read("lib/home-content.ts");
+if (!/focus:\s*\{[\s\S]{0,200}aesthetic clinics/i.test(hc)) {
+  bad("packages.focus (Stage 1 disclosure) is missing from home-content");
+} else ok("Stage 1 disclosure present");
+
+/* 5 — canonical origin is the production domain */
+console.log("\n[5] canonical origin");
+const site = read("lib/site.ts")
+  .replace(/\/\*[\s\S]*?\*\//g, "")
+  // line comments only — the "//" inside "https://" must survive
+  .replace(/(^|[^:])\/\/.*$/gm, "$1");
+if (site.includes("ark-flow-sg.vercel.app")) {
+  bad("lib/site.ts still falls back to the Vercel preview origin");
+} else if (!site.includes("www.arkflowsolutions.com")) {
+  bad("lib/site.ts does not point at www.arkflowsolutions.com");
+} else ok("SITE_URL resolves to the production domain");
+
+console.log(
+  fail.length
+    ? `\n${fail.length} check(s) failed — do not deploy.\n`
+    : "\nAll checks passed.\n"
+);
+process.exit(fail.length ? 1 : 0);
