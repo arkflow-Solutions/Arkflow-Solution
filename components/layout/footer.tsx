@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Container } from "@/components/ui/container";
 import { Wordmark } from "@/components/layout/wordmark";
 import { activeSocials } from "@/lib/social";
+import { COMPANY } from "@/lib/site";
 
 /* Approved sitemap only. There is no "Industries" column: listing
    verticals ArkFlow does not serve would breach Stage 1 discipline
@@ -86,7 +87,11 @@ export function Footer() {
           ))}
         </div>
         <div className="hairline mt-14 flex flex-col justify-between gap-4 pt-8 text-small text-[color:var(--text-tertiary)] md:flex-row">
-          <p>© {new Date().getFullYear()} ArkFlow Solutions Pte Ltd. Singapore.</p>
+          {/* Legal entity, not brand. Sourced from lib/site.ts so the
+              registered name and UEN exist in exactly one place. */}
+          <p>
+            © {new Date().getFullYear()} {COMPANY.legalName} · UEN {COMPANY.uen}
+          </p>
           <nav aria-label="Legal" className="flex gap-6">
             <Link href="/privacy" className="transition-colors hover:text-white">
               Privacy

@@ -66,8 +66,34 @@ export const CONTACT_EMAIL = "arkflowsg@gmail.com";
 /** VERIFIED — company contact number, as used across ArkFlow deliverables. */
 export const CONTACT_PHONE = "+65 8765 5809";
 
+/**
+ * Company identity — single source of truth.
+ *
+ * BRAND vs LEGAL ENTITY. These are two different strings and the
+ * distinction is deliberate:
+ *
+ *   Brand        "ArkFlow"                     — capital F, used everywhere
+ *                                                 in marketing and product copy
+ *   Legal entity "Arkflow Solutions Pte Ltd"   — lowercase f, the ACRA
+ *                                                 registered name
+ *
+ * The registered name is NOT a stylistic variant of the brand. Do not
+ * "correct" the lowercase f in `legalName` — it is the name on the
+ * register, and legal, privacy and terms contexts must match it exactly.
+ * Equally, do not push the lowercase form into marketing copy.
+ *
+ * CORRECTED 28 Aug 2026: legalName previously read "ArkFlow Solutions
+ * Pte Ltd", applying brand capitalisation to the registered entity.
+ */
 export const COMPANY = {
-  legalName: "ArkFlow Solutions Pte Ltd",
+  /** ACRA registered name. Exact capitalisation — do not alter. */
+  legalName: "Arkflow Solutions Pte Ltd",
+  /** Unique Entity Number, ACRA. */
+  uen: "202638999Z",
+  /** Public brand. Capital F. */
   shortName: "ArkFlow",
   base: "Singapore · SGT business hours",
 } as const;
+
+/** Formatted identification line: "Arkflow Solutions Pte Ltd · UEN 202638999Z" */
+export const COMPANY_IDENTIFIER = `${COMPANY.legalName} · UEN ${COMPANY.uen}`;

@@ -207,6 +207,34 @@ for (const f of publicSrc) {
 }
 if (!scarce) ok("no artificial scarcity");
 
+/* 10 — legal entity naming and UEN consistency */
+console.log("\n[10] company identity");
+const siteFile = read("lib/site.ts");
+let idIssues = 0;
+
+if (!/legalName:\s*"Arkflow Solutions Pte Ltd"/.test(siteFile)) {
+  bad("lib/site.ts legalName is not the exact ACRA name 'Arkflow Solutions Pte Ltd'");
+  idIssues++;
+}
+if (!/uen:\s*"202638999Z"/.test(siteFile)) {
+  bad("lib/site.ts is missing the UEN 202638999Z");
+  idIssues++;
+}
+
+/**
+ * The registered entity uses a lowercase f. Applying brand capitalisation
+ * to it in a legal context misidentifies the company, so any hardcoded
+ * "ArkFlow Solutions Pte" is a defect — the legal name must come from
+ * COMPANY.legalName, never be typed inline.
+ */
+for (const f of publicSrc) {
+  if (/ArkFlow Solutions Pte/.test(body(f))) {
+    bad(`${f} hardcodes the legal name with brand capitalisation — use COMPANY.legalName`);
+    idIssues++;
+  }
+}
+if (!idIssues) ok("legal name exact, UEN present, no hardcoded entity strings");
+
 console.log(
   fail.length
     ? `\n${fail.length} check(s) failed — do not deploy.\n`

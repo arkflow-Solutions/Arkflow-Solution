@@ -106,9 +106,10 @@ export default function TermsPage() {
               </p>
             </div>
             <p className="border-t border-[color:var(--border-subtle)] pt-8 text-small text-[color:var(--text-tertiary)]">
-              {COMPANY.legalName}, Singapore. This summary is provided for
-              clarity and is not legal advice. Where it differs from a signed
-              client agreement, the agreement governs.
+              This website is operated by {COMPANY.legalName} (UEN{" "}
+              {COMPANY.uen}), a company incorporated in Singapore. This summary
+              is provided for clarity and is not legal advice. Where it differs
+              from a signed client agreement, the agreement governs.
             </p>
           </div>
         </Container>

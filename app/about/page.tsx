@@ -7,11 +7,12 @@ import { CtaBand } from "@/components/pages/cta-band";
 import { about } from "@/lib/content";
 
 import { buildMetadata } from "@/lib/seo";
+import { COMPANY } from "@/lib/site";
 
 export const metadata = buildMetadata({
   title: "About ArkFlow",
   description:
-    "ArkFlow Solutions Pte Ltd is a Singapore Revenue Operations company. Why we exist, how we think, and why the risk sits with us.",
+    "Arkflow Solutions Pte Ltd is a Singapore Revenue Operations company. Why we exist, how we think, and why the risk sits with us.",
   path: "/about",
 });
 
@@ -73,7 +74,7 @@ export default function AboutPage() {
         <Container className="max-w-3xl text-center">
           <Reveal>
             <p className="font-mono text-eyebrow uppercase text-[color:var(--text-tertiary)]">
-              ArkFlow Solutions Pte Ltd · Singapore
+              {COMPANY.legalName} · UEN {COMPANY.uen} · Singapore
             </p>
             <p className="mx-auto mt-6 max-w-prose text-lead text-[color:var(--text-secondary)]">
               Founded and operated in Singapore, for Singapore service

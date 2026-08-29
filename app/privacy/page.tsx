@@ -8,7 +8,7 @@ import { buildMetadata } from "@/lib/seo";
 export const metadata = buildMetadata({
   title: "Privacy policy",
   description:
-    "How ArkFlow Solutions Pte Ltd collects, uses, discloses and retains personal data, consistent with Singapore's Personal Data Protection Act.",
+    "How Arkflow Solutions Pte Ltd collects, uses, discloses and retains personal data, consistent with Singapore's Personal Data Protection Act.",
   path: "/privacy",
 });
 
@@ -92,9 +92,13 @@ export default function PrivacyPage() {
                 reason.
               </p>
             </div>
+            {/* Data controller identification. A privacy notice should
+                name the entity responsible for the data, not just the brand. */}
             <p className="border-t border-[color:var(--border-subtle)] pt-8 text-small text-[color:var(--text-tertiary)]">
-              {COMPANY.legalName}, Singapore. This summary is provided for
-              clarity and is not legal advice.
+              This website is operated by {COMPANY.legalName} (UEN{" "}
+              {COMPANY.uen}), a company incorporated in Singapore, which is the
+              organisation responsible for the personal data described above.
+              This summary is provided for clarity and is not legal advice.
             </p>
           </div>
         </Container>

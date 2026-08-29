@@ -14,8 +14,21 @@ export function OrgJsonLd() {
   const data = {
     "@context": "https://schema.org",
     "@type": "Organization",
+    // Registered ACRA name, not the brand. `alternateName` carries the brand.
     name: COMPANY.legalName,
     alternateName: COMPANY.shortName,
+    /**
+     * UEN as a PropertyValue identifier. schema.org has no Singapore-
+     * specific UEN property; PropertyValue with a named propertyID is the
+     * documented pattern for jurisdictional registration numbers, and is
+     * valid for Organization. Not emitted as `taxID` — a UEN is a
+     * registration number, not a tax identifier.
+     */
+    identifier: {
+      "@type": "PropertyValue",
+      propertyID: "UEN",
+      value: COMPANY.uen,
+    },
     url: SITE_URL,
     description:
       "ArkFlow designs, connects and operates the digital architecture behind service businesses — from first enquiry through booking, payment and repeat customer.",
