@@ -15,6 +15,10 @@ import { contact } from "@/lib/content";
  *  menu: /aesthetic-clinics is the only vertical page at Stage 1. */
 const links = [
   { label: "How it works", href: "/how-it-works" },
+  /* Amendment 8 (v1.4). A plain item, not a services dropdown — a
+     dropdown is how agencies present themselves and would undo the
+     packaged-product positioning the rest of the site is built on. */
+  { label: "Websites", href: "/attract" },
   { label: "Solutions", href: "/solutions" },
   { label: "Packages", href: "/packages" },
   { label: "Insights", href: "/insights" },

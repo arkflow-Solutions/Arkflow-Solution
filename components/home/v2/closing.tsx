@@ -81,7 +81,21 @@ export function Packages() {
           section, which is where it used to live. Governance-required —
           Founder Bible §1.5, §1.11. Do not remove when editing this section.
         */}
+        {/* Amendment 8 (v1.4) — à-la-carte reference. No price, and
+            deliberately not styled as a fourth tier. */}
         <Reveal className="mt-10">
+          <p className="flex flex-wrap items-center gap-x-3 gap-y-2 text-body text-[color:var(--text-secondary)]">
+            {packages.alaCarte.line}
+            <Link
+              href={packages.alaCarte.href}
+              className="text-blue-soft underline underline-offset-4 hover:text-white"
+            >
+              {packages.alaCarte.cta} &rarr;
+            </Link>
+          </p>
+        </Reveal>
+
+        <Reveal className="mt-4">
           <p className="flex flex-wrap items-center gap-x-3 gap-y-2 text-body text-[color:var(--text-secondary)]">
             {packages.focus.line}
             <Link

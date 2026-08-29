@@ -61,6 +61,11 @@ export type ArkFlowEvent =
   | 'facebook_click'
   // Footer / closing
   | 'cta_final_click'
+  // Website line (v1.4 Amendment 8)
+  | 'website_review_click'
+  | 'website_build_view'
+  | 'website_revamp_view'
+  | 'attract_page_view'
 
 /**
  * Allowed parameter values. Constrained to primitives so a free-text

@@ -12,6 +12,13 @@ interface ButtonProps
   href?: string;
   /** Primary CTAs earn an arrow that slides on hover. */
   withArrow?: boolean;
+  /**
+   * External links (WhatsApp, social) need target and rel, and CTAs need
+   * their onClick to fire for tracking. The link branch previously
+   * dropped all three, so an href button could not be instrumented.
+   */
+  target?: string;
+  rel?: string;
 }
 
 const base =
@@ -40,6 +47,8 @@ export function Button({
   size = "default",
   href,
   withArrow = false,
+  target,
+  rel,
   children,
   ...props
 }: ButtonProps) {
@@ -59,7 +68,16 @@ export function Button({
 
   if (href) {
     return (
-      <Link href={href} className={classes}>
+      <Link
+        href={href}
+        className={classes}
+        target={target}
+        // Always pair a new tab with noopener; rel may add to it.
+        rel={target === "_blank" ? `noopener noreferrer ${rel ?? ""}`.trim() : rel}
+        onClick={
+          props.onClick as unknown as React.MouseEventHandler<HTMLAnchorElement>
+        }
+      >
         {content}
       </Link>
     );

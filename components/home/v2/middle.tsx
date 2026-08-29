@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+
 import { Container } from "@/components/ui/container";
 import { Section } from "@/components/ui/section";
 import { Reveal } from "@/components/motion/reveal";
@@ -40,6 +42,14 @@ export function EngineJourney() {
                   <p className="mt-3 max-w-prose text-body text-[color:var(--text-secondary)]">
                     {s.body}
                   </p>
+                  {"href" in s && s.href && (
+                    <Link
+                      href={s.href}
+                      className="mt-3 inline-block text-small text-blue-soft underline underline-offset-4 transition-colors hover:text-white"
+                    >
+                      See how we build the front door &rarr;
+                    </Link>
+                  )}
                 </div>
               </li>
             </Reveal>
@@ -50,6 +60,16 @@ export function EngineJourney() {
         <Reveal className="mt-4">
           <p className="max-w-2xl text-subheading font-medium leading-snug">
             {engine.close}
+          </p>
+          {/* Amendment 8 (v1.4) — approved supporting line. */}
+          <p className="mt-4 max-w-2xl text-body text-[color:var(--text-secondary)]">
+            {engine.frontDoor}{" "}
+            <Link
+              href={engine.frontDoorHref}
+              className="text-blue-soft underline underline-offset-4 transition-colors hover:text-white"
+            >
+              See website work &rarr;
+            </Link>
           </p>
         </Reveal>
       </Container>

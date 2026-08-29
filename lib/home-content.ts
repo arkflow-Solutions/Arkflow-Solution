@@ -124,6 +124,8 @@ export const engine = {
     {
       name: "Attract",
       body: "An enquiry arrives, and the source it came from is recorded with it.",
+      /* Amendment 8 (v1.4) — website work is the substance of this stage. */
+      href: "/attract",
     },
     {
       name: "Engage",
@@ -151,6 +153,9 @@ export const engine = {
    * That whole section made one point; this is the point.
    */
   close: "Your people handle people. ArkFlow handles the repetition.",
+  /* Amendment 8 (v1.4) — approved supporting line, verbatim. */
+  frontDoor: "The front door can be built on its own, or as part of the system.",
+  frontDoorHref: "/attract",
 } as const;
 
 /* ---------------------------------------------- 6 · UNIFIED INBOX */
@@ -535,6 +540,12 @@ export const packages = {
    * marketing block: it must appear on the homepage in some form.
    * Founder Bible §1.5, §1.11. Do not remove.
    */
+  /* Amendment 8 (v1.4) — one line, no pricing, no fourth tier implied. */
+  alaCarte: {
+    line: "Website design and revamp work is also available on its own, separate from the packages.",
+    cta: "See website work",
+    href: "/attract",
+  },
   focus: {
     line: "Currently working with Singapore aesthetic clinics.",
     cta: "How it works for clinics",

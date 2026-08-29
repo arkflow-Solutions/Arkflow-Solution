@@ -146,6 +146,67 @@ for (const f of source.filter((f) => f.includes("lib/insights/articles/"))) {
 }
 if (!visualIssues) ok("figures labelled, no stock imagery referenced");
 
+/* 9 — v1.4 Amendment 8 constraints on the website line */
+console.log("\n[9] v1.4 Amendment 8");
+const publicSrc = source.filter((f) => !f.startsWith("scripts/"));
+
+/**
+ * Scan rendered content only. Governance comments legitimately quote the
+ * very strings these checks look for — the prohibited price list, the
+ * prohibited Scale adjectives — so scanning raw source produces false
+ * positives on the documentation that exists to prevent the violation.
+ */
+const body = (f) =>
+  read(f)
+    .replace(/\/\*[\s\S]*?\*\//g, "")
+    .replace(/(^|[^:])\/\/.*$/gm, "$1");
+
+// 9a — no à-la-carte pricing anywhere public
+const ALACARTE = /\b(2,?880|4,?880|S?\$\s?288|S?\$\s?188|S?\$\s?380)\b/;
+let priced = 0;
+for (const f of publicSrc) {
+  if (ALACARTE.test(body(f))) {
+    bad(`${f} appears to contain à-la-carte pricing (v1.4 §5 prohibits it)`);
+    priced++;
+  }
+}
+if (!priced) ok("no à-la-carte pricing in any public file");
+
+// 9b — SEO must never be offered as a service
+const SEO_SERVICE =
+  /\b(SEO (services?|packages?|retainers?|management)|local SEO|keyword research (service|package)|Google Business Profile optimisation|ranking guarantee)\b/i;
+let seo = 0;
+for (const f of publicSrc) {
+  if (SEO_SERVICE.test(body(f))) {
+    bad(`${f} offers SEO as a service (v1.4 §19 — SEO is ON HOLD)`);
+    seo++;
+  }
+}
+if (!seo) ok("no SEO service claims");
+
+// 9c — Scale must not be undercut by the standalone offer
+const WEAKENS = /standalone[^.]{0,80}\b(starter|entry-level|lite|cheaper|trial)\b/i;
+let weak = 0;
+for (const f of publicSrc) {
+  if (WEAKENS.test(body(f))) {
+    bad(`${f} frames the standalone website as a lesser Scale (v1.4 §15)`);
+    weak++;
+  }
+}
+if (!weak) ok("Scale positioning intact");
+
+// 9d — internal capacity constraint must not surface as scarcity
+const SCARCITY =
+  /\b(only \d+ slots?|slots? (left|remaining)|spaces? left|book before we'?re full)\b/i;
+let scarce = 0;
+for (const f of publicSrc) {
+  if (SCARCITY.test(body(f))) {
+    bad(`${f} exposes the internal capacity constraint as scarcity (v1.4 §13)`);
+    scarce++;
+  }
+}
+if (!scarce) ok("no artificial scarcity");
+
 console.log(
   fail.length
     ? `\n${fail.length} check(s) failed — do not deploy.\n`

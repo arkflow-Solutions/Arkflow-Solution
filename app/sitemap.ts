@@ -17,6 +17,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/how-it-works",
     "/solutions",
     "/aesthetic-clinics",
+    "/attract",
     "/packages",
     "/insights",
     "/case-studies",
@@ -35,7 +36,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority:
       path === ""
         ? 1
-        : ["/packages", "/aesthetic-clinics", "/insights"].includes(path)
+        : ["/packages", "/aesthetic-clinics", "/insights", "/attract"].includes(path)
           ? 0.9
           : 0.7,
   }));
