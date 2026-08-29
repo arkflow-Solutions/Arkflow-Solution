@@ -1,4 +1,4 @@
-import { WHATSAPP_URL } from "@/lib/site";
+import { WHATSAPP_URL, CONTACT_EMAIL } from "@/lib/site";
 
 /**
  * ArkFlow homepage content — single source of truth for copy.
@@ -314,7 +314,7 @@ export const contact = {
     body: "The fastest way to reach us — the same channel we build on. Business-hours replies within 4 hours.",
     href: WHATSAPP_URL,
   },
-  email: { title: "Email", address: "hello@arkflow.sg" },
+  email: { title: "Email", address: CONTACT_EMAIL },
   base: "Singapore · SGT business hours",
 };
 

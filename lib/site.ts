@@ -29,11 +29,26 @@ export const SITE_URL =
   "https://www.arkflowsolutions.com";
 
 /**
- * PENDING — no verified WhatsApp number. The previous value
- * (wa.me/6500000000) was a placeholder that shipped as a live link.
- * While null, every WhatsApp affordance is hidden rather than broken.
+ * VERIFIED — company WhatsApp, supplied by the founder 28 Aug 2026.
+ * Resolves the long-standing placeholder; every WhatsApp affordance
+ * across the site now renders and points here.
+ *
+ * wa.me requires the number in international format with no plus sign,
+ * no spaces and no dashes: +65 8765 5809 -> 6587655809.
  */
-export const WHATSAPP_URL: string | null = null;
+export const WHATSAPP_NUMBER = "6587655809";
+export const WHATSAPP_DISPLAY = "+65 8765 5809";
+export const WHATSAPP_URL: string | null = `https://wa.me/${WHATSAPP_NUMBER}`;
+
+/**
+ * Builds a WhatsApp link with the message pre-filled, so an enquiry
+ * arrives with its own context instead of a bare "Hi". Keep prefills
+ * short — long ones look automated and get deleted before sending.
+ */
+export function whatsappLink(message?: string): string {
+  const base = `https://wa.me/${WHATSAPP_NUMBER}`;
+  return message ? `${base}?text=${encodeURIComponent(message)}` : base;
+}
 
 /**
  * GOVERNANCE FLAG — changed from hello@arkflow.sg.
