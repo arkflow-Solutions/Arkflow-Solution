@@ -48,6 +48,21 @@ export const metadata: Metadata = {
     description: DESCRIPTION,
   },
   robots: { index: true, follow: true },
+  /**
+   * Meta (Facebook) Business domain verification.
+   *
+   * Emitted server-side into <head> via the Metadata API. Meta rejects
+   * this tag if it is injected by JavaScript or placed outside <head>,
+   * so it must stay here rather than in a client component or script.
+   *
+   * The token is public by design — it proves domain control, it is not
+   * a credential. Safe to commit.
+   */
+  verification: {
+    other: {
+      "facebook-domain-verification": "qq0rsvwf2t50efu64zvo6pmx4rxor1",
+    },
+  },
 };
 
 export default function RootLayout({
