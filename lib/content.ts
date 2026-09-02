@@ -1,4 +1,4 @@
-import { WHATSAPP_URL, CONTACT_EMAIL } from "@/lib/site";
+import { WHATSAPP_URL, CONTACT_EMAIL, BOOKING_URL, SURVEY_URL } from "@/lib/site";
 
 /**
  * ArkFlow homepage content — single source of truth for copy.
@@ -300,10 +300,11 @@ export const contact = {
   call: {
     title: "Book a discovery call",
     body: "Thirty minutes, no obligation. We map your enquiry-to-payment flow, run a Lead Response Audit on your current numbers, and show you exactly where revenue is slipping through — useful whether or not you work with us.",
-    // Live GoHighLevel / LeadConnector booking widget — every "Book
-    // Discovery Call" CTA opens this in <BookingModal /> (see
-    // lib/use-booking.ts and components/booking/booking-modal.tsx).
-    href: "https://api.leadconnectorhq.com/widget/booking/KusL0qfR1oz37ZonStXL",
+    // Live booking widget — every "Book Discovery Call" CTA opens this
+    // in <BookingModal />. Sourced from lib/site.ts so the calendar ID
+    // exists in exactly one place; the last rebuild left a dead widget
+    // behind precisely because it was duplicated.
+    href: BOOKING_URL,
   },
   /* PENDING — no verified WhatsApp number. `href` reads from
      WHATSAPP_URL in lib/site.ts, which is null until the founder
@@ -313,6 +314,17 @@ export const contact = {
     title: "WhatsApp us",
     body: "The fastest way to reach us — the same channel we build on. Business-hours replies within 4 hours.",
     href: WHATSAPP_URL,
+  },
+  /**
+   * Lead Response Audit survey — the GoHighLevel form that captures an
+   * enquiry directly into the CRM. Rendered in an iframe on /contact,
+   * so submissions land in GHL without depending on the /api/enquiry
+   * endpoint or its environment variables.
+   */
+  survey: {
+    title: "Start your Lead Response Audit",
+    body: "A few questions about how enquiries reach your business today. Takes about two minutes, and the answers are what we measure against.",
+    href: SURVEY_URL,
   },
   email: { title: "Email", address: CONTACT_EMAIL },
   base: "Singapore · SGT business hours",

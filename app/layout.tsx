@@ -8,6 +8,7 @@ import { SmoothScroll } from "@/components/motion/smooth-scroll";
 import { IntroVeil } from "@/components/motion/intro-veil";
 import { OrgJsonLd } from "@/components/seo/json-ld";
 import { SITE_URL } from "@/lib/site";
+import Script from "next/script";
 
 /**
  * Site metadata.
@@ -85,6 +86,20 @@ export default function RootLayout({
         <Footer />
         <OrgJsonLd />
         <BookingModal />
+        {/*
+          GoHighLevel embed script. Drives auto-resize for both the
+          booking widget (BookingModal) and the Lead Response Audit
+          survey on /contact — without it the iframes render at a
+          fixed height and clip their own content.
+
+          lazyOnload keeps it off the critical path; neither embed is
+          above the fold. Served from the white-label domain so no
+          third-party host appears in the network tab.
+        */}
+        <Script
+          src="https://link.arkflowsolutions.com/js/form_embed.js"
+          strategy="lazyOnload"
+        />
       </body>
     </html>
   );

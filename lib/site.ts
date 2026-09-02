@@ -7,9 +7,37 @@
  * label until the real value is supplied.
  */
 
-/** VERIFIED — GoHighLevel / LeadConnector booking widget. */
+/**
+ * VERIFIED — GoHighLevel booking widget, discovery call.
+ * Rebuilt account, 1 Sep 2026. The previous calendar
+ * (KusL0qfR1oz37ZonStXL) belonged to the deleted sub-account and
+ * every "Book Discovery Call" button was opening a dead widget.
+ *
+ * Served from the link.arkflowsolutions.com white-label domain rather
+ * than api.leadconnectorhq.com, so the booking iframe stays on an
+ * ArkFlow domain.
+ */
 export const GHL_CALENDAR_URL =
-  "https://api.leadconnectorhq.com/widget/booking/KusL0qfR1oz37ZonStXL";
+  "https://link.arkflowsolutions.com/widget/booking/dVmkLzktSpMYKEIXNBpz";
+
+/** Alias — the name used across content and components. */
+export const BOOKING_URL = GHL_CALENDAR_URL;
+
+/**
+ * VERIFIED — GoHighLevel survey, 1 Sep 2026. The Lead Response Audit
+ * intake form.
+ *
+ * Embedded as an iframe on /contact so submissions land directly in
+ * the CRM. This is deliberately independent of the /api/enquiry
+ * endpoint: that route needs GHL_API_TOKEN and GHL_LOCATION_ID set in
+ * Vercel, and silently logs-and-drops the enquiry when they are
+ * missing. The iframe cannot fail that way.
+ *
+ * The GHL resize script (form_embed.js) is loaded once in
+ * app/layout.tsx and drives both this and the booking widget.
+ */
+export const SURVEY_URL =
+  "https://link.arkflowsolutions.com/widget/survey/NXyNayYOuw3hhVcb9cMY";
 
 /**
  * VERIFIED — www.arkflowsolutions.com is live and serving this site.
