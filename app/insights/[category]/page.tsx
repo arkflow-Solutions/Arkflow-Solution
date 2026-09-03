@@ -20,10 +20,24 @@ export function generateMetadata({
 }) {
   const category = categoryBySlug(params.category);
   if (!category) return {};
+
+  /**
+   * A pillar with no articles is an empty page. It keeps its correct
+   * self-referencing canonical — it is a real URL, reachable from
+   * /insights, and must not point anywhere else — but it is held out of
+   * the index until it has something to say. The sitemap applies the
+   * same condition (app/sitemap.ts), so the two never disagree.
+   *
+   * Publishing the first article in the category lifts this
+   * automatically. Nothing to remember, nothing to undo.
+   */
+  const isEmpty = articlesByCategory(category.slug).length === 0;
+
   return buildMetadata({
     title: category.title,
     description: category.description,
     path: `/insights/${category.slug}`,
+    noIndex: isEmpty,
   });
 }
 

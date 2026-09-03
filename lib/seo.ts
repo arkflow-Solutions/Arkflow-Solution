@@ -45,7 +45,17 @@ export function buildMetadata({
     title,
     description,
     alternates: { canonical: path },
-    robots: noIndex ? { index: false, follow: false } : { index: true, follow: true },
+    /**
+     * noindex, FOLLOW — not nofollow.
+     *
+     * A page held out of the index is still a page Google should crawl
+     * through. nofollow would tell it to ignore every outbound link,
+     * which on an empty category pillar means dropping the /insights
+     * and discovery-call links that give the page its only value while
+     * it waits for content. noindex keeps it out of results; follow
+     * keeps the crawl path intact.
+     */
+    robots: noIndex ? { index: false, follow: true } : { index: true, follow: true },
     openGraph: {
       type: "website",
       locale: LOCALE,
