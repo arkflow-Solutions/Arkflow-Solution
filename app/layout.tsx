@@ -9,6 +9,7 @@ import { IntroVeil } from "@/components/motion/intro-veil";
 import { OrgJsonLd } from "@/components/seo/json-ld";
 import { SITE_URL } from "@/lib/site";
 import Script from "next/script";
+import { GoogleAnalytics } from "@/components/analytics/google-analytics";
 
 /**
  * Site metadata.
@@ -86,6 +87,7 @@ export default function RootLayout({
         <Footer />
         <OrgJsonLd />
         <BookingModal />
+        <GoogleAnalytics />
         {/*
           GoHighLevel embed script. Drives auto-resize for both the
           booking widget (BookingModal) and the Lead Response Audit
