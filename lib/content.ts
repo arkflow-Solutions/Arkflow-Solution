@@ -1,4 +1,4 @@
-import { WHATSAPP_URL, CONTACT_EMAIL, BOOKING_URL, SURVEY_URL } from "@/lib/site";
+import { WHATSAPP_URL, CONTACT_EMAIL, BOOKING_URL } from "@/lib/site";
 
 /**
  * ArkFlow content — copy for /about, /case-studies, /contact and the
@@ -110,17 +110,13 @@ export const contact = {
     body: "The fastest way to reach us — the same channel we build on.",
     href: WHATSAPP_URL,
   },
-  /**
-   * Revenue Leak Audit survey — the GoHighLevel form that captures an
-   * enquiry directly into the CRM. Rendered in an iframe on /contact,
-   * so submissions land in GHL without depending on the /api/enquiry
-   * endpoint or its environment variables.
-   */
-  survey: {
-    title: "Start your Revenue Leak Audit",
-    body: "A few questions about how enquiries reach your business today. Takes about two minutes, and the answers are what we measure against.",
-    href: SURVEY_URL,
-  },
+  /* `survey` removed 6 September 2026. It described a GoHighLevel survey
+     iframe on /contact and claimed submissions landed in the CRM without
+     depending on /api/enquiry. Neither was true any more: the embed
+     component was deleted when the multi-step form became the single
+     intake path, and nothing read this object. SURVEY_URL still exists in
+     lib/site.ts as the record of a live GHL asset pending a founder
+     decision — it is simply not rendered anywhere. */
   email: { title: "Email", address: CONTACT_EMAIL },
   base: "Singapore · SGT business hours",
 };

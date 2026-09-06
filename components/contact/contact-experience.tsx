@@ -113,20 +113,62 @@ const EMPTY: FormState = {
   message: "",
 };
 
-async function submitEnquiry(payload: FormState) {
+/**
+ * Honeypot field name. Must match HONEYPOT_FIELD in app/api/enquiry/route.ts.
+ * Rendered off-screen and hidden from assistive technology, so a human
+ * never sees it and a bot that fills every input does.
+ */
+const HONEYPOT_FIELD = "companyWebsite";
+
+/** Shown when the server sends no usable message of its own. */
+const GENERIC_SEND_ERROR =
+  "We could not send that just now. Please try again in a moment, or reach us on WhatsApp or email.";
+
+/**
+ * Submit the enquiry.
+ *
+ * A success state is shown ONLY when the server confirms the enquiry
+ * reached a real destination. The route returns `{ ok: true }` on genuine
+ * delivery and a non-2xx with a safe `error` string otherwise — it no
+ * longer reports success for an enquiry it could not deliver. Anything
+ * that is not an explicit `ok: true` is treated as a failure here.
+ *
+ * On failure this throws with a visitor-safe message. The caller leaves
+ * the form on its final step with every answer still in component state,
+ * so a transient failure costs a click, not the whole submission.
+ */
+async function submitEnquiry(payload: FormState, honeypot: string) {
   const endpoint = process.env.NEXT_PUBLIC_ENQUIRY_ENDPOINT || "/api/enquiry";
-  const res = await fetch(endpoint, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      ...payload,
-      name: `${payload.firstName} ${payload.lastName}`.trim(),
-      help: payload.help.join(", "),
-      source: "arkflow-contact",
-    }),
-  });
-  if (!res.ok) throw new Error("submit failed");
-  return res.json().catch(() => ({}));
+
+  let res: Response;
+  try {
+    res = await fetch(endpoint, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        ...payload,
+        name: `${payload.firstName} ${payload.lastName}`.trim(),
+        help: payload.help.join(", "),
+        [HONEYPOT_FIELD]: honeypot,
+        source: "arkflow-contact",
+      }),
+    });
+  } catch {
+    // Offline, DNS, connection reset — never reached the server.
+    throw new Error(GENERIC_SEND_ERROR);
+  }
+
+  const data = (await res.json().catch(() => null)) as
+    | { ok?: boolean; error?: string }
+    | null;
+
+  if (!res.ok || data?.ok !== true) {
+    // The route's messages are written for visitors and carry no upstream
+    // status, GHL error text or infrastructure detail.
+    throw new Error(data?.error || GENERIC_SEND_ERROR);
+  }
+
+  return data;
 }
 
 const styles = `
@@ -213,6 +255,8 @@ export function ContactExperience() {
   const [form, setForm] = useState<FormState>(EMPTY);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
+  /** Honeypot. Stays empty for every human; a bot filling all inputs sets it. */
+  const [honeypot, setHoneypot] = useState("");
   const [openFaq, setOpenFaq] = useState<number | null>(0);
 
   const set = (patch: Partial<FormState>) => setForm((f) => ({ ...f, ...patch }));
@@ -253,10 +297,13 @@ export function ContactExperience() {
     setSubmitting(true);
     setError("");
     try {
-      await submitEnquiry(form);
+      // Only advances to the success step when the server confirmed the
+      // enquiry was actually delivered. On failure the step, and every
+      // answer already given, stay exactly as they are.
+      await submitEnquiry(form, honeypot);
       setStep(STEPS);
-    } catch {
-      setError("Something went wrong sending that. Please try again, or WhatsApp us.");
+    } catch (err) {
+      setError(err instanceof Error && err.message ? err.message : GENERIC_SEND_ERROR);
     } finally {
       setSubmitting(false);
     }
@@ -353,7 +400,7 @@ export function ContactExperience() {
                     <span className="val">{contact.email.address}</span>
                   </span>
                 </a>
-                <a className="cx-crow" href={LINKEDIN_URL} target="_blank" rel="noreferrer">
+                <a className="cx-crow" href={LINKEDIN_URL} target="_blank" rel="noopener noreferrer">
                   <Linkedin size={18} className="text-blue-soft" aria-hidden />
                   <span>
                     <span className="lbl">LinkedIn</span>
@@ -528,7 +575,32 @@ export function ContactExperience() {
                       {step === 5 && (
                         <div>
                           <p className="cx-q">Where should we reach you?</p>
-                          <p className="cx-qs">We&apos;ll follow up within 4 hours.</p>
+                          <p className="cx-qs">
+                            We&apos;ll come back to you on whichever channel you prefer.
+                          </p>
+                          {/*
+                            Honeypot. Positioned off-screen rather than
+                            display:none, which some bots skip. Hidden from
+                            assistive technology and removed from the tab
+                            order, so no human encounters it.
+                          */}
+                          <input
+                            type="text"
+                            name={HONEYPOT_FIELD}
+                            value={honeypot}
+                            onChange={(e) => setHoneypot(e.target.value)}
+                            tabIndex={-1}
+                            autoComplete="off"
+                            aria-hidden="true"
+                            style={{
+                              position: "absolute",
+                              left: "-9999px",
+                              width: 1,
+                              height: 1,
+                              opacity: 0,
+                              pointerEvents: "none",
+                            }}
+                          />
                           <div className="cx-grid2">
                             <input
                               className="cx-input"

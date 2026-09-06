@@ -39,25 +39,21 @@ export const AUDIT_URL = "https://go.arkflowsolutions.com/audit";
 
 /**
  * SUPERSEDED AS A PUBLIC CTA — the Lead Response Audit intake survey.
+ * VERIFIED as a GoHighLevel asset, 1 Sep 2026.
  *
- * Retained because /contact still embeds it and it is a live GHL asset
- * receiving submissions. It must NOT be presented as the primary public
- * call to action anywhere: AUDIT_URL is canonical. Flagged for founder
- * decision on whether this survey is retired, renamed or kept as the
- * intake step behind AUDIT_URL.
- */
-/**
- * VERIFIED — GoHighLevel survey, 1 Sep 2026. The Lead Response Audit
- * intake form.
+ * NOT RENDERED ANYWHERE. Corrected 6 September 2026: the comments here
+ * previously stated that /contact embedded this survey and that it was
+ * therefore immune to the /api/enquiry environment-variable failure.
+ * Both statements were false. The embed component was removed when the
+ * multi-step form became the single intake path, and this constant has
+ * had no consumer since.
  *
- * Embedded as an iframe on /contact so submissions land directly in
- * the CRM. This is deliberately independent of the /api/enquiry
- * endpoint: that route needs GHL_API_TOKEN and GHL_LOCATION_ID set in
- * Vercel, and silently logs-and-drops the enquiry when they are
- * missing. The iframe cannot fail that way.
+ * It is retained, unused, only as the record of a live GHL asset that
+ * may still be receiving submissions from elsewhere. AUDIT_URL is the
+ * canonical public CTA and this must never be presented as one.
  *
- * The GHL resize script (form_embed.js) is loaded once in
- * app/layout.tsx and drives both this and the booking widget.
+ * FOUNDER DECISION OPEN: retire this survey, rename it, or keep it as
+ * the intake step behind AUDIT_URL. Delete this constant once decided.
  */
 export const SURVEY_URL =
   "https://link.arkflowsolutions.com/widget/survey/NXyNayYOuw3hhVcb9cMY";
@@ -74,9 +70,17 @@ export const SURVEY_URL =
  * REQUIRED IN VERCEL: set www.arkflowsolutions.com as the PRIMARY domain
  * so ark-flow-sg.vercel.app 301s to it. Without that redirect there are
  * still two indexable copies of every page.
+ *
+ * EMPTY IS TREATED AS UNSET. This previously used `??`, which only falls
+ * back on null/undefined — so `NEXT_PUBLIC_SITE_URL=""` (what a bare
+ * `NEXT_PUBLIC_SITE_URL=` line in an env file produces) resolved SITE_URL
+ * to "" and made `new URL(SITE_URL)` throw `TypeError: Invalid URL`,
+ * failing the build in app/layout.tsx and lib/seo.ts. Trimming first and
+ * using `||` makes empty, whitespace and unset all resolve to the
+ * canonical origin below. The origin itself is unchanged.
  */
 export const SITE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") ??
+  process.env.NEXT_PUBLIC_SITE_URL?.trim().replace(/\/$/, "") ||
   "https://www.arkflowsolutions.com";
 
 /**
