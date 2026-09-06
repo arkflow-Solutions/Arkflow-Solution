@@ -6,26 +6,39 @@ import { usePathname } from "next/navigation";
 import { Menu, X, ChevronDown, BookOpen, Star, Building2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Container } from "@/components/ui/container";
-import { AuditButton } from "@/components/home/v3/shared";
+import { DiscoveryCallButton } from "@/components/home/v3/shared";
 import { Wordmark } from "@/components/layout/wordmark";
 
 /**
  * Top-level primary navigation.
  *
- * PACKAGES REMOVED, 6 September 2026. The route is deleted: package
- * names, pricing, guarantees and contract terms are not for public use,
- * so there is nothing behind that item to link to.
+ * RESTRUCTURED 7 September 2026. The primary nav was four homepage
+ * anchors plus Insights. Two problems with that:
  *
- * The homepage anchors give the visitor the shape of the argument
- * without a dropdown. A services dropdown is how agencies present
- * themselves and would undo the Revenue Operating Company positioning
- * the rest of the site is built on.
+ *  1. An anchor is not a destination. From any page other than the
+ *     homepage those four items navigated home and jumped — so the nav
+ *     behaved differently depending on where you were standing.
+ *  2. It hid the real pages. /attract carries ArkFlow's website and
+ *     digital-experience capability and was reachable from nothing. A
+ *     capability that is not in the navigation is not a capability the
+ *     visitor knows exists.
+ *
+ * Four destinations now, in the order a visitor meets them: the front
+ * door, what sits behind it, the scope of an engagement, and the
+ * writing. /packages is labelled "What we build" because ArkFlow does
+ * not sell fixed packages and the label should not imply otherwise.
+ *
+ * DELIBERATELY NOT HERE: /aesthetic-clinics stays in the Company group —
+ * one vertical must never lead an industry-agnostic site.
+ * /how-it-works stays out of the primary nav; it is reached from the
+ * homepage and from content, and adding it would push this back toward
+ * a sitemap. Still no services dropdown — that is how agencies present
+ * themselves and would undo the Revenue Operating Company positioning.
  */
 const links = [
-  { label: "The problem", href: "/#the-leak" },
-  { label: "Revenue engine", href: "/#revenue-engine" },
-  { label: "Capabilities", href: "/#capabilities" },
-  { label: "Industries", href: "/#industries" },
+  { label: "Attract", href: "/attract" },
+  { label: "Solutions", href: "/solutions" },
+  { label: "What we build", href: "/packages" },
   { label: "Insights", href: "/insights" },
 ];
 
@@ -200,13 +213,13 @@ export function Navbar() {
           </div>
         </nav>
 
-        {/* The one primary action on the site. The Revenue Leak Audit
-            is the canonical CTA and lives on its own funnel, so this is
-            a real outbound link rather than the booking modal. */}
+        {/* The one primary action on the site. Opens the booking modal
+            and keeps the visitor here — the audit funnel is no longer a
+            CTA (founder decision, 6 Sep 2026). */}
         <div className="hidden lg:block">
-          <AuditButton location="navbar" size="default">
-            Get your Revenue Leak Audit
-          </AuditButton>
+          <DiscoveryCallButton location="navbar" size="default">
+            Book a Discovery Call
+          </DiscoveryCallButton>
         </div>
 
         <button
@@ -260,9 +273,9 @@ export function Navbar() {
             })}
 
             <div className="px-3 pb-2 pt-4">
-              <AuditButton location="navbar_mobile" size="default" className="w-full">
-                Get your Revenue Leak Audit
-              </AuditButton>
+              <DiscoveryCallButton location="navbar_mobile" size="default" className="w-full">
+                Book a Discovery Call
+              </DiscoveryCallButton>
             </div>
           </Container>
         </nav>

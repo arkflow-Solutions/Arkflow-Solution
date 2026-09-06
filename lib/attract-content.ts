@@ -5,19 +5,31 @@
  * (locked 28 August 2026). Every commercial claim on this page traces to
  * a numbered section of that document. No new commercial assumptions.
  *
+ * AMENDED 7 September 2026 — the package tiers this page was written
+ * against are superseded. Package names do not appear here any more, and
+ * every capability named is a current one. See attractFork.
+ *
  * HARD CONSTRAINTS — do not relax when editing:
  *  · NO PRICING. Not S$288 / S$2,880 / S$4,880 / S$380 / S$188, no "from",
  *    no ranges, no anchors, nothing in metadata or structured data. (v1.4 §5)
  *  · NO SEO AS A SERVICE. Technical foundations may be described only as
  *    properties of a properly built site, never as an offering. (v1.4 §19)
- *  · SCALE IS NOT WEAKENED. The standalone offer is never "starter",
- *    "entry-level", "lite", "cheap", "trial" or an alternative. (v1.4 §15)
+ *  · NO PACKAGE OR TIER NAMES. Respond / Operate / Scale are superseded
+ *    and must not return. Describe what a client receives, not which tier
+ *    it sits in. The standalone website is never framed as a lesser or
+ *    entry-level version of anything.
+ *  · NOTHING ABOVE ITS CLASSIFICATION. Website work, lead capture, AI
+ *    conversation, qualification, booking, CRM, follow-up, retention and
+ *    reactivation are current. Invoice/payment automation and the AI
+ *    Voice Agent are NOT — they must not be described as included.
  *  · NO CAPACITY SCARCITY. The 2-project/month limit is internal and must
  *    not appear as slots, counters or urgency. (v1.4 §13)
  *  · NO FABRICATED PROOF. No clients, results, traffic, rankings, revenue,
  *    leads, conversion rates or project volume. (v1.4 §20)
- *  · NO NEW FRAMEWORK. ATTRACT is stage one of the existing six-stage
- *    canonical journey, not a new model. (v1.4 §21)
+ *  · ATTRACT IS STAGE ONE of the canonical ten-stage Revenue Engine
+ *    (Attract → Capture → Respond → Qualify → Book → Convert → Follow Up
+ *    → Retain → Reactivate → Grow). Not a new model, and not the
+ *    superseded six-stage journey.
  */
 
 export const attractHero = {
@@ -25,8 +37,11 @@ export const attractHero = {
   title: "Get discovered. Build the front door.",
   titleAccent: "Turn attention into enquiries.",
   lead: "A website is the first stage of the customer journey, not a brochure that sits beside it. ArkFlow can build that front door on its own — or as part of the system it opens into.",
-  primaryCta: "Get a Website Review",
-  secondaryCta: "Book a discovery call",
+  /* Canonical CTA first (founder decision, 6 Sep 2026). The Website
+     Review stays as the secondary, high-intent action for a visitor who
+     already has a site and wants it looked at. */
+  primaryCta: "Book a Discovery Call",
+  secondaryCta: "Get a Website Review",
 } as const;
 
 /** The problem. Kept to one idea, per the site-wide copy discipline. */
@@ -45,8 +60,21 @@ export const attractProblem = {
 } as const;
 
 /**
- * The fork. This is the page's load-bearing section — the standalone /
- * Scale distinction from v1.4 §15, stated without weakening Scale.
+ * The fork. This is the page's load-bearing section: a website on its
+ * own, or a website wired into the system it opens onto.
+ *
+ * REWRITTEN 7 September 2026. The second option was "Website inside
+ * ArkFlow Scale" and described invoicing and a voice agent. Three
+ * separate problems: "Scale" is a superseded package name, invoice and
+ * payment automation is classified FUTURE, and the AI Voice Agent is IN
+ * DEVELOPMENT — none of the three could be presented as something a
+ * client receives today. It also linked to the Revenue Leak Audit
+ * anchor, which is no longer the canonical CTA.
+ *
+ * The distinction itself is worth keeping, because it is the real
+ * question a website buyer has. It is now drawn between a website and a
+ * connected system rather than between two package tiers, and every
+ * capability named is a current one.
  */
 export const attractFork = {
   eyebrow: "Two ways to do this",
@@ -61,13 +89,13 @@ export const attractFork = {
       note: "Built so it can connect to a CRM and follow-up system later without rebuilding the site.",
     },
     {
-      id: "scale",
-      label: "Website inside ArkFlow Scale",
-      promise: "We build the front door and everyone behind it.",
-      body: "The website, plus the system it opens into: every channel in one inbox, replies that go out whether or not anyone is free, booking, invoicing, follow-up, reactivation, and a voice agent for the calls your team cannot take.",
-      note: "The complete revenue system. The website is one component of it.",
-      href: "/#revenue-leak-audit",
-      hrefLabel: "See what Scale includes",
+      id: "connected",
+      label: "Website connected to the system",
+      promise: "We build the front door, and what happens after someone walks through it.",
+      body: "The website, plus the system it opens onto: every channel in one inbox, an assistant that answers new enquiries at any hour and hands over the moment judgement is needed, qualification, booking synced to your calendar, follow-up that does not depend on memory, and customers brought back rather than forgotten.",
+      note: "The website becomes stage one of a connected customer journey rather than a destination on its own.",
+      href: "/solutions",
+      hrefLabel: "See the connected system",
     },
   ],
 } as const;
@@ -124,7 +152,7 @@ export const websiteRevamp = {
   honesty: {
     title: "Sometimes the website is not the problem.",
     body: "If the review finds that traffic arrives and converts, but enquiries are answered slowly or not at all, we will tell you that — and point you at a Revenue Leak Audit instead of selling you a website you do not need.",
-    ctaLabel: "About the Revenue Leak Audit",
+    ctaLabel: "See how ArkFlow works",
     href: "/how-it-works",
   },
 } as const;
@@ -202,8 +230,8 @@ export const attractEligibility = {
 export const attractCta = {
   title: "Send us your website.",
   body: "We will look at the design, the customer journey, the conversion experience and the technical foundations, and tell you whether it needs optimising, redesigning or rebuilding.",
-  primary: "Get a Website Review",
-  secondary: "Book a discovery call",
+  primary: "Book a Discovery Call",
+  secondary: "Get a Website Review",
   /** Pre-filled so the first message carries its own context. */
   whatsappPrefill:
     "Hi ArkFlow — I'd like a Website Review. My website is: ",

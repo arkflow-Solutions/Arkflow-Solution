@@ -153,10 +153,23 @@ export const article: Article = {
       a: "It covers the calls a receptionist cannot — the ones during other calls, and outside opening hours. Businesses that use one well usually redeploy attention rather than remove a role.",
     },
   ],
+  /*
+   * CORRECTED 7 September 2026. This previously read "ArkFlow includes a
+   * voice agent at Scale" and linked the Revenue Leak Audit anchor. Two
+   * problems: voice is IN DEVELOPMENT rather than a shipped capability,
+   * so the claim was above its classification, and "Scale" is a
+   * superseded package name. The audit is also no longer the CTA.
+   *
+   * The article keeps its educational value — it is a genuinely useful
+   * explainer for someone deciding whether they need voice at all, and
+   * it is more credible, not less, for saying plainly that ArkFlow does
+   * not currently sell one. The onward path now goes to what ArkFlow
+   * does ship.
+   */
   solution: {
-    label: "See where a voice agent fits",
-    href: "/#revenue-leak-audit",
-    note: "ArkFlow includes a voice agent at Scale, as one entry point into the wider system — not as a standalone product.",
+    label: "See what ArkFlow does connect today",
+    href: "/solutions",
+    note: "ArkFlow does not currently sell a voice agent. What it does build is the system a call would land in — enquiries captured across channels, answered, qualified, booked and followed up.",
   },
   related: ["why-speed-to-lead-matters", "aesthetic-clinic-lead-follow-up"],
 };

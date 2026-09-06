@@ -34,14 +34,17 @@
  * and the rest. Those are gaps in coverage, not dead entries, and
  * removing them would hide work still owed.
  *
- * `lead_response_audit_click` is also kept. The audit was renamed to the
- * Revenue Leak Audit and `revenue_leak_audit_click` is the current
- * event, but the old name is still the key under which historical data
- * sits in GA4. Renaming it here would silently split the series.
+ * RETIRED 6 September 2026 with the CTA migration:
+ * `revenue_leak_audit_click` and `lead_response_audit_click`. Both fired
+ * from the audit-funnel button, which no longer exists — the canonical
+ * conversion is now the booking modal and fires `discovery_call_click`.
+ * Historical GA4 data under the old keys is unaffected by removing them
+ * here; nothing can send to them any more, so listing them would claim
+ * instrumentation that does not exist.
  */
 export type ArkFlowEvent =
   // Hero
-  | 'cta_hero_primary_click' // Get your Revenue Leak Audit
+  | 'cta_hero_primary_click' // Book a Discovery Call
   | 'cta_hero_secondary_click' // See how ArkFlow works
   // Audit — the primary conversion
   | 'audit_form_view'
@@ -67,7 +70,6 @@ export type ArkFlowEvent =
   | 'industry_cta_click'
   | 'case_study_view'
   // Conversion — canonical names
-  | 'lead_response_audit_click' // legacy key, retained for series continuity
   | 'discovery_call_click'
   | 'discovery_call_booked'
   | 'cta_secondary_click'
@@ -79,8 +81,7 @@ export type ArkFlowEvent =
   // Website line (v1.4 Amendment 8)
   | 'website_review_click'
   | 'attract_page_view'
-  // Homepage v3 — the Revenue Leak Audit is the canonical conversion
-  | 'revenue_leak_audit_click'
+  // Homepage v3 — "Book a Discovery Call" is the canonical conversion
   | 'engine_stage_view'
   | 'leak_stage_view'
   | 'ai_demo_play'

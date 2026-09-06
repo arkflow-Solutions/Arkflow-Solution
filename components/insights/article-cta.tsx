@@ -49,7 +49,7 @@ export function ArticleCard({
  * The CTA is chosen by funnel level rather than being identical
  * everywhere (brief §21). A reader on a "what is X" article is not ready
  * for an audit; a reader on an intent article usually is. The primary
- * conversion stays the Revenue Leak Audit in every case — only the
+ * conversion stays "Book a Discovery Call" in every case — only the
  * framing and the secondary action change.
  */
 export function ArticleCta({ article }: { article: Article }) {
@@ -81,11 +81,11 @@ export function ArticleCta({ article }: { article: Article }) {
       <div className="mt-8 flex flex-wrap gap-4">
         <Button
           onClick={() => {
-            track("lead_response_audit_click", { location: "article_cta" });
+            track("discovery_call_click", { location: "article_cta" });
             openBooking();
           }}
         >
-          Get Your Revenue Leak Audit
+          Book a Discovery Call
         </Button>
         <Button
           variant="secondary"

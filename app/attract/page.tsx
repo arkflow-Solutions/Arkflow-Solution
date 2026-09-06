@@ -46,16 +46,18 @@ export default function AttractPage() {
 
       <Container>
         <div className="flex flex-wrap gap-4 pb-4">
+          {/* Canonical CTA leads. The Website Review is the secondary,
+              high-intent action for someone who already has a site. */}
+          <BookCallButton size="large" withArrow>
+            {attractHero.primaryCta}
+          </BookCallButton>
           <WhatsAppCta
-            label={attractHero.primaryCta}
+            label={attractHero.secondaryCta}
             prefill={attractCta.whatsappPrefill}
             location="attract_hero"
+            variant="secondary"
             size="large"
-            withArrow
           />
-          <BookCallButton variant="secondary" size="large">
-            {attractHero.secondaryCta}
-          </BookCallButton>
         </div>
       </Container>
 
@@ -109,7 +111,10 @@ export default function AttractPage() {
               <Reveal key={o.id}>
                 <div
                   className={
-                    o.id === "scale"
+                    /* The connected option carries the emphasis — it is
+                       the one that explains what ArkFlow is for. Renamed
+                       from "scale" when the tier names were retired. */
+                    o.id === "connected"
                       ? "h-full rounded-card border border-blue/40 bg-blue/[0.05] p-8"
                       : "h-full rounded-card border border-[color:var(--border-subtle)] bg-surface/50 p-8"
                   }
@@ -395,16 +400,16 @@ export default function AttractPage() {
               {attractCta.body}
             </p>
             <div className="mt-9 flex flex-wrap gap-4">
+              <BookCallButton size="large" withArrow>
+                {attractCta.primary}
+              </BookCallButton>
               <WhatsAppCta
-                label={attractCta.primary}
+                label={attractCta.secondary}
                 prefill={attractCta.whatsappPrefill}
                 location="attract_final_cta"
+                variant="secondary"
                 size="large"
-                withArrow
               />
-              <BookCallButton variant="secondary" size="large">
-                {attractCta.secondary}
-              </BookCallButton>
             </div>
           </div>
         </Container>

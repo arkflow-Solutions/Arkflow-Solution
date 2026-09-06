@@ -24,18 +24,25 @@ export const GHL_CALENDAR_URL =
 export const BOOKING_URL = GHL_CALENDAR_URL;
 
 /**
- * CANONICAL PUBLIC CTA — the Revenue Leak Audit funnel.
+ * AUDIT_URL — REMOVED 6 September 2026 (founder decision).
  *
- * Founder ruling, 6 September 2026: the Revenue Leak Audit is the
- * primary conversion mechanism for the public website, and it lives on
- * its own funnel. The main site educates and drives here; it never
- * recreates the funnel inline.
+ * This constant held https://go.arkflowsolutions.com/audit and was the
+ * canonical public CTA. It is deleted rather than left unused, because
+ * an exported URL constant is an invitation to link to it again.
  *
- * This is a separate property from SURVEY_URL below. Do not merge them
- * without a ruling on whether the old Lead Response Audit survey and
- * this funnel are the same asset.
+ * WHY IT WENT: the audit funnel is a separate property. Making it the
+ * primary CTA sent every visitor off arkflowsolutions.com at the moment
+ * of highest intent, into a funnel with its own notice and its own data
+ * collection. The canonical conversion is now "Book a Discovery Call",
+ * which keeps the visitor here and opens the booking modal.
+ *
+ * The audit itself is unchanged and still exists as a separate system.
+ * The site still describes it as something that happens ON a discovery
+ * call — it is simply no longer a button that leaves the website.
+ *
+ * DO NOT REINTRODUCE IT AS A CTA. scripts/verify.mjs check 12 fails the
+ * build if go.arkflowsolutions.com/audit appears in public source again.
  */
-export const AUDIT_URL = "https://go.arkflowsolutions.com/audit";
 
 /**
  * SUPERSEDED AS A PUBLIC CTA — the Lead Response Audit intake survey.
@@ -49,11 +56,12 @@ export const AUDIT_URL = "https://go.arkflowsolutions.com/audit";
  * had no consumer since.
  *
  * It is retained, unused, only as the record of a live GHL asset that
- * may still be receiving submissions from elsewhere. AUDIT_URL is the
- * canonical public CTA and this must never be presented as one.
+ * may still be receiving submissions from elsewhere. It must never be
+ * presented as a public CTA — the canonical conversion is the booking
+ * modal (Book a Discovery Call).
  *
- * FOUNDER DECISION OPEN: retire this survey, rename it, or keep it as
- * the intake step behind AUDIT_URL. Delete this constant once decided.
+ * FOUNDER DECISION OPEN: retire this survey, rename it, or keep it as an
+ * intake step. Delete this constant once decided.
  */
 export const SURVEY_URL =
   "https://link.arkflowsolutions.com/widget/survey/NXyNayYOuw3hhVcb9cMY";

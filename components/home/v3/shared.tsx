@@ -4,19 +4,38 @@ import { Button } from "@/components/ui/button";
 import { Eyebrow } from "@/components/ui/eyebrow";
 import { Reveal } from "@/components/motion/reveal";
 import { track } from "@/lib/analytics";
-import { AUDIT_URL } from "@/lib/site";
+import { useBooking } from "@/lib/use-booking";
+import { contact } from "@/lib/content";
 import { cn } from "@/lib/utils";
 
 /**
- * AuditButton — the one primary action on the public website.
+ * DiscoveryCallButton — the one primary action on the public website.
  *
- * The Revenue Leak Audit is the canonical CTA (founder ruling,
- * 6 Sep 2026) and it lives on a separate funnel, so this is a real
- * outbound link rather than a modal. Every instance is instrumented
- * with the section it fired from.
+ * REPLACES AuditButton, 6 September 2026 (founder decision). The Revenue
+ * Leak Audit funnel is no longer the canonical website conversion. It was
+ * an outbound link to go.arkflowsolutions.com/audit, which sent every
+ * visitor off the site at the moment of highest intent.
+ *
+ * The canonical conversion is now "Book a Discovery Call", which keeps the
+ * visitor on arkflowsolutions.com and opens the existing booking modal:
+ *
+ *   useBooking(contact.call.href)
+ *     -> dispatches "arkflow:open-booking"
+ *     -> <BookingModal /> (mounted once in app/layout.tsx)
+ *     -> GHL calendar widget, ID dVmkLzktSpMYKEIXNBpz
+ *
+ * The calendar configuration is unchanged and comes from lib/site.ts via
+ * lib/content.ts. Do not introduce a second calendar.
+ *
+ * The audit itself still exists as a separate system, and the site still
+ * describes it as something that happens ON a discovery call. What it is
+ * no longer is a button that leaves the website.
+ *
+ * Every instance is instrumented with the section it fired from.
+ * scripts/verify.mjs check 12 enforces all of this.
  */
-export function AuditButton({
-  children = "Get your Revenue Leak Audit",
+export function DiscoveryCallButton({
+  children = "Book a Discovery Call",
   location,
   size = "large",
   variant = "primary",
@@ -29,15 +48,17 @@ export function AuditButton({
   variant?: "primary" | "secondary";
   className?: string;
 }) {
+  const openBooking = useBooking(contact.call.href);
   return (
     <Button
-      href={AUDIT_URL}
-      target="_blank"
       size={size}
       variant={variant}
       className={className}
       withArrow
-      onClick={() => track("revenue_leak_audit_click", { location })}
+      onClick={() => {
+        track("discovery_call_click", { location });
+        openBooking();
+      }}
     >
       {children}
     </Button>

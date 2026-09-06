@@ -33,7 +33,7 @@ export const hero = {
   lead: "Leads go unanswered. Follow-ups get forgotten. Customers buy once and disappear. Opportunities fall through the gaps between the systems you already pay for.",
   leadTwo:
     "ArkFlow builds and operates the AI-powered revenue systems that close those gaps.",
-  primaryCta: "Get your Revenue Leak Audit",
+  primaryCta: "Book a Discovery Call",
   secondaryCta: "See how ArkFlow works",
   /**
    * Scroll beats for the pinned 3D story. These are the argument of the
@@ -799,13 +799,13 @@ export const auditCta = {
     "Operational workload",
     "Customer experience",
   ],
-  cta: "Get your Revenue Leak Audit",
+  cta: "Book a Discovery Call",
 } as const;
 
 export const finalCta = {
   title:
     "Your business already has the customers. The question is how many are falling through the gaps.",
   lead: "Build the system that keeps opportunities moving.",
-  primary: "Get your Revenue Leak Audit",
+  primary: "Book a Discovery Call",
   secondary: "Explore how ArkFlow works",
 } as const;

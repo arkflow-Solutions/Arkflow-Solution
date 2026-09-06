@@ -30,7 +30,7 @@ import { InsightsStrip } from "@/components/home/insights-strip";
  *   14  Industries         One architecture, many business models
  *   15  Product UI         Real infrastructure (screenshot slot)
  *   16  Why ArkFlow        Software is easy, operating it is not
- *   17  Audit              The Revenue Leak Audit, the one conversion
+ *   17  Audit              What we look at on the call
  *   18  Final CTA          The closing question
  *
  * GOVERNANCE — do not change without founder sign-off:
@@ -40,8 +40,10 @@ import { InsightsStrip } from "@/components/home/insights-strip";
  *  - No pricing, package names, guarantees or contract terms appear on
  *    any public surface. The Packages section that used to sit between
  *    the unified inbox and How we work is removed for that reason.
- *  - The Revenue Leak Audit is the only primary CTA. It links out to
- *    go.arkflowsolutions.com/audit and is never recreated inline.
+ *  - "Book a Discovery Call" is the only primary CTA (founder decision,
+ *    6 Sep 2026). It opens the booking modal and keeps the visitor on
+ *    this site. The Revenue Leak Audit funnel must NOT be linked as a
+ *    CTA — scripts/verify.mjs check 12 fails the build if it reappears.
  *  - Positioning stays industry-agnostic. Aesthetics is one vertical in
  *    the Industries selector and never leads.
  *  - No invented clients, results, statistics or testimonials. Anything

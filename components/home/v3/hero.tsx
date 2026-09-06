@@ -5,7 +5,7 @@ import dynamic from "next/dynamic";
 import { Container } from "@/components/ui/container";
 import { Eyebrow } from "@/components/ui/eyebrow";
 import { Button } from "@/components/ui/button";
-import { AuditButton } from "@/components/home/v3/shared";
+import { DiscoveryCallButton } from "@/components/home/v3/shared";
 import { LeakFlow } from "@/components/motion/leak-flow";
 import { useSceneGate, useScrollProgress } from "@/lib/use-scene-gate";
 import { track } from "@/lib/analytics";
@@ -32,7 +32,7 @@ const HeroScene = dynamic(() => import("@/components/three/hero-scene"), {
  * WHAT IS NEW. The headline is the leak. The 2D fallback is now
  * LeakFlow rather than ConvergenceField, so devices without WebGL get
  * the signature visual rather than an ambient one. The primary action
- * is the Revenue Leak Audit.
+ * is "Book a Discovery Call", which opens the booking modal.
  */
 export function Hero() {
   const ref = useRef<HTMLElement>(null);
@@ -97,9 +97,9 @@ export function Hero() {
             </p>
 
             <div className="pointer-events-auto mt-12 flex flex-wrap items-center gap-4">
-              <AuditButton location="homepage_hero">
+              <DiscoveryCallButton location="homepage_hero">
                 {hero.primaryCta}
-              </AuditButton>
+              </DiscoveryCallButton>
               <Button
                 href="#revenue-engine"
                 variant="secondary"

@@ -330,18 +330,67 @@ for (const f of publicSrc) {
 }
 if (!superseded) ok("no superseded commercial or product terms on any public surface");
 
-/* 12 — the Revenue Leak Audit is wired as the canonical CTA */
+/* 12 — "Book a Discovery Call" is the canonical conversion path
+ *
+ * REWRITTEN 6 September 2026 (founder decision). This check previously
+ * REQUIRED the Revenue Leak Audit funnel URL in lib/site.ts and an
+ * AuditSection on the homepage. That is now inverted: the audit funnel
+ * must NOT be the CTA, and the booking modal must be.
+ *
+ * The check was rewritten rather than deleted. Retiring it would have
+ * left the conversion path ungoverned at exactly the moment it changed,
+ * which is when a regression is most likely. It is now stricter than
+ * before — five assertions instead of two, including a negative one.
+ */
 console.log("\n[12] canonical conversion path");
 let ctaIssues = 0;
-if (!read("lib/site.ts").includes("go.arkflowsolutions.com/audit")) {
-  bad("lib/site.ts does not define the Revenue Leak Audit funnel URL");
+
+// 12a — the audit funnel must not be linked from any public surface.
+//       Comments are stripped: lib/site.ts documents the removal and
+//       legitimately names the URL it is forbidding.
+for (const f of publicSrc) {
+  if (/go\.arkflowsolutions\.com\/audit/.test(body(f))) {
+    bad(`${f} links the Revenue Leak Audit funnel — the canonical CTA is the booking modal`);
+    ctaIssues++;
+  }
+}
+
+// 12b — the booking calendar is defined, and is the verified one.
+const siteSrc = read("lib/site.ts");
+if (!/dVmkLzktSpMYKEIXNBpz/.test(siteSrc)) {
+  bad("lib/site.ts does not define the verified booking calendar (dVmkLzktSpMYKEIXNBpz)");
   ctaIssues++;
 }
-if (!read("app/page.tsx").includes("AuditSection")) {
-  bad("the homepage no longer renders the Revenue Leak Audit section");
+
+// 12c — the modal plumbing is intact end to end. Any one of these
+//       missing means a CTA that opens nothing.
+const bookingChain = [
+  ["lib/use-booking.ts", /arkflow:open-booking/, "useBooking no longer dispatches arkflow:open-booking"],
+  ["components/booking/booking-modal.tsx", /arkflow:open-booking/, "BookingModal no longer listens for arkflow:open-booking"],
+  ["app/layout.tsx", /<BookingModal\s*\/>/, "BookingModal is not mounted in the root layout"],
+];
+for (const [file, re, message] of bookingChain) {
+  if (!re.test(read(file))) {
+    bad(message);
+    ctaIssues++;
+  }
+}
+
+// 12d — the homepage renders the primary CTA.
+if (!/DiscoveryCallButton/.test(read("components/home/v3/close.tsx"))) {
+  bad("the homepage closing section no longer renders the discovery-call CTA");
   ctaIssues++;
 }
-if (!ctaIssues) ok("Revenue Leak Audit is the canonical CTA and is rendered");
+
+// 12e — the CTA component opens the modal rather than navigating away.
+const ctaSrc = read("components/home/v3/shared.tsx");
+if (!/useBooking/.test(ctaSrc) || /href=\{AUDIT_URL\}/.test(ctaSrc)) {
+  bad("DiscoveryCallButton does not open the booking modal");
+  ctaIssues++;
+}
+
+if (!ctaIssues)
+  ok("Book a Discovery Call is the canonical CTA, modal wired, audit funnel unlinked");
 
 /* 13 — capabilities above their classification must not be claimed */
 console.log("\n[13] capability classification");

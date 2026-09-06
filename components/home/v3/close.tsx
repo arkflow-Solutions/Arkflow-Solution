@@ -5,7 +5,7 @@ import { Section } from "@/components/ui/section";
 import { Reveal } from "@/components/motion/reveal";
 import { Eyebrow } from "@/components/ui/eyebrow";
 import { Button } from "@/components/ui/button";
-import { AuditButton, SectionHead } from "@/components/home/v3/shared";
+import { DiscoveryCallButton, SectionHead } from "@/components/home/v3/shared";
 import { track } from "@/lib/analytics";
 import { whyArkflow, auditCta, finalCta } from "@/lib/revenue-content";
 
@@ -68,9 +68,9 @@ export function AuditSection() {
                 {auditCta.note}
               </p>
               <div className="mt-10">
-                <AuditButton location="homepage_audit_section">
+                <DiscoveryCallButton location="homepage_audit_section">
                   {auditCta.cta}
-                </AuditButton>
+                </DiscoveryCallButton>
               </div>
             </div>
 
@@ -103,9 +103,9 @@ export function FinalCta() {
             {finalCta.lead}
           </p>
           <div className="mt-12 flex flex-wrap items-center justify-center gap-4">
-            <AuditButton location="homepage_final_cta">
+            <DiscoveryCallButton location="homepage_final_cta">
               {finalCta.primary}
-            </AuditButton>
+            </DiscoveryCallButton>
             <Button
               href="#revenue-engine"
               variant="secondary"

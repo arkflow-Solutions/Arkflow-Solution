@@ -11,8 +11,12 @@ import { buildMetadata } from "@/lib/seo";
 
 export const metadata = buildMetadata({
   title: "How ArkFlow works",
+  /* Corrected 7 Sep 2026: the step is "Optimisation", not "30-day
+     optimisation" — that name was retired with the guarantee it was
+     measured against. The audit is no longer the entry point either;
+     a discovery call is. */
   description:
-    "Discovery, setup, testing, go-live and 30-day optimisation. How an ArkFlow system is built, tested and operated — starting with a free Revenue Leak Audit.",
+    "Discovery, setup, testing, go-live and optimisation. How an ArkFlow system is built, tested and operated — starting with a discovery call.",
   path: "/how-it-works",
 });
 
@@ -88,11 +92,21 @@ export default function HowItWorksPage() {
           </ol>
 
           <Reveal className="mt-10">
+            {/*
+              CORRECTED 7 September 2026. This footnote cited a 72-hour
+              core-system figure and a 10-business-day website delivery
+              "on Scale". All three were problems: "Scale" is a
+              superseded package name, both figures are published
+              delivery commitments that were removed everywhere else, and
+              the 72-hour figure referred to a step that no longer
+              mentions it — the footnote annotated something that had
+              stopped existing.
+            */}
             <p className="max-w-prose text-small text-[color:var(--text-tertiary)]">
-              Timings are service commitments measured from a completed intake,
-              not averages from past work. The 72-hour figure covers the core
-              system; on Scale, the professional website is delivered within 10
-              business days on a parallel track.
+              Timelines are agreed per engagement and committed to in writing
+              in the quotation, rather than quoted here as averages from past
+              work. Where a website is part of the engagement, it runs on its
+              own track alongside the system build.
             </p>
           </Reveal>
         </Container>
