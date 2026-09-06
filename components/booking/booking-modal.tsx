@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Script from "next/script";
 import { X } from "lucide-react";
 import { contact } from "@/lib/content";
 
@@ -11,8 +12,16 @@ import { contact } from "@/lib/content";
  * Every "Book Discovery Call" CTA calls useBooking() (see
  * lib/use-booking.ts), which dispatches "arkflow:open-booking". This
  * modal listens for that event and opens with the booking widget URL
- * from lib/content.ts (contact.call.href). The GHL resize script
- * (link.msgsndr.com/js/form_embed.js) is loaded once in the layout.
+ * from lib/content.ts (contact.call.href).
+ *
+ * THIRD-PARTY LOADING, changed 6 September 2026. The GoHighLevel resize
+ * script (form_embed.js) previously loaded in app/layout.tsx on every
+ * page. It is only needed to size this iframe, and this component
+ * returns null until a visitor actually opens the modal — so both the
+ * script and the iframe now load at that moment and not before.
+ *
+ * A visitor who never books never loads GoHighLevel at all. next/script
+ * de-duplicates by src, so opening the modal repeatedly loads it once.
  */
 export function BookingModal() {
   const [open, setOpen] = useState(false);
@@ -43,6 +52,13 @@ export function BookingModal() {
 
   return (
     <div className="fixed inset-0 z-[200] flex items-center justify-center p-4">
+      {/* Loaded only now that the modal is open. Served from the
+          white-label domain so the booking widget and its resize script
+          share an origin. */}
+      <Script
+        src="https://link.arkflowsolutions.com/js/form_embed.js"
+        strategy="lazyOnload"
+      />
       <div
         className="absolute inset-0 bg-black/70 backdrop-blur-sm"
         onClick={() => setOpen(false)}

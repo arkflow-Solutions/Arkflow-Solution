@@ -1,6 +1,6 @@
 # ArkFlow — www.arkflowsolutions.com
 
-The digital headquarters of Arkflow Solutions Pte Ltd: a Revenue
+The digital headquarters of Arkflow Solutions Pte. Ltd.: a Revenue
 Operating Company. Public positioning is industry-agnostic — aesthetics
 is one vertical among several and never leads.
 

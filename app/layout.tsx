@@ -8,7 +8,6 @@ import { SmoothScroll } from "@/components/motion/smooth-scroll";
 import { IntroVeil } from "@/components/motion/intro-veil";
 import { OrgJsonLd } from "@/components/seo/json-ld";
 import { SITE_URL } from "@/lib/site";
-import Script from "next/script";
 import { GoogleAnalytics } from "@/components/analytics/google-analytics";
 
 /**
@@ -100,19 +99,21 @@ export default function RootLayout({
         <BookingModal />
         <GoogleAnalytics />
         {/*
-          GoHighLevel embed script. Drives auto-resize for both the
-          booking widget (BookingModal) and the Revenue Leak Audit
-          survey on /contact — without it the iframes render at a
-          fixed height and clip their own content.
+          MOVED 6 September 2026 — the GoHighLevel embed script
+          (form_embed.js) used to load here, on every page.
 
-          lazyOnload keeps it off the critical path; neither embed is
-          above the fold. Served from the white-label domain so no
-          third-party host appears in the network tab.
+          It drives auto-resize for the booking iframe. It once also
+          served the Revenue Leak Audit survey embed, but that component
+          was removed, leaving the booking widget as its only consumer —
+          and the booking widget mounts only when a visitor opens it.
+          Loading a third-party script on every page, including /privacy
+          and /terms, for a widget most visitors never open is a cost
+          with no matching benefit.
+
+          It now loads inside components/booking/booking-modal.tsx, at
+          the moment the modal opens. next/script de-duplicates by src,
+          so repeated opens load it once.
         */}
-        <Script
-          src="https://link.arkflowsolutions.com/js/form_embed.js"
-          strategy="lazyOnload"
-        />
       </body>
     </html>
   );

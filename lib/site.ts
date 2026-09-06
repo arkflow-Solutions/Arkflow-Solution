@@ -127,10 +127,10 @@ export const CONTACT_PHONE = "+65 8765 5809";
  * BRAND vs LEGAL ENTITY. These are two different strings and the
  * distinction is deliberate:
  *
- *   Brand        "ArkFlow"                     — capital F, used everywhere
- *                                                 in marketing and product copy
- *   Legal entity "Arkflow Solutions Pte Ltd"   — lowercase f, the ACRA
- *                                                 registered name
+ *   Brand        "ArkFlow"                      — capital F, used everywhere
+ *                                                  in marketing and product copy
+ *   Legal entity "Arkflow Solutions Pte. Ltd."   — lowercase f, with points,
+ *                                                  the ACRA registered name
  *
  * The registered name is NOT a stylistic variant of the brand. Do not
  * "correct" the lowercase f in `legalName` — it is the name on the
@@ -139,16 +139,50 @@ export const CONTACT_PHONE = "+65 8765 5809";
  *
  * CORRECTED 28 Aug 2026: legalName previously read "ArkFlow Solutions
  * Pte Ltd", applying brand capitalisation to the registered entity.
+ *
+ * VERIFIED AGAINST THE ACRA BUSINESS PROFILE, 6 September 2026. The
+ * registered name carries points: "Pte. Ltd.", not "Pte Ltd". The
+ * lowercase f was already correct. The registered address is
+ * "#6-28", not "#06-28".
+ *
+ * NOTE FOR WHOEVER RECONCILES THE CONTRACT STACK: the issued documents
+ * (ARK-WTOS, ARK-PRIV, ARK-DPCA, 31 Aug 2026) render the entity as
+ * "ArkFlow Solutions Pte. Ltd." with a capital F, and the address as
+ * "#06-28". Those documents are out of scope here and have not been
+ * touched. The website now follows the ACRA profile; the contracts do
+ * not yet. That divergence is real and is flagged, not resolved.
  */
 export const COMPANY = {
-  /** ACRA registered name. Exact capitalisation — do not alter. */
-  legalName: "Arkflow Solutions Pte Ltd",
+  /**
+   * ACRA registered name, verified against the Business Profile
+   * 6 Sep 2026. Exact capitalisation and punctuation — do not alter.
+   */
+  legalName: "Arkflow Solutions Pte. Ltd.",
   /** Unique Entity Number, ACRA. */
   uen: "202638999Z",
   /** Public brand. Capital F. */
   shortName: "ArkFlow",
+  /**
+   * Registered address, per the ACRA Business Profile verified
+   * 6 September 2026. The unit is "#6-28" — the issued contract stack
+   * renders it "#06-28", which is the divergence noted above.
+   */
+  address: "60 Paya Lebar Road, #6-28, Paya Lebar Square, Singapore 409051",
   base: "Singapore · SGT business hours",
 } as const;
 
-/** Formatted identification line: "Arkflow Solutions Pte Ltd · UEN 202638999Z" */
+/**
+ * Document references for the issued legal documents. The public pages
+ * are summaries of these; the issued documents govern.
+ *
+ * ISSUE dates, not legal-review dates. Do not relabel them as "reviewed"
+ * — no representation is made here about who reviewed what.
+ */
+export const LEGAL_DOCS = {
+  websiteTerms: { ref: "ARK-WTOS", issued: "31 August 2026" },
+  privacy: { ref: "ARK-PRIV", issued: "31 August 2026" },
+  dataProtection: { ref: "ARK-DPCA", issued: "31 August 2026" },
+} as const;
+
+/** Formatted identification line: "Arkflow Solutions Pte. Ltd. · UEN 202638999Z" */
 export const COMPANY_IDENTIFIER = `${COMPANY.legalName} · UEN ${COMPANY.uen}`;

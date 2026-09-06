@@ -11,8 +11,16 @@ import { COMPANY } from "@/lib/site";
 
 export const metadata = buildMetadata({
   title: "About ArkFlow",
-  description:
-    "Arkflow Solutions Pte Ltd is a Singapore Revenue Operations company. Why we exist, how we think, and why the risk sits with us.",
+  /*
+   * CORRECTED 6 September 2026, two stale strings:
+   *
+   *  - "Revenue Operations company" → "Revenue Operating Company", the
+   *    canonical positioning.
+   *  - "why the risk sits with us" → "how we stay honest". The former
+   *    described a guarantee-based honesty item that no longer exists;
+   *    the latter is the actual heading rendered on the page.
+   */
+  description: `${COMPANY.legalName} is a Singapore Revenue Operating Company. Why we exist, how we think, and how we stay honest.`,
   path: "/about",
 });
 

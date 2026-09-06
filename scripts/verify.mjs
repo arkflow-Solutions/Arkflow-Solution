@@ -260,8 +260,25 @@ console.log("\n[10] company identity");
 const siteFile = read("lib/site.ts");
 let idIssues = 0;
 
-if (!/legalName:\s*"Arkflow Solutions Pte Ltd"/.test(siteFile)) {
-  bad("lib/site.ts legalName is not the exact ACRA name 'Arkflow Solutions Pte Ltd'");
+/**
+ * UPDATED 6 September 2026, against the ACRA Business Profile.
+ *
+ * This assertion previously required "Arkflow Solutions Pte Ltd". The
+ * Business Profile was checked and the registered name carries points —
+ * "Pte. Ltd." The lowercase f was already right. The check itself is
+ * unchanged in purpose and strictness: it still demands one exact
+ * string, it is simply now the verified one.
+ */
+if (!/legalName:\s*"Arkflow Solutions Pte\. Ltd\."/.test(siteFile)) {
+  bad("lib/site.ts legalName is not the exact ACRA name 'Arkflow Solutions Pte. Ltd.'");
+  idIssues++;
+}
+/**
+ * The registered address per the same Business Profile. Kept here so a
+ * future edit to the address has to be deliberate.
+ */
+if (!/#6-28/.test(siteFile)) {
+  bad("lib/site.ts does not carry the registered address unit '#6-28'");
   idIssues++;
 }
 if (!/uen:\s*"202638999Z"/.test(siteFile)) {

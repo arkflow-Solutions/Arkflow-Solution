@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import Link from "next/link";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import {
   ArrowRight,
@@ -226,6 +227,12 @@ textarea.cx-input{height:auto;min-height:96px;padding:14px 16px;resize:vertical;
 .cx-btn-g{background:transparent;border:1px solid var(--border-strong);color:var(--text-secondary);width:50px;padding:0}
 .cx-btn-g:hover{color:#fff;border-color:rgba(255,255,255,.3)}
 .cx-lbl{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--text-tertiary);margin:16px 0 0}
+/* Point-of-collection privacy notice. --text-secondary rather than
+   tertiary: this has to be readable, not decorative small print. */
+.cx-privacy{margin-top:18px;padding-top:16px;border-top:1px solid var(--border-subtle);font-size:13px;line-height:1.6;color:var(--text-secondary)}
+.cx-privacy a{color:var(--blue-soft);text-decoration:underline;text-underline-offset:3px}
+.cx-privacy a:hover{color:#fff}
+.cx-privacy a:focus-visible{outline:2px solid var(--blue-soft);outline-offset:3px;border-radius:2px}
 /* success */
 .cx-done{text-align:center;margin:auto;padding:20px 0}
 .cx-ring{width:84px;height:84px;margin:0 auto;border-radius:50%;border:1px solid rgba(59,130,246,.4);display:flex;align-items:center;justify-content:center;background:rgba(26,60,255,.12);box-shadow:0 0 40px rgba(26,60,255,.4)}
@@ -429,7 +436,9 @@ export function ContactExperience() {
                   <span>
                     <span className="lbl">Response</span>
                     <br />
-                    <span className="val">Within 4 hours</span>
+                    {/* No time commitment. The website does not publish
+                        response-time promises. */}
+                    <span className="val">On your preferred channel</span>
                   </span>
                 </div>
               </div>
@@ -638,7 +647,10 @@ export function ContactExperience() {
                             onChange={(e) => set({ message: e.target.value })}
                           />
                           {error && (
-                            <p style={{ color: "#f87171", fontSize: 13, marginTop: 12 }}>
+                            <p
+                              role="alert"
+                              style={{ color: "#f87171", fontSize: 13, marginTop: 12 }}
+                            >
                               {error}
                             </p>
                           )}
@@ -680,6 +692,30 @@ export function ContactExperience() {
                       )}
                     </motion.div>
                   </AnimatePresence>
+
+                  {/*
+                    Point-of-collection transparency, shown on EVERY step
+                    of the form rather than only the last — the first
+                    field is collected at step 0, so a notice that only
+                    appears at step 5 is not at the point of collection.
+
+                    Deliberately not a checkbox: nothing is being agreed
+                    to beyond ArkFlow replying to the enquiry, and a
+                    checkbox would imply a consent that is not being
+                    sought. No marketing consent is bundled in. No
+                    response time is promised.
+                  */}
+                  {step < STEPS && (
+                    <p className="cx-privacy">
+                      We use these details to reply to your enquiry and to talk
+                      to you about it. We will not add you to marketing without
+                      asking you separately. See our{" "}
+                      <Link href="/privacy">Privacy Policy</Link> for how long we
+                      keep enquiries and how to ask us to correct or delete them.
+                      Please do not include health information or anyone
+                      else&apos;s personal details.
+                    </p>
+                  )}
 
                   {step < STEPS && (
                     <div className="cx-nav">

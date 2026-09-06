@@ -104,6 +104,9 @@ export function Footer() {
             <Link href="/terms" className="transition-colors hover:text-white">
               Terms
             </Link>
+            <Link href="/cookies" className="transition-colors hover:text-white">
+              Cookies
+            </Link>
           </nav>
         </div>
       </Container>
