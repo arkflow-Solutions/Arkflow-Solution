@@ -1790,3 +1790,213 @@
   .af-audit__areas { grid-template-columns: 1fr; }
   .af-toggle button { padding-inline: 0.9rem; font-size: 0.8125rem; }
 }
+
+
+/* ============================================================
+   THROUGHLINE — Attract → Capture handoff (Phase 3C)
+
+   Recomposed after review. The first version was a hairline in a
+   large empty card: the line occupied a fraction of the panel and
+   the argument of the section — Attract → Capture — was under a
+   tenth of its width.
+
+   The composition now leans into the near field. Perspective in the
+   renderer does the spatial work; this file supplies the depth
+   behind it and the type on top. Still one accent, no filters, no
+   glass, no second colour.
+   ============================================================ */
+
+@layer components {
+  .af-hand {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    border-radius: 1.25rem;
+    /* Deeper than the page, so the section reads as a space you look
+       into rather than a card sitting on top of it. */
+    background:
+      radial-gradient(120% 140% at 8% 50%, rgba(15, 23, 42, 0.9), transparent 60%),
+      linear-gradient(180deg, #070b14, #0a0e1a 60%, #080c16);
+    border: 1px solid var(--border-subtle);
+  }
+
+  /* Atmosphere plane. Two washes: a cool floor, and a warmer pool of
+     ArkFlow blue where the opportunity enters the system. */
+  .af-hand__field {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+      radial-gradient(70% 120% at 26% 55%, rgba(26, 60, 255, 0.13), transparent 62%),
+      radial-gradient(90% 60% at 70% 100%, rgba(59, 130, 246, 0.06), transparent 70%);
+  }
+
+  /* Structure plane. The SVG carries its own left inset, so the panel
+     adds only vertical rhythm. */
+  .af-hand__svg {
+    position: relative;
+    display: block;
+    z-index: 1;
+  }
+
+  /* Surface plane. */
+  .af-hand__labels {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  .af-hand__label {
+    position: absolute;
+    top: 50%;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    /* Left-aligned to the node rather than centred on it: a centred
+       label at t=0 hangs off the composition, which is what clipped
+       the first version. */
+    transform: translate(-2px, 30px);
+    white-space: nowrap;
+  }
+
+  .af-hand__name {
+    font-family: var(--font-mono), ui-monospace, monospace;
+    font-size: 0.6875rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    transition: color 400ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .af-hand__role {
+    font-size: 0.75rem;
+    line-height: 1.35;
+    color: var(--text-tertiary);
+  }
+
+  /* Capture is the one lit element. Blue scarcity holds. */
+  .af-hand__label--focus .af-hand__name {
+    color: var(--text-secondary);
+  }
+  .af-hand__label--focus.is-lit .af-hand__name {
+    color: #fff;
+    text-shadow: 0 0 22px rgba(26, 60, 255, 0.55);
+  }
+
+  /* The far end. Names the recession rather than leaving it ambiguous. */
+  .af-hand__horizon {
+    position: absolute;
+    right: 26px;
+    top: 50%;
+    transform: translateY(30px);
+    text-align: right;
+    opacity: 0.5;
+  }
+
+  /* ---------------------------------------------- reading layer */
+
+  .af-hand__read {
+    margin-top: 40px;
+    display: grid;
+    gap: 40px;
+    grid-template-columns: minmax(0, 21rem) 1fr;
+  }
+
+  .af-hand__pair {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+  }
+  .af-hand__pair dt {
+    font-family: var(--font-mono), ui-monospace, monospace;
+    font-size: 0.6875rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--blue-soft);
+  }
+  /* Same emphasis the visual gives Capture, so the two read as one
+     system rather than a graphic beside a list. */
+  .af-hand__pair dt.is-focus {
+    color: #fff;
+  }
+  .af-hand__pair dd {
+    margin-top: 7px;
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--text-secondary);
+  }
+
+  .af-hand__stages {
+    margin-top: 16px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 7px;
+  }
+  .af-hand__stages li {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+  }
+  .af-hand__stages span:not(.af-hand__arrow) {
+    display: inline-block;
+    padding: 5px 11px;
+    border: 1px solid var(--border-subtle);
+    border-radius: 0.625rem;
+    font-family: var(--font-mono), ui-monospace, monospace;
+    font-size: 0.6875rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-tertiary);
+  }
+  .af-hand__stages span[data-focus] {
+    border-color: rgba(26, 60, 255, 0.45);
+    background: rgba(26, 60, 255, 0.08);
+    color: var(--blue-soft);
+  }
+  .af-hand__arrow {
+    font-family: var(--font-mono), ui-monospace, monospace;
+    color: var(--text-tertiary);
+    opacity: 0.55;
+  }
+  .af-hand__note {
+    margin-top: 18px;
+    max-width: 42rem;
+    font-size: 0.875rem;
+    line-height: 1.6;
+    color: var(--text-tertiary);
+  }
+
+  /* ------------------------------------------------------ mobile */
+  @media (max-width: 860px) {
+    .af-hand__read {
+      grid-template-columns: 1fr;
+      gap: 30px;
+      margin-top: 30px;
+    }
+  }
+
+  @media (max-width: 640px) {
+    /* Re-composed, not shrunk. The perspective already puts Attract and
+       Capture in the near field, which is exactly what survives a narrow
+       viewport — so the two labels stay and only the horizon caption,
+       which has no room to sit, is dropped. */
+    .af-hand {
+      border-radius: 1rem;
+    }
+    .af-hand__label {
+      transform: translate(-2px, 22px);
+    }
+    .af-hand__name {
+      font-size: 0.625rem;
+      letter-spacing: 0.12em;
+    }
+    .af-hand__role {
+      font-size: 0.6875rem;
+    }
+    .af-hand__horizon {
+      display: none;
+    }
+  }
+}

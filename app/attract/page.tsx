@@ -5,6 +5,7 @@ import { PageHero } from "@/components/pages/page-hero";
 import { Reveal } from "@/components/motion/reveal";
 import { WhatsAppCta } from "@/components/attract/whatsapp-cta";
 import { BookCallButton } from "@/components/pages/book-call-button";
+import { AttractHandoff } from "@/components/throughline/attract-handoff";
 import { buildMetadata } from "@/lib/seo";
 import {
   attractHero,
@@ -338,30 +339,23 @@ export default function AttractPage() {
             {attractContinuity.body}
           </p>
 
-          {/* Canonical six-stage journey. Attract highlighted, not renamed. */}
-          <ol className="mt-12 flex flex-wrap items-center gap-2">
-            {attractContinuity.journey.map((stage, i) => (
-              <li key={stage} className="flex items-center gap-2">
-                <span
-                  className={
-                    i === 0
-                      ? "rounded-button border border-blue/40 bg-blue/[0.08] px-4 py-2 font-mono text-eyebrow uppercase tracking-wider text-blue-soft"
-                      : "rounded-button border border-[color:var(--border-subtle)] px-4 py-2 font-mono text-eyebrow uppercase tracking-wider text-[color:var(--text-tertiary)]"
-                  }
-                >
-                  {stage}
-                </span>
-                {i < attractContinuity.journey.length - 1 && (
-                  <span aria-hidden className="font-mono text-[color:var(--text-tertiary)]">
-                    &rarr;
-                  </span>
-                )}
-              </li>
-            ))}
-          </ol>
-          <p className="mt-5 text-small text-[color:var(--text-tertiary)]">
-            {attractContinuity.journeyNote}
-          </p>
+          {/*
+            The Attract → Capture handoff. Phase 3C.
+
+            This replaced a flat row of ten chips with arrows between
+            them. The chips were accurate and accessible but read as a
+            caption: they said the stages existed without showing the
+            website joining them. The handoff is the argument of this
+            section, so it is now drawn.
+
+            The ten stage names are still real DOM inside the component,
+            in the same order and with the same Attract emphasis — the
+            visual is additive, not a replacement for the text. The
+            canonical stages now come from lib/throughline.ts, which
+            reproduces lib/revenue-content.ts exactly, so
+            attractContinuity.journey is no longer read here.
+          */}
+          <AttractHandoff note={attractContinuity.journeyNote} />
         </Container>
       </Section>
 
