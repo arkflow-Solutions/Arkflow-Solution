@@ -1,0 +1,356 @@
+#!/usr/bin/env node
+/**
+ * Pre-deploy verification. Run before every push: `npm run verify`.
+ *
+ * Exists because two failures shipped that a typecheck alone did not stop:
+ *
+ *  1. A test stub for `lib/fonts.ts` was committed in place of the real
+ *     Google Fonts loader. It compiled and built cleanly — it would simply
+ *     have deployed the site with no typography.
+ *  2. `components/home/v2/capabilities.tsx` was deleted locally but not in
+ *     the GitHub repo (uploading files through the web UI adds and
+ *     overwrites, it never deletes). The stale file imported four exports
+ *     that no longer exist and broke the Vercel build.
+ *
+ * Checks 3 and 4 guard the governance rules that must never regress.
+ */
+
+import { readFileSync, readdirSync, statSync } from "node:fs";
+import { join, sep } from "node:path";
+
+const fail = [];
+const ok = (m) => console.log(`  ok   ${m}`);
+const bad = (m) => {
+  fail.push(m);
+  console.log(`  FAIL ${m}`);
+};
+
+/**
+ * Every path this script produces is repository-relative and uses forward
+ * slashes on all platforms.
+ *
+ * WHY: `path.join` emits the platform separator, so on Windows `walk`
+ * returned "lib\social.ts" while every filter below compares against a
+ * forward-slash literal — `f.includes("lib/social.ts")`,
+ * `f.includes("lib/insights/articles/")`, `f.startsWith("scripts/")`.
+ * None of those matched, which meant lib/social.ts was never excluded
+ * from its own scan (a phantom check-6 failure) and checks 7 and 8 found
+ * zero of the three articles and passed over an empty list. On Linux and
+ * on Vercel the separators happened to agree, so this never surfaced in
+ * CI — it only misled anyone verifying on Windows.
+ *
+ * Normalising once, here, is deliberate: the alternative is a `sep` fix at
+ * each of the six comparison sites, and the seventh would be forgotten.
+ * No check rule, threshold or exclusion is altered by this — the
+ * comparisons simply now see the strings they were always written for.
+ */
+const posix = (p) => p.split(sep).join("/");
+
+function walk(dir, out = []) {
+  for (const entry of readdirSync(dir)) {
+    if (entry === "node_modules" || entry === ".next" || entry === ".git") continue;
+    const p = posix(join(dir, entry));
+    if (statSync(p).isDirectory()) walk(p, out);
+    else out.push(p);
+  }
+  return out;
+}
+
+const files = walk(".");
+const source = files.filter((f) => /\.(ts|tsx)$/.test(f));
+const read = (f) => readFileSync(f, "utf8");
+
+/* 1 — the real font loader is in place, not a build stub */
+console.log("\n[1] fonts");
+const fonts = read("lib/fonts.ts");
+if (fonts.includes("stub") || !fonts.includes("next/font/google")) {
+  bad("lib/fonts.ts is a stub — restore the Inter / JetBrains_Mono loader");
+} else ok("real Google Fonts loader present");
+
+/* 2 — no source file imports a name its module no longer exports */
+console.log("\n[2] orphaned imports from lib/home-content");
+const exported = new Set(
+  [...read("lib/home-content.ts").matchAll(/export const (\w+)/g)].map((m) => m[1])
+);
+let orphans = 0;
+for (const f of source) {
+  const m = read(f).match(/import \{([^}]+)\} from "@\/lib\/home-content"/);
+  if (!m) continue;
+  for (const name of m[1].split(",").map((s) => s.trim()).filter(Boolean)) {
+    if (!exported.has(name)) {
+      bad(`${f} imports "${name}" which home-content no longer exports`);
+      orphans++;
+    }
+  }
+}
+if (!orphans) ok("every home-content import resolves");
+
+/* 3 — no price on any public surface (Amendment 2) */
+console.log("\n[3] governance: no published pricing");
+const PRICE = /\bS?\$\s?(688|988|1,?488|888)\b|\b(688|988|1,?488)\s*(\/|per\s)?\s*(month|mo)\b/i;
+let leaks = 0;
+for (const f of source.filter((f) => !f.startsWith("scripts/"))) {
+  if (PRICE.test(read(f))) {
+    bad(`${f} appears to contain a published price`);
+    leaks++;
+  }
+}
+if (!leaks) ok("no price found in any source file");
+
+/* 4 — the canonical ten-stage Revenue Engine is intact
+ *
+ * REPLACES the old Stage 1 disclosure check, which asserted that
+ * home-content still declared aesthetic clinics as the commercial
+ * focus. Public positioning is industry-agnostic as of 6 Sep 2026, so
+ * that assertion is now the opposite of the rule.
+ */
+console.log("\n[4] governance: canonical Revenue Engine");
+const CANON = [
+  "Attract", "Capture", "Respond", "Qualify", "Book",
+  "Convert", "Follow Up", "Retain", "Reactivate", "Grow",
+];
+const rc = read("lib/revenue-content.ts");
+const stageKeys = [...rc.matchAll(/key:\s*"([^"]+)"/g)].map((m) => m[1]);
+const engineKeys = stageKeys.slice(0, 10);
+if (engineKeys.length !== 10 || CANON.some((k, i) => engineKeys[i] !== k)) {
+  bad(
+    `revenue-content.ts engine is not the canonical ten stages. Found: ${
+      engineKeys.join(" > ") || "none"
+    }`
+  );
+} else ok("ten canonical stages, in order");
+
+// The superseded six-stage journey must not reappear anywhere.
+let sixStage = 0;
+for (const f of source.filter((f) => !f.startsWith("scripts/"))) {
+  const t = read(f);
+  if (/"Attract"[\s\S]{0,80}"Engage"[\s\S]{0,80}"Qualify"/.test(t)) {
+    bad(`${f} reintroduces the superseded six-stage journey`);
+    sixStage++;
+  }
+}
+if (!sixStage) ok("no six-stage journey present");
+
+/* 5 — canonical origin is the production domain */
+console.log("\n[5] canonical origin");
+const site = read("lib/site.ts")
+  .replace(/\/\*[\s\S]*?\*\//g, "")
+  // line comments only — the "//" inside "https://" must survive
+  .replace(/(^|[^:])\/\/.*$/gm, "$1");
+if (site.includes("ark-flow-sg.vercel.app")) {
+  bad("lib/site.ts still falls back to the Vercel preview origin");
+} else if (!site.includes("www.arkflowsolutions.com")) {
+  bad("lib/site.ts does not point at www.arkflowsolutions.com");
+} else ok("SITE_URL resolves to the production domain");
+
+/* 6 — no unverified social URL is rendered */
+console.log("\n[6] social profiles");
+const social = read("lib/social.ts");
+const hardcoded = source
+  .filter((f) => !f.includes("lib/social.ts") && !f.startsWith("scripts/"))
+  .filter((f) => /facebook\.com|instagram\.com/.test(read(f)));
+if (hardcoded.length) {
+  for (const f of hardcoded)
+    bad(`${f} hardcodes a social URL — route it through lib/social.ts`);
+} else ok("social URLs come only from lib/social.ts");
+if (/id: "facebook"[\s\S]{0,200}url: "/.test(social)) {
+  ok("Facebook URL supplied");
+} else {
+  console.log("  note Facebook URL still pending — link is hidden, not broken");
+}
+
+/* 7 — every article routes somewhere */
+console.log("\n[7] articles have an onward path");
+const articleFiles = source.filter((f) => f.includes("lib/insights/articles/"));
+let dead = 0;
+for (const f of articleFiles) {
+  const a = read(f);
+  if (!/solution:\s*\{[\s\S]{0,400}href:/.test(a)) {
+    bad(`${f} has no solution link — articles must not dead-end`);
+    dead++;
+  }
+}
+if (!dead)
+  ok(`${articleFiles.length} article(s), all with an onward destination`);
+
+/* 8 — no stock photography or unlabelled figures in articles */
+console.log("\n[8] article visuals");
+let visualIssues = 0;
+for (const f of source.filter((f) => f.includes("lib/insights/articles/"))) {
+  const a = read(f);
+  // Every metrics block must carry its provenance note. The type system
+  // requires the field; this catches it being filled with nothing.
+  for (const m of a.matchAll(/type: "metrics"[\s\S]{0,200}?note:\s*"([^"]*)"/g)) {
+    if (m[1].trim().length < 10) {
+      bad(`${f} has a metrics block with no meaningful provenance note`);
+      visualIssues++;
+    }
+  }
+  // Images must not be sourced from stock libraries.
+  if (/unsplash|pexels|shutterstock|gettyimages|istockphoto/i.test(a)) {
+    bad(`${f} references a stock photo library`);
+    visualIssues++;
+  }
+}
+if (!visualIssues) ok("figures labelled, no stock imagery referenced");
+
+/* 9 — v1.4 Amendment 8 constraints on the website line */
+console.log("\n[9] v1.4 Amendment 8");
+const publicSrc = source.filter((f) => !f.startsWith("scripts/"));
+
+/**
+ * Scan rendered content only. Governance comments legitimately quote the
+ * very strings these checks look for — the prohibited price list, the
+ * prohibited Scale adjectives — so scanning raw source produces false
+ * positives on the documentation that exists to prevent the violation.
+ */
+const body = (f) =>
+  read(f)
+    .replace(/\/\*[\s\S]*?\*\//g, "")
+    .replace(/(^|[^:])\/\/.*$/gm, "$1");
+
+// 9a — no à-la-carte pricing anywhere public
+const ALACARTE = /\b(2,?880|4,?880|S?\$\s?288|S?\$\s?188|S?\$\s?380)\b/;
+let priced = 0;
+for (const f of publicSrc) {
+  if (ALACARTE.test(body(f))) {
+    bad(`${f} appears to contain à-la-carte pricing (v1.4 §5 prohibits it)`);
+    priced++;
+  }
+}
+if (!priced) ok("no à-la-carte pricing in any public file");
+
+// 9b — SEO must never be offered as a service
+const SEO_SERVICE =
+  /\b(SEO (services?|packages?|retainers?|management)|local SEO|keyword research (service|package)|Google Business Profile optimisation|ranking guarantee)\b/i;
+let seo = 0;
+for (const f of publicSrc) {
+  if (SEO_SERVICE.test(body(f))) {
+    bad(`${f} offers SEO as a service (v1.4 §19 — SEO is ON HOLD)`);
+    seo++;
+  }
+}
+if (!seo) ok("no SEO service claims");
+
+// 9c — Scale must not be undercut by the standalone offer
+const WEAKENS = /standalone[^.]{0,80}\b(starter|entry-level|lite|cheaper|trial)\b/i;
+let weak = 0;
+for (const f of publicSrc) {
+  if (WEAKENS.test(body(f))) {
+    bad(`${f} frames the standalone website as a lesser Scale (v1.4 §15)`);
+    weak++;
+  }
+}
+if (!weak) ok("Scale positioning intact");
+
+// 9d — internal capacity constraint must not surface as scarcity
+const SCARCITY =
+  /\b(only \d+ slots?|slots? (left|remaining)|spaces? left|book before we'?re full)\b/i;
+let scarce = 0;
+for (const f of publicSrc) {
+  if (SCARCITY.test(body(f))) {
+    bad(`${f} exposes the internal capacity constraint as scarcity (v1.4 §13)`);
+    scarce++;
+  }
+}
+if (!scarce) ok("no artificial scarcity");
+
+/* 10 — legal entity naming and UEN consistency */
+console.log("\n[10] company identity");
+const siteFile = read("lib/site.ts");
+let idIssues = 0;
+
+if (!/legalName:\s*"Arkflow Solutions Pte Ltd"/.test(siteFile)) {
+  bad("lib/site.ts legalName is not the exact ACRA name 'Arkflow Solutions Pte Ltd'");
+  idIssues++;
+}
+if (!/uen:\s*"202638999Z"/.test(siteFile)) {
+  bad("lib/site.ts is missing the UEN 202638999Z");
+  idIssues++;
+}
+
+/**
+ * The registered entity uses a lowercase f. Applying brand capitalisation
+ * to it in a legal context misidentifies the company, so any hardcoded
+ * "ArkFlow Solutions Pte" is a defect — the legal name must come from
+ * COMPANY.legalName, never be typed inline.
+ */
+for (const f of publicSrc) {
+  if (/ArkFlow Solutions Pte/.test(body(f))) {
+    bad(`${f} hardcodes the legal name with brand capitalisation — use COMPANY.legalName`);
+    idIssues++;
+  }
+}
+if (!idIssues) ok("legal name exact, UEN present, no hardcoded entity strings");
+
+/* 11 — founder resolutions of 6 September 2026
+ *
+ * Everything below was classified SUPERSEDED or NOT FOR PUBLIC USE.
+ * Comments are stripped before scanning, because the governance notes
+ * that exist to prevent these violations legitimately name them.
+ */
+console.log("\n[11] governance: September 2026 resolutions");
+
+const SUPERSEDED = [
+  [/\b(ArkFlow\s+)?(Respond|Operate|Scale)\s*(package|tier|plan)\b/i, "a superseded package name"],
+  [/\b(Survive|Grow)\s*(package|tier|plan)\b/i, "a superseded package name"],
+  [/\b(30[- ]Day Response Guarantee|90[- ]Second (Response )?Guarantee|30[- ]Day Go[- ]Live)\b/i, "a superseded guarantee"],
+  [/\b(six|6)[- ]month (minimum|commitment|term)\b/i, "a superseded contract term"],
+  [/\bno long(-| )?term lock[- ]in\b/i, "a superseded contract term"],
+  [/\b(LeadCapture Pro|BookingBot|CRM Command Centre|ReviewPilot|InvoiceFlow|RenewalRadar)\b/i, "an unapproved product name"],
+  [/\bLead Response Audit\b/i, "the superseded audit name (use Revenue Leak Audit)"],
+];
+
+let superseded = 0;
+for (const f of publicSrc) {
+  const t = body(f);
+  for (const [re, what] of SUPERSEDED) {
+    if (re.test(t)) {
+      bad(`${f} contains ${what}`);
+      superseded++;
+    }
+  }
+}
+if (!superseded) ok("no superseded commercial or product terms on any public surface");
+
+/* 12 — the Revenue Leak Audit is wired as the canonical CTA */
+console.log("\n[12] canonical conversion path");
+let ctaIssues = 0;
+if (!read("lib/site.ts").includes("go.arkflowsolutions.com/audit")) {
+  bad("lib/site.ts does not define the Revenue Leak Audit funnel URL");
+  ctaIssues++;
+}
+if (!read("app/page.tsx").includes("AuditSection")) {
+  bad("the homepage no longer renders the Revenue Leak Audit section");
+  ctaIssues++;
+}
+if (!ctaIssues) ok("Revenue Leak Audit is the canonical CTA and is rendered");
+
+/* 13 — capabilities above their classification must not be claimed */
+console.log("\n[13] capability classification");
+const OVERCLAIM = [
+  [/\bAI Voice Agent\b/i, "AI Voice Agent (in development, not shippable copy)"],
+  [/\b(invoice|payment) automation\b/i, "payment or invoice automation (future)"],
+  [/\b(return on ad spend|ROAS|cost per appointment)\b/i, "advertising attribution (future)"],
+];
+let overclaims = 0;
+for (const f of publicSrc) {
+  // The insights article about voice agents is educational content about
+  // the category, not a product claim, and is excluded deliberately.
+  if (f.includes("what-is-an-ai-voice-agent")) continue;
+  const t = body(f);
+  for (const [re, what] of OVERCLAIM) {
+    if (re.test(t)) {
+      bad(`${f} claims ${what}`);
+      overclaims++;
+    }
+  }
+}
+if (!overclaims) ok("no capability claimed above its classification");
+
+console.log(
+  fail.length
+    ? `\n${fail.length} check(s) failed — do not deploy.\n`
+    : "\nAll checks passed.\n"
+);
+process.exit(fail.length ? 1 : 0);
