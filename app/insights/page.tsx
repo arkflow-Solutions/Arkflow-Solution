@@ -10,7 +10,7 @@ import { categories } from "@/lib/insights/categories";
 export const metadata = buildMetadata({
   title: "ArkFlow Intelligence",
   description:
-    "Practical writing on Revenue Operations for Singapore service businesses — lead response, WhatsApp, CRM, AI voice agents and aesthetic clinic operations.",
+    "Practical writing on Revenue Operations for Singapore service businesses — lead response, WhatsApp, CRM, voice AI and aesthetic clinic operations.",
   path: "/insights",
 });
 

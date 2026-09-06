@@ -49,7 +49,7 @@ export default function CaseStudiesPage() {
 
       <CtaBand
         title="Be the case study."
-        body="Founding clinics receive waived implementation in exchange for the right to publish their results. The guarantee still applies — the risk stays with us."
+        body="We are working with founding clients now, and their results will be published with their sign-off or not at all. Until then this page stays empty rather than invented."
       />
     </>
   );

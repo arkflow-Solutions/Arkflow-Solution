@@ -1,15 +1,35 @@
 /**
  * /solutions — one page, six anchored sections (approved sitemap).
  *
+ * TIER 2A, 6 September 2026 — public positioning cleanup.
+ *
+ * WHAT CHANGED AND WHY:
+ *
+ *  - The tier ladder is gone. Items were labelled "Every level",
+ *    "Operate and above" and "Scale". Those are superseded package
+ *    names and must not appear on a public surface, so the field is now
+ *    `availability` and carries a factual capability grouping instead.
+ *    No replacement tier was invented.
+ *
+ *  - "BookingBot" and "InvoiceFlow" are removed. Neither is an approved
+ *    public product name. Booking is described functionally, because
+ *    ArkFlow does ship it. Invoicing is not described at all, because
+ *    invoice and payment automation is classified FUTURE, and renaming
+ *    it functionally would still claim a capability above its
+ *    classification.
+ *
+ *  - "AI Voice Agent" is removed. It is IN DEVELOPMENT / VALIDATION,
+ *    not a shipped product, and /solutions describes what a client
+ *    actually receives today.
+ *
+ *  - Delivery commitments are removed ("within 10 business days").
+ *    Timelines are agreed per engagement, not published.
+ *
  * GOVERNANCE:
- *  - Tier labels must match the Canonical Package Specification as
- *    amended by AMENDMENTS-v1.1 and v1.3. Voice AI is Scale-only;
- *    RenewalRadar is Operate and above; recall and ad-source tracking
- *    are on every level.
- *  - No prices anywhere (Amendment 2).
- *  - Delivery windows are commitments, never measured performance.
+ *  - No prices, packages, tiers or guarantees anywhere.
+ *  - Nothing above its capability classification. Current only.
+ *  - No claim that any advertising platform is managed by ArkFlow.
  *  - Reporting is a supporting capability, not the reason to buy.
- *  - No claim that any advertising platform is integrated.
  */
 
 export type SolutionSection = {
@@ -18,9 +38,17 @@ export type SolutionSection = {
   eyebrow: string;
   title: string;
   lead: string;
-  items: { name: string; tier: string; body: string }[];
+  /**
+   * Factual capability grouping. NOT a package, tier or plan.
+   *   "Current capability"       — shipped and operating today.
+   *   "Implementation-dependent" — shipped, but scoped per engagement.
+   */
+  items: { name: string; availability: string; body: string }[];
   note?: string;
 };
+
+const CURRENT = "Current capability";
+const SCOPED = "Implementation-dependent";
 
 export const solutionSections: SolutionSection[] = [
   {
@@ -32,17 +60,17 @@ export const solutionSections: SolutionSection[] = [
     items: [
       {
         name: "Unified inbox",
-        tier: "Every level",
+        availability: CURRENT,
         body: "WhatsApp, Instagram, TikTok, Messenger, Telegram, SMS, email and website enquiries land in one place, against one customer record — so the history is already there when someone opens it.",
       },
       {
         name: "Professional website",
-        tier: "Scale",
-        body: "A fast, credible site built to produce enquiries and feed them straight into the same system, rather than into a form nobody checks. Delivered within 10 business days.",
+        availability: SCOPED,
+        body: "A fast, credible site built to produce enquiries and feed them straight into the same system, rather than into a form nobody checks.",
       },
       {
         name: "Lead source captured",
-        tier: "Every level",
+        availability: CURRENT,
         body: "Where the enquiry came from is recorded with the enquiry itself, so the answer to \"what is actually working\" is not a guess.",
       },
     ],
@@ -56,17 +84,17 @@ export const solutionSections: SolutionSection[] = [
     items: [
       {
         name: "Digital assistant",
-        tier: "Every level",
+        availability: CURRENT,
         body: "Replies to new enquiries in your own voice, at any hour, and asks the questions that turn a message into something your team can act on — what they want, when, and how urgent.",
       },
       {
-        name: "AI Voice Agent",
-        tier: "Scale",
-        body: "Picks up inbound calls when your team is with a customer. Handles hours, location, common questions, bookings and reschedules — and hands the call over the moment it stops being routine. Designed to answer within two rings.",
+        name: "Lead qualification",
+        availability: CURRENT,
+        body: "The conversation establishes what the enquiry is actually for and how ready it is, and the customer record reflects it — so your team opens a qualified opportunity rather than an unread message.",
       },
       {
         name: "Escalation to a person",
-        tier: "Every level",
+        availability: CURRENT,
         body: "Anything sensitive, anything requiring judgement, and anything where the customer asks for a human goes to your team immediately.",
       },
     ],
@@ -74,20 +102,15 @@ export const solutionSections: SolutionSection[] = [
   },
   {
     id: "booking",
-    nav: "Booking & payments",
+    nav: "Booking",
     eyebrow: "Getting to the appointment",
-    title: "The booking gets made. The invoice chases itself.",
-    lead: "Two of the three jobs that quietly consume a service business, handled without anyone remembering to do them.",
+    title: "The booking gets made, without anyone chasing it.",
+    lead: "One of the jobs that quietly consumes a service business, handled without anyone having to remember to do it.",
     items: [
       {
-        name: "BookingBot",
-        tier: "Operate and above",
+        name: "Appointment booking and scheduling",
+        availability: CURRENT,
         body: "Booking, rescheduling and cancellation over messaging, synced to your calendar — with confirmations, 24-hour and 2-hour reminders, and a follow-up sequence when someone does not show.",
-      },
-      {
-        name: "InvoiceFlow",
-        tier: "Operate and above",
-        body: "Invoices generated and delivered on the right trigger, then a reminder chain that runs on its own, with an escalation to you if it is still unpaid. Payment collected without a single chasing message from your team.",
       },
     ],
   },
@@ -96,21 +119,26 @@ export const solutionSections: SolutionSection[] = [
     nav: "Automation",
     eyebrow: "What keeps moving",
     title: "The follow-up that does not depend on memory.",
-    lead: "Almost every leak in a service business is something that should have been sent and wasn't.",
+    lead: "Almost every leak in a service business is something that should have been sent and was not.",
     items: [
       {
         name: "Follow-up sequences",
-        tier: "Every level",
+        availability: CURRENT,
         body: "An enquiry that goes quiet gets followed up on a schedule, in a way that reads like a person wrote it, until it is either answered or closed.",
       },
       {
         name: "Reminders and no-show recovery",
-        tier: "Operate and above",
+        availability: CURRENT,
         body: "Confirmations and reminders before the appointment, and a recovery sequence afterwards for the ones that still slipped.",
       },
       {
+        name: "Retention and reactivation",
+        availability: CURRENT,
+        body: "Customers who are due get a personalised message on a rule you set, and customers who have gone quiet are surfaced before they are gone for good — revenue that was already earned once.",
+      },
+      {
         name: "Review requests",
-        tier: "Every level",
+        availability: CURRENT,
         body: "Asked at the point a customer is most likely to say yes, rather than whenever someone gets round to it.",
       },
     ],
@@ -124,17 +152,17 @@ export const solutionSections: SolutionSection[] = [
     items: [
       {
         name: "CRM and pipeline",
-        tier: "Every level",
+        availability: CURRENT,
         body: "Every contact visible on one pipeline — new, contacted, qualified, booked, won, lost. No lead exists only in somebody's phone.",
       },
       {
         name: "Customer journey",
-        tier: "Every level",
-        body: "What they asked, what they were quoted, what they booked, what they paid and when they last came in — held together rather than scattered.",
+        availability: CURRENT,
+        body: "What they asked, what they were quoted, what they booked and when they last came in — held together rather than scattered.",
       },
       {
         name: "Smart lists",
-        tier: "Every level",
+        availability: CURRENT,
         body: "The enquiries that came in this week, the ones that have gone three days without a reply, and the ones worth calling today.",
       },
     ],
@@ -148,17 +176,17 @@ export const solutionSections: SolutionSection[] = [
     items: [
       {
         name: "Monthly performance report",
-        tier: "Every level",
-        body: "Enquiry volume, response time and conversion — expanded on Operate to cover bookings, no-shows and payment, and on Scale to cover website and voice.",
+        availability: CURRENT,
+        body: "Enquiry volume, response time, bookings, no-shows and conversion — read against the stages of your own revenue engine rather than platform by platform.",
       },
       {
         name: "Ad source tracking",
-        tier: "Every level",
-        body: "Connect your Facebook, Instagram, Google Ads and TikTok accounts and the lead source travels with the customer — into the same record as the conversation, the booking and the payment. One dashboard rather than four tabs and a spreadsheet.",
+        availability: SCOPED,
+        body: "Connect your Facebook, Instagram, Google Ads and TikTok accounts and the lead source travels with the customer — into the same record as the conversation and the booking. One dashboard rather than four tabs and a spreadsheet.",
       },
       {
         name: "Monthly strategy call",
-        tier: "Scale",
+        availability: CURRENT,
         body: "Thirty minutes on your own numbers, and what to change next.",
       },
     ],

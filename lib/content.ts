@@ -22,34 +22,38 @@ import { WHATSAPP_URL, CONTACT_EMAIL, BOOKING_URL, SURVEY_URL } from "@/lib/site
  * — the worst of both. HOTFIX.md records what a stale unreferenced file
  * costs on a Vercel build.
  *
- * GOVERNANCE — the five exports that remain are LIVE and rendered.
- * `guarantee` and the guarantee sentence inside `about.honesty` and
- * `faq` still carry commercial terms that the September 2026
- * resolutions classify as superseded. They are deliberately UNTOUCHED:
- * replacing them is a founder copy decision and, for the contract term,
- * a legal one. Do not paraphrase them here to make a check pass.
+ * TIER 2A, 6 September 2026 — public positioning cleanup.
+ *
+ * The `guarantee` export is DELETED. It carried the 30-Day Response
+ * Guarantee, which is not a current public term. Its only consumer was
+ * one line in components/contact/contact-experience.tsx; that line was
+ * rewritten first, leaving the export with no consumer at all.
+ *
+ * The superseded commercial framing has also been removed from `faq`,
+ * `about` and `caseStudies`: the guarantee, the six-month minimum, the
+ * implementation-fee and upgrade language, the package/tier ladder, and
+ * the 72-hour and 10-business-day delivery commitments.
+ *
+ * NOTHING REPLACED THEM. No new guarantee, no new contract term, no new
+ * delivery window and no new tier was invented to fill the gap — a
+ * commercial promise is a founder decision and a contract term is a
+ * legal one. Where a question could not be answered without inventing
+ * one, the question was removed rather than answered vaguely.
+ *
+ * The binding terms live in /terms, which Tier 2A does not touch.
  */
-export const guarantee = {
-  name: "30-Day Response Guarantee",
-  // Canonical full text — do not paraphrase in legal contexts.
-  fullText:
-    "If ArkFlow does not reduce the client's average lead response time to under 90 seconds within the first 30 days after successful onboarding, ArkFlow will refund the client's first monthly subscription fee. This is ArkFlow's only guarantee.",
-  summary:
-    "Response time not under 90 seconds within 30 days? Your first month is refunded — checked at Day 30, no need to ask.",
-};
-
 export const faq = [
   {
-    q: "What exactly does the 30-Day Response Guarantee cover?",
-    a: "One thing, stated plainly: if we don't reduce your average lead response time to under 90 seconds within the first 30 days after onboarding, we refund your first monthly subscription fee. It's our only guarantee, and we evaluate it proactively at Day 30 — you never have to ask for a refund you're owed.",
+    q: "What is ArkFlow, exactly?",
+    a: "A Revenue Operating Company. We build and operate the connected system that runs between your enquiries and your revenue — capture, response, qualification, booking, conversion, follow-up, retention and reactivation. AI is part of how it works, but the product is the operating system, not the AI.",
   },
   {
-    q: "What's the minimum commitment?",
-    a: "Six months on every package, then month-to-month with 30 days' notice. There is a one-time implementation that covers the real work of building and testing your system — it is never a profit centre, and it is waived when you upgrade between packages.",
+    q: "Is this an AI automation agency, or a chatbot?",
+    a: "Neither. A chatbot is one component someone hands you and leaves you to maintain. We design the system around how your business actually operates, implement it, and keep operating it — the software is the mechanism, the revenue operations are the work.",
   },
   {
-    q: "How fast can we go live?",
-    a: "Your system goes live within 72 hours of your completed intake form. On Scale, your website is live within 10 business days.",
+    q: "How does implementation work?",
+    a: "We start with a Revenue Leak Audit on your own numbers, map your enquiry-to-payment flow, then build and test the system against your real services before it goes live. After that we monitor and tune it as it settles into how your team works.",
   },
   {
     q: "We already have a marketing agency. Do we still need this?",
@@ -77,13 +81,13 @@ export const about = {
   mission:
     "ArkFlow exists to protect and grow the revenue that Singapore service businesses are quietly losing every day to slow replies, missed messages, no-shows and dormant follow-up.",
   positioning:
-    "Read the verbs in that mission: protect, grow, convert, reactivate. They are revenue verbs, not technology verbs. ArkFlow is a Revenue Operations company, not an AI automation company — automation is how we deliver the outcome; revenue is the outcome. We never lead with the technology. We lead with the money the clinic keeps.",
+    "Read the verbs in that mission: protect, grow, convert, reactivate. They are revenue verbs, not technology verbs. ArkFlow is a Revenue Operating Company, not an AI automation company — AI is the mechanism, the connected revenue operating system is the solution. We never lead with the technology. We lead with the revenue a business keeps.",
   vision:
-    "Depth first. ArkFlow doesn't begin as a platform — it begins as the best operations partner Singapore aesthetic clinics have ever had, and earns the right to expand one vertical at a time. Breadth is earned.",
+    "Depth first. ArkFlow doesn't begin as a platform — it begins by operating one business's revenue system properly, and earns the right to expand from there. Breadth is earned.",
   honesty: [
-    { title: "We mark our claims", body: "Internally, every claim ArkFlow makes carries an evidence tag: proven principle, reasoned recommendation, or validated standard. We know exactly which of our promises are proven and which are being earned — and we price the risk of the unproven ones into our guarantee, not into your fees." },
-    { title: "The risk sits with us", body: "We're a young company, and we won't pretend otherwise. That's why the 30-Day Response Guarantee exists: if your response time isn't under 90 seconds within 30 days, your first month is refunded — measured proactively, so you never have to ask." },
-    { title: "Fees track effort", body: "The implementation fee is never a profit centre. It covers the real work of building and testing your system, is reviewed as our delivery gets more efficient, and is waived entirely on upgrades." },
+    { title: "We mark our claims", body: "Internally, every claim ArkFlow makes carries an evidence tag: proven principle, reasoned recommendation, or validated standard. We know exactly which of our promises are proven and which are still being earned — and we say which is which rather than blurring the two." },
+    { title: "We don't publish numbers we haven't earned", body: "We're a young company, and we won't pretend otherwise. You will not find invented client counts, conversion rates or revenue figures on this site. Anything shown to illustrate how the system behaves is labelled as illustrative, in the interface itself." },
+    { title: "Scope is agreed before it is built", body: "What your system does is decided with you, in writing, before implementation starts — so what gets built is what was actually discussed, and anything outside it is raised rather than assumed." },
   ],
 };
 
@@ -103,7 +107,7 @@ export const contact = {
      rather than shipping a dead link. Do not invent a number. */
   whatsapp: {
     title: "WhatsApp us",
-    body: "The fastest way to reach us — the same channel we build on. Business-hours replies within 4 hours.",
+    body: "The fastest way to reach us — the same channel we build on.",
     href: WHATSAPP_URL,
   },
   /**
@@ -123,10 +127,10 @@ export const contact = {
 
 export const caseStudies = {
   statement:
-    "Our first case studies are being earned right now, with founding clinics — implementation waived in exchange for the right to publish their results.",
+    "Our first case studies are being earned right now, with founding clients. We would rather show you an empty page than an invented one.",
   promise: [
     "Real response-time numbers, before and after",
-    "Show-rate and collection improvements, measured from the client's own data",
-    "Published with the clinic's sign-off, or not at all",
+    "Booking and retention improvements, measured from the client's own data",
+    "Published with the client's sign-off, or not at all",
   ],
 };

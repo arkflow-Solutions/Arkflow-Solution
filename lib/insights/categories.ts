@@ -69,13 +69,31 @@ export const categories: CategoryMeta[] = [
       "In Singapore, WhatsApp is not a marketing channel. It is where the sale actually happens — which is exactly why it is the worst place to be slow.",
   },
   {
+    /**
+     * EDUCATIONAL PILLAR — not a product page.
+     *
+     * TIER 2A, 6 September 2026. This pillar was named "AI Voice
+     * Agents" and read as an ArkFlow product line. Voice is IN
+     * DEVELOPMENT / VALIDATION, not shipped, so the name and copy were
+     * reframed to what this pillar actually is: an explainer about a
+     * category of technology, written for someone deciding whether they
+     * need it at all.
+     *
+     * The SLUG IS DELIBERATELY UNCHANGED. It carries the published
+     * route /insights/ai-voice-agents and the article
+     * `what-is-an-ai-voice-agent`. Removing the category would orphan
+     * that article and break a live URL, so it was retained — the
+     * fallback Tier 2A explicitly allows.
+     *
+     * Nothing here may imply ArkFlow currently sells a voice agent.
+     */
     slug: "ai-voice-agents",
-    name: "AI Voice Agents",
-    title: "AI voice agents",
+    name: "Voice AI",
+    title: "Voice AI, explained",
     description:
-      "What an AI voice agent actually does, where it works well, where it does not, and how to judge whether your business is ready for one.",
+      "What voice AI actually does, where it works well, where it does not, and how to judge whether your business needs it — written to help you decide, not to sell you one.",
     standfirst:
-      "A voice agent is a tool, not a strategy. It is worth buying when calls are being missed — and worth skipping when they are not.",
+      "Voice is a tool, not a strategy. It is worth looking at when calls are genuinely being missed — and worth skipping when they are not. ArkFlow does not currently sell a voice agent; this pillar exists because the question keeps coming up.",
   },
   {
     slug: "ai-automation",
@@ -91,7 +109,7 @@ export const categories: CategoryMeta[] = [
     name: "Aesthetic Clinics",
     title: "Aesthetic clinics",
     description:
-      "Enquiry handling, consultation booking, no-shows, follow-up and recall for Singapore aesthetic clinics — ArkFlow's current commercial focus.",
+      "Enquiry handling, consultation booking, no-shows, follow-up and recall for Singapore aesthetic clinics — one of the verticals ArkFlow works in.",
     standfirst:
       "A clinic's revenue is decided in the gaps: between the enquiry and the reply, the consultation and the treatment, the treatment and the next visit.",
   },

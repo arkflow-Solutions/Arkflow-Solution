@@ -25,7 +25,7 @@ import { Reveal } from "@/components/motion/reveal";
 import { TiltCard } from "@/components/motion/tilt-card";
 import { ConvergenceField } from "@/components/motion/convergence-field";
 import { useBooking } from "@/lib/use-booking";
-import { contact, guarantee, faq } from "@/lib/content";
+import { contact, faq } from "@/lib/content";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
@@ -56,7 +56,7 @@ const OUTCOMES = [
   {
     icon: Zap,
     title: "Never lose another lead",
-    body: "Every enquiry answered on every channel, designed to reply in under 90 seconds. The messages you miss today become booked appointments.",
+    body: "Every enquiry answered on every channel, while the customer is still paying attention. The messages you miss today become booked appointments.",
   },
   {
     icon: RefreshCw,
@@ -73,16 +73,16 @@ const OUTCOMES = [
 const TIMELINE = [
   ["Submit enquiry", "Tell us your numbers in two minutes."],
   ["Discovery Call", "A 30-minute call and a Revenue Leak Audit on your figures."],
-  ["Solution Design", "We map your enquiry-to-payment flow and recommend one package — never a menu."],
-  ["Implementation", "We build and test your system against your real service menu."],
-  ["Go Live", "Live within 72 hours of intake — from the first message, nothing is missed."],
-  ["30-Day Optimisation", "We tune, report, and measure against the guarantee at Day 30."],
+  ["Solution Design", "We map your enquiry-to-payment flow and design the system around how your business actually operates."],
+  ["Implementation", "We build and test your system against your real services."],
+  ["Go Live", "The system starts working — every enquiry captured, answered and followed up."],
+  ["Optimisation", "We monitor, tune and report as the system settles into how you work."],
 ];
 
 const BENEFITS: { icon: typeof Zap; text: string }[] = [
   { icon: Zap, text: "A free Revenue Leak Audit on your real numbers." },
-  { icon: TrendingUp, text: "One recommended package — never a menu." },
-  { icon: ShieldCheck, text: `Backed by the ${guarantee.name}.` },
+  { icon: TrendingUp, text: "One connected system, designed around how your business runs." },
+  { icon: ShieldCheck, text: "A clear view of where revenue is leaking — useful whether or not you work with us." },
 ];
 
 const STEPS = 6;

@@ -4,7 +4,7 @@ import { buildMetadata } from "@/lib/seo";
 export const metadata = buildMetadata({
   title: "Contact & Revenue Leak Audit",
   description:
-    "Book a discovery call or request a free Revenue Leak Audit on your own numbers. One recommended package, backed by the 30-Day Response Guarantee.",
+    "Talk to us about where revenue is leaking — slow replies, missed enquiries, follow-up that stops — or request a Revenue Leak Audit on your own numbers.",
   path: "/contact",
 });
 

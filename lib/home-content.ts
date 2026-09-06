@@ -371,11 +371,11 @@ export const howWeWork = {
     },
     {
       name: "Go Live",
-      body: "Core system live within 72 hours of a completed intake. We monitor it from there.",
+      body: "The system starts working on your real enquiries. We monitor it from there.",
     },
     {
-      name: "30-Day Optimisation",
-      body: "Baseline at day zero, guarantee checkpoint at Day 30, then monthly reporting.",
+      name: "Optimisation",
+      body: "Baseline at day zero, then tuning and monthly reporting as the system settles into how your team works.",
     },
   ],
 } as const;

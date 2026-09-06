@@ -12,7 +12,7 @@ import { buildMetadata } from "@/lib/seo";
 export const metadata = buildMetadata({
   title: "Solutions",
   description:
-    "The layers inside an ArkFlow system — unified inbox, AI assistants, booking and payments, automation, CRM and reporting — and which package carries each one.",
+    "The layers inside an ArkFlow system — unified inbox, AI assistants, booking, automation, CRM and reporting — and how they work as one connected revenue system.",
   path: "/solutions",
 });
 
@@ -28,7 +28,7 @@ export default function SolutionsPage() {
       <PageHero
         eyebrow="Solutions"
         title="One connected system, layer by layer."
-        lead="None of these is sold as software. Each is a layer of one outcome — enquiry to booking to payment to the visit after that. Which layers are switched on is a packages question."
+        lead="None of these is sold as software. Each is a layer of one outcome — enquiry to booking to conversion to the visit after that. Which layers your business needs is decided by how it actually operates."
       />
 
       {/* Anchor nav */}
@@ -71,7 +71,7 @@ export default function SolutionsPage() {
                         {item.name}
                       </h3>
                       <p className="mt-2 font-mono text-eyebrow uppercase text-blue-soft">
-                        {item.tier}
+                        {item.availability}
                       </p>
                     </div>
                     <p className="max-w-prose text-body text-[color:var(--text-secondary)]">
@@ -97,12 +97,13 @@ export default function SolutionsPage() {
         <Container>
           <Reveal>
             <p className="max-w-prose text-body text-[color:var(--text-secondary)]">
-              Which layers your business needs is a packages question —{" "}
+              Which of these your business actually needs depends on where
+              revenue is leaking today —{" "}
               <Link
                 href="/#revenue-leak-audit"
                 className="text-blue-soft underline-offset-4 hover:underline"
               >
-                see how Respond, Operate and Scale carry them
+                start with a Revenue Leak Audit
               </Link>
               .
             </p>
