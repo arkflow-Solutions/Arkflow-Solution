@@ -32,7 +32,10 @@ export const hero = {
   titleAccent: "leaking revenue.",
   lead: "Leads go unanswered. Follow-ups get forgotten. Customers buy once and disappear. Opportunities fall through the gaps between the systems you already pay for.",
   leadTwo:
-    "ArkFlow builds and operates the AI-powered revenue systems that close those gaps.",
+    /* No longer rendered — the Phase 3E hero reads from sceneOpening in
+       lib/scene-content.ts. Kept in step with the live positioning so a
+       future reader does not reinstate the retired "AI-powered" line. */
+    "ArkFlow designs, builds and operates the system that closes those gaps.",
   primaryCta: "Book a Discovery Call",
   secondaryCta: "See how ArkFlow works",
   /**

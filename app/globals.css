@@ -29,6 +29,18 @@
     scroll-behavior: smooth;
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
+    /* The navigation is fixed at 64px (h-16). Without this, every
+       in-page anchor lands its target's top edge at y=0 — underneath
+       the bar — so the heading you navigated to is the one thing you
+       cannot read. 5.5rem is the bar plus breathing room.
+
+       scroll-padding, not padding: this changes where the browser
+       STOPS when scrolling to a target and has no layout effect
+       whatsoever, so it fixes every anchor on the site (#unanswered
+       from the hero, /#revenue-leak-audit from /solutions, #enquiry on
+       /contact, the #main skip link) in one declaration without moving
+       a single pixel of the composition. */
+    scroll-padding-top: 5.5rem;
   }
 
   body {
@@ -2114,6 +2126,895 @@
     }
     .af-atmos--vignette::after {
       display: none;
+    }
+  }
+}
+
+/* ============================================================
+   PHASE 3E — THE VISUAL-FIRST HOMEPAGE
+
+   Ten scenes, one story. These styles exist so the scenes read
+   as views of one system rather than ten demonstrations: the
+   shared pieces (.af-scene, .af-cmp) carry the rhythm, and each
+   scene adds only what is genuinely its own.
+
+   MOBILE FIRST, meant literally. Every comparison stacks by
+   default and becomes two columns only when there is room for two
+   readable columns. Side-by-side at 375px is two unreadable
+   columns, which is worse than no comparison at all.
+   ============================================================ */
+
+@layer components {
+  /* ------------------------------------------------ scene shell */
+  .af-scene {
+    position: relative;
+  }
+  .af-scene__atmos {
+    padding-block: 5.5rem;
+  }
+  .af-scene__head {
+    max-width: 46rem;
+  }
+  .af-scene__head--centre {
+    margin-inline: auto;
+    text-align: center;
+  }
+  .af-scene__eyebrow {
+    font-family: var(--font-mono), ui-monospace, monospace;
+    font-size: 0.6875rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-tertiary);
+  }
+  .af-scene__title {
+    margin-top: 0.75rem;
+    font-size: clamp(1.75rem, 1.1rem + 2.6vw, 2.9rem);
+    font-weight: 600;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+  }
+  .af-scene__title--big {
+    font-size: clamp(2rem, 1.1rem + 3.6vw, 3.6rem);
+  }
+  .af-scene__lead {
+    margin-top: 1.25rem;
+    max-width: 34rem;
+    font-size: 1.0625rem;
+    line-height: 1.6;
+    color: var(--text-secondary);
+  }
+  .af-scene__head--centre .af-scene__lead {
+    margin-inline: auto;
+  }
+  .af-scene__body {
+    margin-top: 3rem;
+  }
+
+  /* --------------------------------------------- compare frame */
+  .af-cmp {
+    display: grid;
+    gap: 1rem;
+  }
+  .af-cmp__side {
+    position: relative;
+    padding: 1.5rem;
+    border: 1px solid var(--border-subtle);
+    border-radius: 14px;
+    background: color-mix(in srgb, var(--surface) 60%, transparent);
+    transition: opacity 700ms cubic-bezier(0.22, 1, 0.36, 1),
+      border-color 700ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  /* The failing side recedes rather than disappearing. The visitor
+     must still be able to compare once the scene has turned. */
+  .af-cmp__side.is-dim {
+    opacity: 0.45;
+  }
+  .af-cmp__side.is-on {
+    border-color: color-mix(in srgb, #3b82f6 34%, transparent);
+  }
+  .af-cmp__label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1.25rem;
+    font-family: var(--font-mono), ui-monospace, monospace;
+    font-size: 0.6875rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-tertiary);
+  }
+  .af-cmp__note {
+    grid-column: 1 / -1;
+    font-size: 0.875rem;
+    color: var(--text-tertiary);
+  }
+
+  /* --------------------------------------- scene 02 the thread */
+  .af-thread {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+  .af-thread--cold .af-msg {
+    opacity: 0.72;
+  }
+  .af-clock {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 0.9rem;
+    margin-top: 0.5rem;
+    font-family: var(--font-mono), ui-monospace, monospace;
+    font-size: 0.75rem;
+    color: var(--text-tertiary);
+  }
+  .af-clock__t {
+    opacity: 0.55;
+  }
+  .af-clock__t--last {
+    color: #d97706;
+    opacity: 1;
+  }
+  .af-clock--live .af-clock__t {
+    color: #3b82f6;
+    opacity: 0.9;
+  }
+  .af-thread__verdict {
+    margin-top: 0.75rem;
+    font-size: 0.875rem;
+    line-height: 1.55;
+    color: var(--text-tertiary);
+    transition: opacity 700ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .af-thread__verdict--on {
+    color: var(--text-secondary);
+  }
+
+  /* ------------------------------------- scene 03 the days pass */
+  .af-week {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .af-note {
+    align-self: flex-start;
+    position: relative;
+    padding: 0.7rem 1rem 0.7rem 1.6rem;
+    border: 1px solid var(--border-subtle);
+    border-radius: 4px;
+    background: color-mix(in srgb, #d97706 7%, var(--surface));
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+  }
+  .af-note__pin {
+    position: absolute;
+    left: 0.6rem;
+    top: 50%;
+    width: 5px;
+    height: 5px;
+    margin-top: -2.5px;
+    border-radius: 50%;
+    background: #d97706;
+  }
+  .af-week__days {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    gap: 2px;
+  }
+  .af-day {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    padding: 0.5rem 0.25rem;
+    border-radius: 6px;
+    background: color-mix(in srgb, var(--surface) 70%, transparent);
+    text-align: center;
+  }
+  .af-day__l {
+    font-family: var(--font-mono), ui-monospace, monospace;
+    font-size: 0.625rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-tertiary);
+  }
+  .af-day__slot {
+    display: block;
+    height: 3px;
+    border-radius: 2px;
+    background: color-mix(in srgb, var(--border-subtle) 80%, transparent);
+  }
+  .af-day--marked .af-day__slot {
+    background: color-mix(in srgb, #d97706 55%, transparent);
+  }
+  .af-day--on .af-day__slot {
+    background: #3b82f6;
+  }
+  /* MOBILE FIRST, and this is what that actually means here.
+
+     At 375px a seven-column week gives each day about 38px. A 10px
+     label like "Reminder" needs roughly 44px, so the words spill out of
+     their cells and the strip becomes unreadable — measured, not
+     assumed. Below 640px the day labels are therefore not rendered at
+     all: the strip carries the RHYTHM (which days have something on
+     them) and the chain underneath carries the WORDS, in full size.
+     Nothing is lost, because the chain was always the text equivalent.
+
+     They come back at 640px, where 90px per day is enough to hold
+     them. */
+  .af-day__ev {
+    display: none;
+  }
+  @media (min-width: 640px) {
+    .af-day__ev {
+      display: block;
+      font-size: 0.625rem;
+      line-height: 1.25;
+      color: #3b82f6;
+      animation: af-ev-in 500ms cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+  }
+  @keyframes af-ev-in {
+    from {
+      opacity: 0;
+      transform: translateY(3px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  .af-chain {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+  .af-chain__step {
+    padding: 0.3rem 0.7rem;
+    border: 1px solid var(--border-subtle);
+    border-radius: 999px;
+    font-size: 0.75rem;
+    color: var(--text-tertiary);
+    transition: color 500ms, border-color 500ms, opacity 500ms;
+  }
+  .af-chain__step--lost {
+    color: #d97706;
+    border-color: color-mix(in srgb, #d97706 40%, transparent);
+  }
+  .af-chain--live .af-chain__step.is-on {
+    color: #3b82f6;
+    border-color: color-mix(in srgb, #3b82f6 42%, transparent);
+  }
+  .af-week__verdict {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+  }
+
+  /* ------------------------------ scene 04 one record, cooling */
+  .af-record-life {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem 0.75rem;
+  }
+  .af-record-life__step {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+  }
+  .af-record-life__dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #3b82f6;
+  }
+  .af-record-life__step.is-fade {
+    opacity: 0.6;
+  }
+  .af-record-life__step.is-fade .af-record-life__dot {
+    background: color-mix(in srgb, #3b82f6 40%, transparent);
+  }
+  .af-record-life__step.is-off {
+    color: var(--text-tertiary);
+  }
+  .af-record-life__step.is-off .af-record-life__dot {
+    background: transparent;
+    border: 1px solid var(--border-subtle);
+  }
+  .af-record-life__gap {
+    width: 1.5rem;
+    height: 1px;
+    background: var(--border-subtle);
+  }
+
+  /* --------------------------------------- scene 05 the desk */
+  .af-desk {
+    margin-top: 3rem;
+  }
+  .af-desk__field {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+    padding: 1.25rem;
+    border: 1px solid var(--border-subtle);
+    border-radius: 14px;
+    background: color-mix(in srgb, var(--surface) 55%, transparent);
+  }
+  .af-surface {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    padding: 0.85rem;
+    border: 1px solid var(--border-subtle);
+    border-radius: 10px;
+    background: color-mix(in srgb, var(--surface) 85%, transparent);
+  }
+  .af-surface__n {
+    font-size: 0.875rem;
+    color: #fff;
+  }
+  .af-surface__d {
+    font-family: var(--font-mono), ui-monospace, monospace;
+    font-size: 0.6875rem;
+    color: var(--text-tertiary);
+  }
+  .af-desk__wires {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+  }
+  /* The connections draw themselves in as the work stops being
+     manual. --wire is written by the component from scroll. */
+  .af-wire {
+    fill: none;
+    stroke: #3b82f6;
+    stroke-width: 1;
+    stroke-dasharray: 1000;
+    stroke-dashoffset: calc(1000 - (var(--wire, 0) * 1000));
+    opacity: calc(var(--wire, 0) * 0.5);
+    transition: stroke-dashoffset 700ms cubic-bezier(0.22, 1, 0.36, 1),
+      opacity 700ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .af-desk__split {
+    display: grid;
+    gap: 2rem;
+    margin-top: 2.5rem;
+  }
+  .af-desk__label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--font-mono), ui-monospace, monospace;
+    font-size: 0.6875rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-tertiary);
+  }
+  .af-desk__list {
+    margin-top: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+  }
+  .af-desk__item {
+    font-size: 0.9375rem;
+    line-height: 1.5;
+    color: var(--text-secondary);
+    transition: opacity 700ms cubic-bezier(0.22, 1, 0.36, 1),
+      transform 700ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  /* Repetition moves off the person: it recedes and shifts away. It
+     does not vanish, because the work still happens. */
+  .af-desk__item.is-moved {
+    opacity: 0.5;
+    transform: translateX(6px);
+  }
+  .af-desk__item.is-human {
+    color: #fff;
+  }
+  .af-desk__close {
+    margin-top: 1.5rem;
+    font-size: 1.0625rem;
+    font-weight: 500;
+    line-height: 1.4;
+  }
+
+  /* --------------------------------- scene 06 the transformation */
+  .af-scene--pivot .af-scene__atmos {
+    padding-block: 7rem;
+  }
+  .af-pivot-word {
+    color: #d97706;
+    transition: color 900ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .af-pivot-word.is-on {
+    color: #3b82f6;
+  }
+  .af-pivot__moments {
+    display: grid;
+    gap: 0.5rem;
+    margin-top: 3rem;
+  }
+  .af-moment {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.7rem 1rem;
+    border: 1px solid var(--border-subtle);
+    border-radius: 10px;
+    background: color-mix(in srgb, var(--surface) 55%, transparent);
+  }
+  .af-moment__l {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+  }
+  .af-moment__states {
+    position: relative;
+    display: grid;
+    font-family: var(--font-mono), ui-monospace, monospace;
+    font-size: 0.75rem;
+    text-align: right;
+  }
+  /* Both words share one cell, so the transition must be short enough
+     that it never holds two legible states at once. 700ms did exactly
+     that and produced overlapping words; 140ms only smooths the
+     quantised scroll steps. The component crosses their opacities at
+     zero — see transformation.tsx. */
+  .af-moment__broken,
+  .af-moment__whole {
+    grid-area: 1 / 1;
+    transition: opacity 140ms linear;
+  }
+  .af-moment__broken {
+    color: #d97706;
+  }
+  .af-moment__whole {
+    color: #3b82f6;
+  }
+  .af-pivot__line {
+    margin-top: 2.5rem;
+  }
+  .af-pivot__state {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.55rem;
+    margin-top: 1.5rem;
+    font-family: var(--font-mono), ui-monospace, monospace;
+    font-size: 0.6875rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-tertiary);
+  }
+
+  /* ------------------------------ scene 08 the handover marker */
+  .af-handover {
+    display: grid;
+    gap: 1rem;
+    margin-top: 3.5rem;
+  }
+  .af-handover__mark {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  .af-handover__rule {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      color-mix(in srgb, #059669 45%, transparent),
+      transparent
+    );
+  }
+  .af-handover__badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.35rem 0.8rem;
+    border: 1px solid color-mix(in srgb, #059669 32%, transparent);
+    border-radius: 999px;
+    font-family: var(--font-mono), ui-monospace, monospace;
+    font-size: 0.6875rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    white-space: nowrap;
+  }
+
+  /* --------------------------------- scene 09 the whole journey */
+  .af-journey__line--narrow {
+    display: block;
+  }
+  .af-journey__line--wide {
+    display: none;
+  }
+  .af-journey__stages {
+    display: grid;
+    gap: 0.25rem;
+    margin-top: 2.5rem;
+  }
+  .af-jstage {
+    display: flex;
+    gap: 1rem;
+    padding: 0.7rem 0;
+    border-top: 1px solid var(--border-subtle);
+    opacity: 0.5;
+    transition: opacity 700ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .af-jstage.is-on {
+    opacity: 1;
+  }
+  .af-jstage__n {
+    flex: none;
+    padding-top: 0.2rem;
+    font-family: var(--font-mono), ui-monospace, monospace;
+    font-size: 0.6875rem;
+    color: var(--text-tertiary);
+  }
+  .af-jstage__body {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.25rem 0.6rem;
+  }
+  .af-jstage__name {
+    font-size: 1rem;
+    font-weight: 500;
+    color: #fff;
+  }
+  /* The canonical engineering name, shown only on request. */
+  .af-jstage__canon {
+    font-family: var(--font-mono), ui-monospace, monospace;
+    font-size: 0.6875rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #3b82f6;
+  }
+  /* "ArkFlow builds this" on stage one. Sized as a quiet affordance,
+     not a button — it should be findable without competing with the
+     stage name it sits beside. */
+  .af-jstage__build {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.1rem 0.5rem;
+    border: 1px solid color-mix(in srgb, #3b82f6 34%, transparent);
+    border-radius: 999px;
+    font-family: var(--font-mono), ui-monospace, monospace;
+    font-size: 0.625rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #3b82f6;
+    white-space: nowrap;
+    transition: border-color 200ms, color 200ms;
+  }
+  .af-jstage__build:hover {
+    border-color: color-mix(in srgb, #3b82f6 70%, transparent);
+    color: #fff;
+  }
+  .af-surfaces__link {
+    color: inherit;
+    text-decoration: underline;
+    text-decoration-color: color-mix(in srgb, #3b82f6 55%, transparent);
+    text-underline-offset: 3px;
+    transition: text-decoration-color 200ms;
+  }
+  .af-surfaces__link:hover {
+    text-decoration-color: #3b82f6;
+  }
+  .af-jstage__meaning {
+    flex-basis: 100%;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    color: var(--text-secondary);
+  }
+  .af-journey__foot {
+    margin-top: 2rem;
+  }
+  .af-journey__toggle {
+    padding-bottom: 2px;
+    border-bottom: 1px solid var(--border-subtle);
+    font-family: var(--font-mono), ui-monospace, monospace;
+    font-size: 0.6875rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-tertiary);
+    transition: color 300ms;
+  }
+  .af-journey__toggle:hover {
+    color: #3b82f6;
+  }
+  .af-journey__note {
+    margin-top: 1rem;
+    max-width: 38rem;
+    font-size: 0.875rem;
+    color: var(--text-tertiary);
+  }
+
+  /* ------------------------------------- scene 10 system + close */
+  .af-close {
+    padding-block: 5.5rem;
+  }
+  .af-surfaces {
+    display: grid;
+    gap: 0.5rem;
+    margin-top: 3rem;
+  }
+  .af-surfaces__item {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.3rem 1rem;
+    padding: 0.9rem 1rem;
+    border: 1px solid var(--border-subtle);
+    border-radius: 10px;
+    background: color-mix(in srgb, var(--surface) 55%, transparent);
+  }
+  .af-surfaces__n {
+    grid-row: 1 / 3;
+    padding-top: 0.15rem;
+    font-family: var(--font-mono), ui-monospace, monospace;
+    font-size: 0.6875rem;
+    color: #3b82f6;
+  }
+  .af-surfaces__name {
+    font-size: 1rem;
+    font-weight: 500;
+  }
+  .af-surfaces__body {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+  }
+  .af-position {
+    margin-top: 4rem;
+    padding-top: 2.5rem;
+    border-top: 1px solid var(--border-subtle);
+    text-align: center;
+  }
+  .af-position__name {
+    font-family: var(--font-mono), ui-monospace, monospace;
+    font-size: 0.6875rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--text-tertiary);
+  }
+  .af-position__line {
+    margin-top: 0.75rem;
+    font-size: clamp(1.35rem, 1rem + 1.6vw, 2rem);
+    font-weight: 600;
+    letter-spacing: -0.015em;
+  }
+  .af-position__body {
+    margin-inline: auto;
+    margin-top: 1rem;
+    max-width: 34rem;
+    font-size: 1rem;
+    line-height: 1.6;
+    color: var(--text-secondary);
+  }
+  .af-pillars {
+    display: grid;
+    gap: 1rem;
+    margin-top: 3rem;
+  }
+  .af-pillar {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    padding: 1.1rem;
+    border: 1px solid var(--border-subtle);
+    border-radius: 10px;
+  }
+  .af-pillar__n {
+    font-family: var(--font-mono), ui-monospace, monospace;
+    font-size: 0.6875rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #3b82f6;
+  }
+  .af-pillar__b {
+    font-size: 0.9375rem;
+    line-height: 1.55;
+    color: var(--text-secondary);
+  }
+  .af-close__cta {
+    display: grid;
+    gap: 2.5rem;
+    margin-top: 4rem;
+    padding-top: 3rem;
+    border-top: 1px solid var(--border-subtle);
+  }
+  .af-close__title {
+    font-size: clamp(1.6rem, 1.1rem + 2.2vw, 2.6rem);
+    font-weight: 600;
+    line-height: 1.12;
+    letter-spacing: -0.02em;
+  }
+  .af-close__note {
+    margin-top: 1rem;
+    font-size: 0.875rem;
+    color: var(--text-tertiary);
+  }
+  .af-close__areas-l {
+    margin-bottom: 1rem;
+    font-family: var(--font-mono), ui-monospace, monospace;
+    font-size: 0.6875rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-tertiary);
+  }
+
+  /* --------------------------------------- hero scroll beats
+     THE RULE THIS ENCODES, which the old markup broke:
+
+       Two text states may share a position only if their opacity
+       timing guarantees one is invisible while the other is readable.
+
+     Three beats of different wrapped heights used to be separate
+     `absolute bottom-0` blocks, so on a narrow screen they did not
+     share a baseline and their lines collided mid-crossfade. Here they
+     share ONE grid cell — identical box, whatever their height — and
+     the outgoing beat is fully gone (200ms) before the incoming one
+     begins (220ms delay). The cell reserves the tallest beat's height,
+     so the composition never shifts as the text changes. */
+  /* The bar is anchored to the sticky hero FRAME, so the beats sit in
+     the empty strip beneath the CTAs instead of on top of them. */
+  .af-hero-beatbar {
+    position: absolute;
+    inset-inline: 0;
+    bottom: 0;
+    padding-bottom: 2rem;
+    pointer-events: none;
+    transition: opacity 500ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .af-hero-beats {
+    display: grid;
+    align-items: end;
+  }
+  .af-hero-beat {
+    grid-area: 1 / 1;
+    max-width: 34rem;
+    opacity: 0;
+    /* Out fast and linear: no easing tail to linger under the next. */
+    transition: opacity 200ms linear;
+  }
+  .af-hero-beat.is-on {
+    opacity: 1;
+    /* In only after the outgoing has reached zero. */
+    transition: opacity 420ms cubic-bezier(0.22, 1, 0.36, 1) 220ms;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .af-hero-beat {
+      transition: none;
+    }
+  }
+
+  /* ------------------------------------------- hero entry doors */
+  .af-hero-doors {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+  .af-hero-door {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.3rem 0.7rem;
+    border: 1px solid var(--border-subtle);
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--surface) 50%, transparent);
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+  }
+
+  /* ================================================== >= 768px */
+  @media (min-width: 768px) {
+    .af-scene__atmos {
+      padding-block: 7rem;
+    }
+    .af-cmp {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .af-desk__field {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+    .af-desk__split {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .af-handover {
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+    }
+    .af-handover__mark {
+      flex-direction: column;
+      height: 100%;
+    }
+    .af-handover__rule {
+      flex: 1;
+      width: 1px;
+      height: auto;
+      background: linear-gradient(
+        180deg,
+        transparent,
+        color-mix(in srgb, #059669 45%, transparent),
+        transparent
+      );
+    }
+    .af-journey__line--narrow {
+      display: none;
+    }
+    .af-journey__line--wide {
+      display: block;
+    }
+    .af-jstage__meaning {
+      flex-basis: auto;
+    }
+    .af-surfaces {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .af-pillars {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+    .af-close__cta {
+      grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+      gap: 4rem;
+    }
+    .af-close {
+      padding-block: 7rem;
+    }
+  }
+
+  /* ============================================ reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    /* Both halves of every comparison stay present and legible. The
+       comparison IS the content: resolving to the happy ending alone
+       would remove the argument, not merely the motion. */
+    .af-cmp__side,
+    .af-cmp__side.is-dim,
+    .af-moment__broken,
+    .af-moment__whole,
+    .af-desk__item,
+    .af-jstage,
+    .af-thread__verdict {
+      transition: none !important;
+      opacity: 1 !important;
+      transform: none !important;
+    }
+    .af-day__ev {
+      animation: none;
+    }
+    .af-wire {
+      transition: none;
+      stroke-dashoffset: 0;
+      opacity: 0.5;
+    }
+    /* The two words normally share one grid cell and cross-fade. The
+       rule above forces both to full opacity, which in a shared cell
+       would print them on top of each other — the exact defect this
+       design forbids. Under reduced motion they therefore leave the
+       shared cell and sit side by side, so the before/after reads as a
+       static comparison instead of a collision. */
+    .af-moment__states {
+      display: flex;
+      align-items: baseline;
+      justify-content: flex-end;
+      gap: 0.5rem;
+    }
+    .af-moment__broken,
+    .af-moment__whole {
+      grid-area: auto;
+    }
+    .af-moment__broken {
+      text-decoration: line-through;
+      opacity: 0.55 !important;
     }
   }
 }

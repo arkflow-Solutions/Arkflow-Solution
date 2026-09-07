@@ -34,7 +34,7 @@ export function OrgJsonLd() {
     // current. "Payment" was removed: invoice and payment automation is
     // classified future and exploratory (founder ruling, 6 Sep 2026).
     description:
-      "ArkFlow is a Revenue Operating Company. It builds and operates AI-powered revenue systems across the customer journey, from first enquiry through booking, follow-up and repeat customer.",
+      "ArkFlow is a Revenue Operating Company. It designs the customer journey, builds the system that runs it, and keeps operating it — from first enquiry through booking, follow-up and repeat customer.",
     logo: `${SITE_URL}/brand/arkflow-logo-lockup.png`,
     // Verified profiles only. An unconfirmed URL here is a false claim
     // of identity, so sameAs is omitted entirely when the list is empty.

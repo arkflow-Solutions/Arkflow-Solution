@@ -3,13 +3,13 @@
 import { useRef } from "react";
 import dynamic from "next/dynamic";
 import { Container } from "@/components/ui/container";
-import { Eyebrow } from "@/components/ui/eyebrow";
 import { Button } from "@/components/ui/button";
 import { DiscoveryCallButton } from "@/components/home/v3/shared";
 import { LeakFlow } from "@/components/motion/leak-flow";
+import { ChannelIcon } from "@/components/ui/channel-icon";
 import { useSceneGate, useScrollProgress } from "@/lib/use-scene-gate";
 import { track } from "@/lib/analytics";
-import { hero } from "@/lib/revenue-content";
+import { sceneOpening } from "@/lib/scene-content";
 import { cn } from "@/lib/utils";
 
 const HeroScene = dynamic(() => import("@/components/three/hero-scene"), {
@@ -40,7 +40,18 @@ export function Hero() {
   const progress = useScrollProgress(ref);
 
   const beat =
-    progress >= hero.beats[2].at ? 2 : progress >= hero.beats[1].at ? 1 : 0;
+    progress >= sceneOpening.beats[2].at
+      ? 2
+      : progress >= sceneOpening.beats[1].at
+        ? 1
+        : 0;
+
+  /* The headline block fades as the pinned story advances. Hoisted to a
+     variable because the beat bar and the pointer-events guard both
+     need to know when it has gone. */
+  const contentOpacity = use3d
+    ? 1 - Math.max(0, (progress - 0.2) / 0.22)
+    : 1;
 
   return (
     <section
@@ -73,72 +84,126 @@ export function Hero() {
           <div
             className="max-w-3xl transition-opacity duration-500"
             style={{
-              opacity: use3d ? 1 - Math.max(0, (progress - 0.2) / 0.22) : 1,
+              opacity: contentOpacity,
+              /* Once faded out this block is invisible but was still
+                 clickable, so the scroll beats were sitting on top of
+                 live buttons. Nothing that cannot be seen should be
+                 hittable. */
+              pointerEvents: contentOpacity < 0.05 ? "none" : undefined,
             }}
           >
-            <div className="af-hero-badge">
-              <span className="af-hero-badge__dot" aria-hidden />
-              <Eyebrow className="text-[color:var(--text-tertiary)]">
-                {hero.eyebrow}
-              </Eyebrow>
+            {/* PHASE 3E — the "Revenue Operating Company" eyebrow is
+                gone from here. It was the first three words on the site
+                and the phrase a business owner is least equipped to
+                decode. The positioning was MOVED, not deleted: it now
+                lands in SystemAndClose (v3/close.tsx), once the visitor
+                has watched the system work and the category name
+                describes something they recognise.
+
+                In its place: the doors an enquiry actually arrives
+                through, named in words nobody has to learn. */}
+            <div className="af-hero-doors">
+              {sceneOpening.doors.map((d) => (
+                <span key={d} className="af-hero-door">
+                  <ChannelIcon
+                    name={d === "Messaging" ? "WhatsApp" : d}
+                    className="text-blue-soft"
+                  />
+                  {d}
+                </span>
+              ))}
             </div>
 
             <h1 className="mt-8 text-display-xl font-semibold">
-              {hero.title}
+              {sceneOpening.title}
               <br />
-              <span className="af-leak-word">{hero.titleAccent}</span>
+              <span className="af-leak-word">{sceneOpening.titleAccent}</span>
             </h1>
 
-            <p className="mt-10 max-w-prose text-lead text-[color:var(--text-secondary)]">
-              {hero.lead}
-            </p>
-            <p className="mt-4 max-w-prose text-lead text-white">
-              {hero.leadTwo}
+            {/* One line. The scene behind it does the explaining. */}
+            <p className="mt-8 max-w-prose text-lead text-[color:var(--text-secondary)]">
+              {sceneOpening.lead}
             </p>
 
             <div className="pointer-events-auto mt-12 flex flex-wrap items-center gap-4">
               <DiscoveryCallButton location="homepage_hero">
-                {hero.primaryCta}
+                {sceneOpening.primaryCta}
               </DiscoveryCallButton>
               <Button
-                href="#revenue-engine"
+                href="#unanswered"
                 variant="secondary"
                 size="large"
                 onClick={() =>
                   track("cta_secondary_click", { location: "homepage_hero" })
                 }
               >
-                {hero.secondaryCta}
+                {sceneOpening.secondaryCta}
               </Button>
             </div>
           </div>
 
-          {/* Scroll beats, only while the pinned story is running. */}
-          {use3d && (
-            <div
-              className="pointer-events-none absolute inset-x-0 bottom-0 transition-opacity duration-500"
-              style={{ opacity: progress > 0.24 ? 1 : 0 }}
-            >
-              {hero.beats.map((b, i) => (
-                <div
-                  key={b.kicker}
-                  className="absolute inset-x-0 bottom-0 transition-all duration-700 ease-premium"
-                  style={{
-                    opacity: i === beat ? 1 : 0,
-                    transform: `translateY(${i === beat ? 0 : 12}px)`,
-                  }}
-                >
-                  <p className="font-mono text-eyebrow uppercase text-blue-soft">
-                    {b.kicker}
-                  </p>
-                  <p className="mt-3 max-w-xl text-subheading font-medium leading-snug">
+        </Container>
+
+        {/* Scroll beats, only while the pinned story is running.
+
+            ANCHORED TO THE STICKY FRAME, NOT TO THE TEXT BLOCK. They
+            used to live inside the Container above and were positioned
+            `bottom-0` — but that is the bottom of the CONTENT, which at
+            375px ends at 686px while the frame ends at 812px. The beats
+            therefore landed on top of the CTA buttons with a measured
+            61px overlap, while a 126px strip sat empty beneath them.
+            Sitting outside the Container, they use that strip. */}
+        {use3d && (
+          /* THE BEAT STACK. Fixed 7 September 2026 — see below.
+                Every beat occupies ONE shared grid cell (.af-hero-beats
+                / .af-hero-beat in globals.css), so all three sit in
+                exactly the same box whatever their wrapped height, and
+                their opacity is staggered so two are never legible at
+                once.
+
+                THE BUG THIS REPLACES. Each beat used to be its own
+                `absolute inset-x-0 bottom-0` block. Bottom-anchored
+                blocks of DIFFERENT heights do not share a baseline: at
+                375px "Between the steps, nobody is watching." wraps to
+                two lines (61px tall, top 637) while "That is where they
+                stop." is one line (30px tall, top 667) — so the second
+                line of one landed on exactly the same 30px row as the
+                whole of the other. During the 700ms crossfade both were
+                partially visible and the rows collided, rendering as
+                "Th…That is where they stop."
+
+                It never showed on desktop because at 1280px all three
+                beats fit on one line, so all three were the same height
+                and did share a baseline. Classic desktop geometry
+                carried onto mobile — and note that it passed every
+                overflow, width and DOM check, because nothing was
+                overflowing or missing. Two things were simply in the
+                same place. */
+          <div
+            className="af-hero-beatbar"
+            style={{ opacity: progress > 0.24 ? 1 : 0 }}
+          >
+            <Container>
+              <div className="af-hero-beats">
+                {/* No kicker label: the beat is one plain sentence.
+                    Only the beat actually on screen is announced, so a
+                    screen reader gets one caption, not all three. */}
+                {sceneOpening.beats.map((b, i) => (
+                  <p
+                    key={b.line}
+                    className={cn(
+                      "af-hero-beat text-subheading font-medium leading-snug",
+                      i === beat && "is-on"
+                    )}
+                    aria-hidden={i !== beat}
+                  >
                     {b.line}
                   </p>
-                </div>
-              ))}
-            </div>
-          )}
-        </Container>
+                ))}
+              </div>
+            </Container>
+          </div>
+        )}
 
         {/* Philosophy strip. Replaces the superseded commitments strip:
             these are statements of intent, not performance claims. */}

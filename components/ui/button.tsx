@@ -66,6 +66,33 @@ export function Button({
     </>
   );
 
+  /**
+   * IN-PAGE ANCHORS USE A PLAIN <a>, NOT next/link.
+   *
+   * next/link intercepts the click and performs a router navigation.
+   * For a same-page hash that is the wrong mechanism, and with Lenis
+   * smoothing the scroll it silently did nothing: clicking the hero's
+   * "See where" moved the page 129px, left location.hash empty, and
+   * never reached #unanswered. A CTA that goes nowhere.
+   *
+   * A plain anchor gets native hash navigation, which also honours the
+   * `scroll-padding-top` on <html> — so the target lands below the
+   * fixed navigation rather than under it.
+   */
+  if (href?.startsWith("#")) {
+    return (
+      <a
+        href={href}
+        className={classes}
+        onClick={
+          props.onClick as unknown as React.MouseEventHandler<HTMLAnchorElement>
+        }
+      >
+        {content}
+      </a>
+    );
+  }
+
   if (href) {
     return (
       <Link

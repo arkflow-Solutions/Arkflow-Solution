@@ -7,6 +7,7 @@ import { Reveal } from "@/components/motion/reveal";
 import { SectionHead, IllustrativeTag } from "@/components/home/v3/shared";
 import { useInView } from "@/lib/use-in-view";
 import { retention, reactivation, multiLocation } from "@/lib/revenue-content";
+import { sceneDisappearing } from "@/lib/scene-content";
 import { cn } from "@/lib/utils";
 
 /* ======================================================= 11 · RETENTION
@@ -139,11 +140,34 @@ export function Reactivation() {
       <Container>
         <SectionHead
           eyebrow={reactivation.eyebrow}
-          title={reactivation.title}
-          lead={reactivation.lead}
+          title={sceneDisappearing.title}
+          lead={sceneDisappearing.lead}
         />
 
-        <Reveal className="mt-16">
+        {/* PHASE 3E — the opening frame. Before the field of dormant
+            records, ONE record: a customer who bought and then cooled.
+            Without it the grid reads as an abstract array of cells; with
+            it, the grid reads as many of that person, which is the
+            recognition this scene is for ("I have hundreds of those").
+            No count is stated and none may be — see reactivation.note. */}
+        <Reveal className="mt-14">
+          <ol className="af-record-life" aria-label="What happens to one customer">
+            {sceneDisappearing.lifecycle.map((step, i) => (
+              <li
+                key={step.label}
+                className={`af-record-life__step is-${step.tone}`}
+              >
+                <span className="af-record-life__dot" aria-hidden />
+                <span className="af-record-life__l">{step.label}</span>
+                {i < sceneDisappearing.lifecycle.length - 1 && (
+                  <span className="af-record-life__gap" aria-hidden />
+                )}
+              </li>
+            ))}
+          </ol>
+        </Reveal>
+
+        <Reveal className="mt-12">
           <div ref={ref} className="af-dormant">
             <div className="flex flex-wrap items-center justify-between gap-4">
               <span className="font-mono text-eyebrow uppercase text-[color:var(--text-tertiary)]">

@@ -23,12 +23,12 @@ import { GoogleAnalytics } from "@/components/analytics/google-analytics";
  * no verified client data, so none is claimed.
  */
 const DESCRIPTION =
-  "ArkFlow is a Revenue Operating Company. We build and operate the AI-powered revenue systems that capture more enquiries, convert more customers, retain more customers and remove repetitive manual work.";
+  "ArkFlow is a Revenue Operating Company. We design the customer journey, build the system that runs it, and keep operating it — so enquiries get answered, follow-up happens, and customers come back.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "ArkFlow · AI-powered revenue systems for growing businesses",
+    default: "ArkFlow · A Revenue Operating Company for growing businesses",
     template: "%s · ArkFlow",
   },
   description: DESCRIPTION,
@@ -51,12 +51,12 @@ export const metadata: Metadata = {
     locale: "en_SG",
     url: SITE_URL,
     siteName: "ArkFlow",
-    title: "ArkFlow · AI-powered revenue systems for growing businesses",
+    title: "ArkFlow · A Revenue Operating Company for growing businesses",
     description: DESCRIPTION,
   },
   twitter: {
     card: "summary_large_image",
-    title: "ArkFlow · AI-powered revenue systems for growing businesses",
+    title: "ArkFlow · A Revenue Operating Company for growing businesses",
     description: DESCRIPTION,
   },
   robots: { index: true, follow: true },

@@ -48,9 +48,9 @@ export function Footer() {
           <div>
             <Wordmark size="large" />
             <p className="mt-4 max-w-xs text-small text-[color:var(--text-tertiary)]">
-              A Revenue Operating Company. We build and operate the
-              AI-powered revenue systems that sit across the customer
-              journey. Capture more, convert more, retain more.
+              A Revenue Operating Company. We design the customer
+              journey, build the system that runs it, and keep operating
+              it. Capture more, convert more, retain more.
             </p>
             {/* Verified profiles only — see lib/social.ts. A profile with
                 no confirmed URL renders nothing rather than a dead link. */}

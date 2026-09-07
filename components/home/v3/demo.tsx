@@ -7,6 +7,9 @@ import { Reveal } from "@/components/motion/reveal";
 import { Button } from "@/components/ui/button";
 import { SectionHead, IllustrativeTag } from "@/components/home/v3/shared";
 import { useInView } from "@/lib/use-in-view";
+import { useViewportProgress } from "@/lib/use-viewport-progress";
+import { SceneAtmosphere } from "@/components/motion/scene-atmosphere";
+import { THROUGHLINE_STAGES } from "@/lib/throughline";
 import { track } from "@/lib/analytics";
 import { aiDemo, aiDemoScript, customerJourney } from "@/lib/revenue-content";
 import { cn } from "@/lib/utils";
@@ -27,6 +30,8 @@ const SCRIPT = aiDemoScript;
 
 export function AiConversation() {
   const { ref, inView } = useInView<HTMLDivElement>("-120px");
+  const atmosRef = useRef<HTMLDivElement>(null);
+  const { progress: atmos } = useViewportProgress(atmosRef, 1, 0.02);
   const [shown, setShown] = useState(0);
   const [typing, setTyping] = useState<null | "ai" | "human">(null);
   const [state, setState] = useState<"ready" | "running" | "complete">("ready");
@@ -106,7 +111,24 @@ export function AiConversation() {
 
   return (
     <Section className="hairline" id="ai-conversation">
-      <Container>
+      {/* PHASE 3E CONTINUITY. Scenes 01–06 and 09–10 all carry the
+          Phase 3D atmosphere, keyed to the canonical stage they are
+          about; this section and Human + AI did not, so the light went
+          flat for two scenes in the middle of the page and the rhythm
+          broke exactly where the argument turns to proof.
+
+          Lit as Book — the stage this conversation is travelling
+          toward — so the environment reads as a magnified moment inside
+          the same journey rather than a separate demonstration. No copy
+          and no markup inside the section changed. */}
+      <div ref={atmosRef}>
+        <SceneAtmosphere
+          progress={atmos}
+          seal={1}
+          focusT={THROUGHLINE_STAGES[4].t}
+          vignette={false}
+        >
+      <Container className="relative z-[1]">
         <SectionHead
           eyebrow={aiDemo.eyebrow}
           title={aiDemo.title}
@@ -202,6 +224,8 @@ export function AiConversation() {
           </Reveal>
         </div>
       </Container>
+        </SceneAtmosphere>
+      </div>
     </Section>
   );
 }

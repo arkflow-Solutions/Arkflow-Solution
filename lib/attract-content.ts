@@ -33,7 +33,9 @@
  */
 
 export const attractHero = {
-  eyebrow: "Attract · Stage one",
+  /* Public label follows the navigation: "Website", not "Attract".
+     The canonical stage key is unchanged — see lib/stage-labels.ts. */
+  eyebrow: "Website · Stage one",
   title: "Get discovered. Build the front door.",
   titleAccent: "Turn attention into enquiries.",
   lead: "A website is the first stage of the customer journey, not a brochure that sits beside it. ArkFlow can build that front door on its own — or as part of the system it opens into.",

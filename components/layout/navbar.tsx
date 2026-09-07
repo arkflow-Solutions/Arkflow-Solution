@@ -36,7 +36,14 @@ import { Wordmark } from "@/components/layout/wordmark";
  * themselves and would undo the Revenue Operating Company positioning.
  */
 const links = [
-  { label: "Attract", href: "/attract" },
+  /* "Website", not "Attract".
+     The route stays /attract and the canonical Revenue Engine key stays
+     "Attract" — this is the public label only, from the same decision
+     that put plain-English stage names on the homepage. A business
+     owner knows what a website is; "Attract" is a stage name they have
+     no reason to have learned. See lib/stage-labels.ts, and note that
+     verify.mjs check 4 asserts the KEYS, not display text. */
+  { label: "Website", href: "/attract" },
   { label: "Solutions", href: "/solutions" },
   { label: "What we build", href: "/packages" },
   { label: "Insights", href: "/insights" },

@@ -20,6 +20,9 @@ import { SpotlightCard } from "@/components/ui/spotlight-card";
 import { Tilt } from "@/components/motion/tilt";
 import { SectionHead } from "@/components/home/v3/shared";
 import { useInView } from "@/lib/use-in-view";
+import { useViewportProgress } from "@/lib/use-viewport-progress";
+import { SceneAtmosphere } from "@/components/motion/scene-atmosphere";
+import { THROUGHLINE_STAGES } from "@/lib/throughline";
 import { track } from "@/lib/analytics";
 import { beforeAfter, capabilities, humanAi } from "@/lib/revenue-content";
 import { cn } from "@/lib/utils";
@@ -181,9 +184,25 @@ export function Capabilities() {
 /* ====================================================== 10 · HUMAN + AI */
 
 export function HumanAndAi() {
+  const atmosRef = useRef<HTMLDivElement>(null);
+  const { progress: atmos } = useViewportProgress(atmosRef, 1, 0.02);
+
   return (
     <Section className="hairline" id="human-and-ai">
-      <Container>
+      {/* PHASE 3E CONTINUITY — see the note in demo.tsx.
+          Lit as Respond, which is the one `branch` stage in the
+          canonical model and therefore the only green in the palette.
+          The environment turns green exactly where the section's
+          argument is that a person takes over: the light is making the
+          point before the columns do. */}
+      <div ref={atmosRef}>
+        <SceneAtmosphere
+          progress={atmos}
+          seal={1}
+          focusT={THROUGHLINE_STAGES[2].t}
+          vignette={false}
+        >
+      <Container className="relative z-[1]">
         <SectionHead
           eyebrow={humanAi.eyebrow}
           title={humanAi.title}
@@ -191,7 +210,19 @@ export function HumanAndAi() {
           wide
         />
 
-        <div className="mt-16 grid gap-4 lg:grid-cols-2">
+        {/* PHASE 3E — the handover, shown on the thread the visitor has
+            just watched rather than asserted in two lists.
+
+            The marker sits between the two columns and names the exact
+            moment from the approved script where the AI stopped: a
+            health question it is not configured to answer. Making the
+            boundary visible on real evidence is what stops this section
+            reading as a claim.
+
+            The lists are trimmed from seven items to four each. Nothing
+            was reworded — the remaining items are verbatim from
+            humanAi.ai.items / humanAi.human.items. */}
+        <div className="af-handover">
           <Reveal>
             <div className="af-split af-split--ai card-toplight">
               <span className="af-split__tag">{humanAi.ai.tag}</span>
@@ -199,7 +230,7 @@ export function HumanAndAi() {
                 {humanAi.ai.title}
               </h3>
               <ul className="mt-8">
-                {humanAi.ai.items.map((item) => (
+                {humanAi.ai.items.slice(0, 4).map((item) => (
                   <li key={item}>
                     <i className="af-dot af-dot--flow" aria-hidden />
                     {item}
@@ -209,6 +240,18 @@ export function HumanAndAi() {
             </div>
           </Reveal>
 
+          {/* The boundary itself. Green is human takeover everywhere on
+              this site, and Respond is the one `branch` stage in the
+              canonical model — the palette already says this. */}
+          <div className="af-handover__mark">
+            <span className="af-handover__rule" aria-hidden />
+            <span className="af-handover__badge">
+              <i className="af-dot af-dot--human" aria-hidden />
+              Escalation · a person takes over
+            </span>
+            <span className="af-handover__rule" aria-hidden />
+          </div>
+
           <Reveal delay={0.08}>
             <div className="af-split af-split--human card-toplight">
               <span className="af-split__tag">{humanAi.human.tag}</span>
@@ -216,7 +259,7 @@ export function HumanAndAi() {
                 {humanAi.human.title}
               </h3>
               <ul className="mt-8">
-                {humanAi.human.items.map((item) => (
+                {humanAi.human.items.slice(0, 4).map((item) => (
                   <li key={item}>
                     <i className="af-dot af-dot--human" aria-hidden />
                     {item}
@@ -233,6 +276,8 @@ export function HumanAndAi() {
           </p>
         </Reveal>
       </Container>
+        </SceneAtmosphere>
+      </div>
     </Section>
   );
 }
