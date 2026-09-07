@@ -188,7 +188,7 @@ export function HumanAndAi() {
   const { progress: atmos } = useViewportProgress(atmosRef, 1, 0.02);
 
   return (
-    <Section className="hairline" id="human-and-ai">
+    <section id="human-and-ai" className="af-scene">
       {/* PHASE 3E CONTINUITY — see the note in demo.tsx.
           Lit as Respond, which is the one `branch` stage in the
           canonical model and therefore the only green in the palette.
@@ -201,6 +201,11 @@ export function HumanAndAi() {
           seal={1}
           focusT={THROUGHLINE_STAGES[2].t}
           vignette={false}
+          /* PHASE 3F.1 — the shared vertical rhythm. This scene used
+             the legacy <Section> padding (6/8/9rem) while the Phase 3E
+             scenes breathed at 5.5/7rem, so the page changed cadence
+             three times for purely historical reasons. */
+          className="af-scene__atmos"
         >
       <Container className="relative z-[1]">
         <SectionHead
@@ -278,6 +283,6 @@ export function HumanAndAi() {
       </Container>
         </SceneAtmosphere>
       </div>
-    </Section>
+    </section>
   );
 }

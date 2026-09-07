@@ -76,6 +76,7 @@ export function SceneJourney() {
   return (
     <Scene
       id="the-journey"
+      emphasis={1.15}
       stageIndex={LAST}
       seal={1}
       title={sceneJourney.title}

@@ -52,6 +52,13 @@ export function useSceneTurn(ref: React.RefObject<HTMLElement>) {
 
 export function Scene({
   id,
+  /**
+   * Phase 3F.1 emotional curve. Problem scenes sit below 1 so they read
+   * darker; the payoffs go above it. Contrast is what makes a climax —
+   * every scene resolving to the same 0.2 is why the page was evenly
+   * toned. Tint and the amber/green rules are untouched.
+   */
+  emphasis = 1,
   /** Canonical stage index this scene is about. Drives the light. */
   stageIndex,
   /** 0 = the handover is open and leaking, 1 = closed. */
@@ -66,6 +73,7 @@ export function Scene({
   bare = false,
 }: {
   id: string;
+  emphasis?: number;
   stageIndex?: number;
   seal?: number;
   eyebrow?: string;
@@ -82,11 +90,12 @@ export function Scene({
     stageIndex !== undefined ? THROUGHLINE_STAGES[stageIndex] : undefined;
 
   return (
-    <section ref={ref} id={id} className={cn("af-scene hairline", className)}>
+    <section ref={ref} id={id} className={cn("af-scene", className)}>
       <SceneAtmosphere
         progress={progress}
         seal={seal}
         focusT={stage?.t}
+        emphasis={emphasis}
         vignette={false}
         className="af-scene__atmos"
       >

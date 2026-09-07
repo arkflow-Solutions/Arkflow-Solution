@@ -50,6 +50,7 @@ export function SceneDesk() {
     <Scene
       id="the-desk"
       /* Respond — the stage where a person is currently the system. */
+      emphasis={0.7}
       stageIndex={2}
       seal={connected}
       title={sceneDesk.title}

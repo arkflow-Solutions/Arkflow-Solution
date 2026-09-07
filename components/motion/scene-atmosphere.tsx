@@ -42,8 +42,10 @@ export function SceneAtmosphere({
   seal = 1,
   /** The stage the section is about, and the peak of its light. */
   focusT,
-  /** Where this section's stretch of the Throughline begins. */
+  /** Where this section stretch of the Throughline begins. */
   fromT = 0,
+  /** Phase 3F.1 emotional curve. See sectionLuminance. */
+  emphasis = 1,
   /** Adds the depth vignette. Off for sections that sit flush. */
   vignette = true,
   as: Tag = "div",
@@ -54,12 +56,13 @@ export function SceneAtmosphere({
   seal?: number;
   focusT?: number;
   fromT?: number;
+  emphasis?: number;
   vignette?: boolean;
   as?: "div" | "section";
   className?: string;
   children: React.ReactNode;
 }) {
-  const lum = sectionLuminance(progress, seal, focusT, fromT);
+  const lum = sectionLuminance(progress, seal, focusT, fromT, emphasis);
 
   return (
     <Tag

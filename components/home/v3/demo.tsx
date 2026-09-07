@@ -110,7 +110,7 @@ export function AiConversation() {
     from === "them" ? "Customer" : from === "ai" ? "ArkFlow AI" : "Priya · team";
 
   return (
-    <Section className="hairline" id="ai-conversation">
+    <section id="ai-conversation" className="af-scene">
       {/* PHASE 3E CONTINUITY. Scenes 01–06 and 09–10 all carry the
           Phase 3D atmosphere, keyed to the canonical stage they are
           about; this section and Human + AI did not, so the light went
@@ -127,6 +127,9 @@ export function AiConversation() {
           seal={1}
           focusT={THROUGHLINE_STAGES[4].t}
           vignette={false}
+          /* PHASE 3F.1 — shared vertical rhythm, replacing the legacy
+             <Section> padding. See the note in system.tsx. */
+          className="af-scene__atmos"
         >
       <Container className="relative z-[1]">
         <SectionHead
@@ -226,7 +229,7 @@ export function AiConversation() {
       </Container>
         </SceneAtmosphere>
       </div>
-    </Section>
+    </section>
   );
 }
 

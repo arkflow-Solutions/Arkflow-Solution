@@ -1,5 +1,6 @@
 "use client";
 
+import { useRef } from "react";
 import Link from "next/link";
 import { Container } from "@/components/ui/container";
 import { Section } from "@/components/ui/section";
@@ -10,6 +11,9 @@ import { DiscoveryCallButton, SectionHead } from "@/components/home/v3/shared";
 import { track } from "@/lib/analytics";
 import { whyArkflow, auditCta, finalCta } from "@/lib/revenue-content";
 import { sceneClose } from "@/lib/scene-content";
+import { useViewportProgress } from "@/lib/use-viewport-progress";
+import { SceneAtmosphere } from "@/components/motion/scene-atmosphere";
+import { THROUGHLINE_STAGES } from "@/lib/throughline";
 
 /* ==================================================== 16 · WHY ARKFLOW
  *
@@ -157,9 +161,25 @@ export function FinalCta() {
  */
 
 export function SystemAndClose() {
+  const atmosRef = useRef<HTMLDivElement>(null);
+  const { progress: atmos } = useViewportProgress(atmosRef, 1, 0.02);
+
   return (
-    <section id="revenue-leak-audit" className="af-scene af-close hairline">
-      <Container>
+    /* PHASE 3F.1 — the closing scene had no atmosphere, so the light
+       went flat at the emotional landing: the one moment the page most
+       needs to feel resolved. Lit at Grow, the far end of the line, and
+       the only scene besides the pivot that carries a vignette. Two
+       vignettes in ten scenes is punctuation; ten would be a filter. */
+    <section id="revenue-leak-audit" className="af-scene af-close">
+      <div ref={atmosRef}>
+        <SceneAtmosphere
+          progress={atmos}
+          seal={1}
+          focusT={THROUGHLINE_STAGES[THROUGHLINE_STAGES.length - 1].t}
+          emphasis={1.35}
+          className="af-scene__atmos"
+        >
+      <Container className="relative z-[1]">
         {/* --- the connected system ----------------------------- */}
         <Reveal>
           <header className="af-scene__head af-scene__head--centre">
@@ -238,6 +258,8 @@ export function SystemAndClose() {
           </div>
         </Reveal>
       </Container>
+        </SceneAtmosphere>
+      </div>
     </section>
   );
 }

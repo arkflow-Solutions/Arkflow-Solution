@@ -9,6 +9,7 @@ import { HumanAndAi } from "@/components/home/v3/system";
 import { SceneJourney } from "@/components/home/scenes/journey";
 import { SystemAndClose } from "@/components/home/v3/close";
 import { InsightsStrip } from "@/components/home/insights-strip";
+import { ThroughlineRail } from "@/components/throughline/throughline-rail";
 
 /**
  * Homepage — ten scenes, one continuous story (Phase 3E).
@@ -102,6 +103,11 @@ import { InsightsStrip } from "@/components/home/insights-strip";
 export default function HomePage() {
   return (
     <>
+      {/* PHASE 3F.2 — one Throughline for the whole page, revealed per
+          scene. Mounted here rather than inside any scene because it is
+          the thing the scenes have in common. Renders nothing at all on
+          devices where the hero already owns the one Canvas 2D loop. */}
+      <ThroughlineRail />
       <Hero />
       <SceneUnanswered />
       <SceneDays />

@@ -134,6 +134,7 @@ export function SceneUnanswered() {
       id="unanswered"
       /* Capture. A gap in the canonical model, and left unsealed here
          because this scene is the leak, not the fix. */
+      emphasis={0.62}
       stageIndex={1}
       seal={settled ? 1 : 1 - turn}
       title={sceneUnanswered.title}

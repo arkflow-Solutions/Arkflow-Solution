@@ -129,6 +129,7 @@ export function SceneDays() {
     <Scene
       id="the-days"
       /* Book. The second flagged gap in the canonical model. */
+      emphasis={0.62}
       stageIndex={4}
       seal={settled ? 1 : turn}
       title={sceneDays.title}

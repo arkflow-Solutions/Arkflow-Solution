@@ -43,13 +43,14 @@ export function SceneTransformation() {
   const seal = settled ? 1 : turn;
 
   return (
-    <section ref={ref} id="the-shift" className="af-scene af-scene--pivot hairline">
+    <section ref={ref} id="the-shift" className="af-scene af-scene--pivot">
       <SceneAtmosphere
         progress={progress}
         seal={seal}
         /* Lit as Grow — the far end of the line, which is the first
            time on this page the environment reaches it. */
         focusT={THROUGHLINE_STAGES[THROUGHLINE_STAGES.length - 1].t}
+        emphasis={1.6}
         className="af-scene__atmos"
       >
         <Container>

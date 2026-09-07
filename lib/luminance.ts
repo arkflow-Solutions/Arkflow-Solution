@@ -186,7 +186,26 @@ export function sectionLuminance(
   /** Stage the section is about, and the peak of its light. */
   focusT?: number,
   /** Where the section's stretch of line starts. */
-  fromT = 0
+  fromT = 0,
+  /**
+   * PHASE 3F.1 — the emotional curve.
+   *
+   * Every scene previously resolved to roughly the same 0.2, so the page
+   * was evenly toned and no moment could feel like a payoff. Contrast is
+   * what makes a climax; a uniform average is what removes one.
+   *
+   * This scales a scene's light WITHOUT touching stage semantics: the
+   * tint, the amber-only and green-only rules and the sealed-gap
+   * behaviour are all unchanged. Problem scenes go below 1 so they sit
+   * darker; the pivot and the close go above it so they can rise.
+   *
+   *   dark -> tension -> recognition -> transformation -> connection
+   *   -> restrained landing
+   *
+   * Clamped to the 0.6 ceiling regardless of what is passed, so this
+   * can never be used to make the environment compete with the line.
+   */
+  emphasis = 1
 ): Luminance {
   const p = clamp01(progress);
   if (p <= 0.001) return LUMINANCE_IDLE;
@@ -207,9 +226,15 @@ export function sectionLuminance(
   const settle =
     p <= PEAK ? 1 : 1 - SETTLE * smooth((p - PEAK) / (1 - PEAK));
 
+  /** Hard ceiling. The environment lights the composition; it never
+   *  competes with it, whatever emphasis a caller asks for. */
+  const CEILING = 0.6;
+  const shaped =
+    lerp(near.intensity, far.intensity, walk) * arrive * settle * emphasis;
+
   return {
     tint: far.tint,
-    intensity: lerp(near.intensity, far.intensity, walk) * arrive * settle,
+    intensity: Math.min(CEILING, shaped),
     bias: lerp(near.bias, far.bias, walk),
     reason:
       p < PEAK

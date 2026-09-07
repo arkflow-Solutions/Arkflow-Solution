@@ -2741,8 +2741,11 @@
   }
 
   /* ------------------------------------- scene 10 system + close */
+  /* PHASE 3F.1 — padding now comes from .af-scene__atmos, shared with
+     every other scene, so the page holds one vertical rhythm instead of
+     three. This class carries only close-specific layout. */
   .af-close {
-    padding-block: 5.5rem;
+    position: relative;
   }
   .af-surfaces {
     display: grid;
@@ -2967,9 +2970,6 @@
       grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
       gap: 4rem;
     }
-    .af-close {
-      padding-block: 7rem;
-    }
   }
 
   /* ============================================ reduced motion */
@@ -3015,6 +3015,69 @@
     .af-moment__broken {
       text-decoration: line-through;
       opacity: 0.55 !important;
+    }
+  }
+}
+
+/* ============================================================
+   PHASE 3F.2 — THE THROUGHLINE SPINE
+
+   One Throughline for the whole page, revealed per scene. Named
+   `af-spine`, not `af-rail`: `.af-rail` is already taken by the
+   flow-line signature further up this file.
+
+   NOT WALLPAPER. Presence is set per scene by ThroughlineRail and is
+   zero in the hero, zero in the footer, and zero in the two scenes
+   that draw their own line. Read the note in that component before
+   changing any of these numbers.
+   ============================================================ */
+
+@layer components {
+  .af-spine {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0;
+    /* 900ms — slower than a scene turn, so the line reads as the
+       environment changing rather than as an element animating in. */
+    transition: opacity 900ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .af-spine.is-on {
+    opacity: var(--spine-presence, 0);
+  }
+
+  /* Desktop: the line runs low in the frame, beneath the composition,
+     where it reads as ground rather than as an object on the page. */
+  .af-spine__c {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 6vh;
+    width: 100%;
+    height: 44vh;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .af-spine {
+      transition: none;
+    }
+  }
+
+  /* MOBILE IS ITS OWN COMPOSITION.
+
+     A wide horizontal line on a 375px screen is the decorative-squiggle
+     failure from Phase 3C repeated. A phone scrolls vertically, so the
+     line does too: a tall narrow band down the left edge that the
+     content flows past, like a margin rule. */
+  @media (max-width: 640px) {
+    .af-spine__c {
+      left: -14vw;
+      right: auto;
+      top: 0;
+      bottom: 0;
+      width: 34vw;
+      height: 100%;
     }
   }
 }

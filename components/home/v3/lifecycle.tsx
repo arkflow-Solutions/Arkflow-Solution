@@ -6,6 +6,9 @@ import { Section } from "@/components/ui/section";
 import { Reveal } from "@/components/motion/reveal";
 import { SectionHead, IllustrativeTag } from "@/components/home/v3/shared";
 import { useInView } from "@/lib/use-in-view";
+import { useViewportProgress } from "@/lib/use-viewport-progress";
+import { SceneAtmosphere } from "@/components/motion/scene-atmosphere";
+import { THROUGHLINE_STAGES } from "@/lib/throughline";
 import { retention, reactivation, multiLocation } from "@/lib/revenue-content";
 import { sceneDisappearing } from "@/lib/scene-content";
 import { cn } from "@/lib/utils";
@@ -88,6 +91,8 @@ const CELL_COUNT = 260;
 
 export function Reactivation() {
   const { ref, inView } = useInView<HTMLDivElement>("-80px");
+  const atmosRef = useRef<HTMLDivElement>(null);
+  const { progress: atmos } = useViewportProgress(atmosRef, 1, 0.02);
   const [warm, setWarm] = useState<Set<number>>(new Set());
   const [wake, setWake] = useState<Set<number>>(new Set());
   const started = useRef(false);
@@ -136,8 +141,21 @@ export function Reactivation() {
   }, [inView, plan]);
 
   return (
-    <Section className="hairline" id="reactivation">
-      <Container>
+    /* PHASE 3F.1 — this scene had NO atmosphere at all, so the
+       environmental light went dark for the whole customer-disappears
+       moment and the luminance spine had a hole in the middle of the
+       page. Lit at Reactivate: the one place the line loops back on
+       itself, which is exactly what this scene is about. */
+    <section id="reactivation" className="af-scene">
+      <div ref={atmosRef}>
+        <SceneAtmosphere
+          progress={atmos}
+          seal={1}
+          focusT={THROUGHLINE_STAGES[8].t}
+          vignette={false}
+          className="af-scene__atmos"
+        >
+      <Container className="relative z-[1]">
         <SectionHead
           eyebrow={reactivation.eyebrow}
           title={sceneDisappearing.title}
@@ -215,7 +233,9 @@ export function Reactivation() {
           </p>
         </Reveal>
       </Container>
-    </Section>
+        </SceneAtmosphere>
+      </div>
+    </section>
   );
 }
 
