@@ -2,6 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 import { THROUGHLINE_STAGES } from "@/lib/throughline";
+import { useViewportProgress } from "@/lib/use-viewport-progress";
+import { SceneAtmosphere } from "@/components/motion/scene-atmosphere";
 import {
   DEFAULT_LAYOUT,
   NARROW_LAYOUT,
@@ -64,6 +66,28 @@ export function AttractHandoff({
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const [progress, setProgress] = useState(0);
+
+  /* Two independent motion sources, deliberately.
+
+     `progress` is the one-shot reveal: it runs once when the section
+     arrives and then holds, so the LINE settles into a strong static
+     state rather than looping. Phase 3C locked that behaviour and this
+     phase does not touch it.
+
+     `travel` is continuous and drives only the ATMOSPHERE. The line
+     never moves under the reader; the environment around it responds
+     to where the opportunity has got to. It costs nothing at rest —
+     the hook measures only while the section is near the viewport, and
+     quantising to 0.02 means a full traversal commits at most fifty
+     renders rather than one per frame. The CSS transition on the
+     atmosphere interpolates between those steps, so the light reads as
+     continuous.
+
+     0.5 is the reduced-motion resolution because that is where
+     sectionLuminance places the Capture climax — a reader who has
+     asked for no motion gets the section's strongest, most complete
+     state rather than its faded tail. */
+  const { progress: travel } = useViewportProgress(ref, 0.5, 0.02);
   const [narrow, setNarrow] = useState(false);
   const done = useRef(false);
 
@@ -118,7 +142,13 @@ export function AttractHandoff({
 
   return (
     <div ref={ref} className={cn("mt-14", className)}>
-      <div className="af-hand">
+      <SceneAtmosphere
+        progress={travel}
+        seal={1}
+        focusT={CAPTURE.t}
+        fromT={ATTRACT.t}
+        className="af-hand"
+      >
         <div className="af-hand__field" aria-hidden />
 
         {/* Structure. Decorative — every stage name and meaning below
@@ -151,7 +181,7 @@ export function AttractHandoff({
             <span className="af-hand__role">…and keeps going</span>
           </span>
         </div>
-      </div>
+      </SceneAtmosphere>
 
       {/* The meaning, in text. Tied to the visual above by the same two
           stage names and the same order — not a second component. */}

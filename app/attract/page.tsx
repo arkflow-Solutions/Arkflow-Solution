@@ -6,6 +6,7 @@ import { Reveal } from "@/components/motion/reveal";
 import { WhatsAppCta } from "@/components/attract/whatsapp-cta";
 import { BookCallButton } from "@/components/pages/book-call-button";
 import { AttractHandoff } from "@/components/throughline/attract-handoff";
+import { Magnetic } from "@/components/motion/magnetic";
 import { buildMetadata } from "@/lib/seo";
 import {
   attractHero,
@@ -49,9 +50,11 @@ export default function AttractPage() {
         <div className="flex flex-wrap gap-4 pb-4">
           {/* Canonical CTA leads. The Website Review is the secondary,
               high-intent action for someone who already has a site. */}
-          <BookCallButton size="large" withArrow>
-            {attractHero.primaryCta}
-          </BookCallButton>
+          <Magnetic>
+            <BookCallButton size="large" withArrow>
+              {attractHero.primaryCta}
+            </BookCallButton>
+          </Magnetic>
           <WhatsAppCta
             label={attractHero.secondaryCta}
             prefill={attractCta.whatsappPrefill}
@@ -394,9 +397,11 @@ export default function AttractPage() {
               {attractCta.body}
             </p>
             <div className="mt-9 flex flex-wrap gap-4">
-              <BookCallButton size="large" withArrow>
-                {attractCta.primary}
-              </BookCallButton>
+              <Magnetic>
+                <BookCallButton size="large" withArrow>
+                  {attractCta.primary}
+                </BookCallButton>
+              </Magnetic>
               <WhatsAppCta
                 label={attractCta.secondary}
                 prefill={attractCta.whatsappPrefill}
