@@ -8,7 +8,6 @@ import {
   gapProximity,
   pointAt,
   projectToBox,
-  sampleThroughline,
 } from "@/lib/throughline";
 import { cn } from "@/lib/utils";
 
@@ -53,11 +52,31 @@ export function ThroughlineCanvas({
    * omitted the component runs its own slow cycle.
    */
   seal,
-  /** Fewer particles, thinner strokes, lower DPR. Phones and tablets. */
+  /**
+   * Canonical t of the stage the page is currently about.
+   *
+   * PHASE 3F.2a — this is what turns the line from a drawn path into an
+   * object with a location. Without it the whole line was stroked
+   * uniformly, which reads as background: nothing on it was more
+   * important than anything else, so nothing on it was the subject.
+   *
+   * With it, the line has a READABLE CORE around the active stage and
+   * recedes away from it, and the opportunity sits in that neighbourhood
+   * rather than anywhere. When the page moves to the next scene this
+   * value changes, the bright region slides along the line and the
+   * opportunity travels with it — which is the entire argument: the
+   * same opportunity, moving through the business.
+   *
+   * Omit it and the line draws uniformly, which is correct for the
+   * self-cycling use.
+   */
+  focus,
+  /** Fewer followers, thinner strokes, lower DPR. Phones and tablets. */
   lite = false,
   className,
 }: {
   seal?: number;
+  focus?: number;
   lite?: boolean;
   className?: string;
 }) {
@@ -65,6 +84,9 @@ export function ThroughlineCanvas({
   /** Read by the loop without restarting it on every scroll tick. */
   const sealRef = useRef(seal ?? 0);
   sealRef.current = seal ?? sealRef.current;
+  /** Target. The loop eases toward it so scene changes travel. */
+  const focusRef = useRef<number | undefined>(focus);
+  focusRef.current = focus;
 
   useEffect(() => {
     const canvas = ref.current;
@@ -74,7 +96,7 @@ export function ThroughlineCanvas({
 
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const driven = seal !== undefined;
-    const maxParticles = lite ? 22 : 40;
+    const maxParticles = lite ? 8 : 16;
 
     let width = 0;
     let height = 0;
@@ -107,13 +129,58 @@ export function ThroughlineCanvas({
 
     const box = () => ({ width, height, padding: 22 });
 
-    const drawSpine = (sealed: number) => {
-      const pts = sampleThroughline(80).map((p) => projectToBox(p, box()));
-      ctx.beginPath();
-      pts.forEach((p, i) => (i === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y)));
+    /**
+     * How present the line is at a point, given where the page is.
+     *
+     * 1 at the active stage, falling to a floor away from it. The floor
+     * is deliberately not zero: the rest of the journey should still be
+     * sensed, so the visitor understands the active stage is part of
+     * something longer. Distant portions recede to roughly a tenth of
+     * the near ones, which is what stops the line competing with the
+     * scene content in front of it.
+     */
+    const FALLOFF = 0.3;
+    const FLOOR = 0.11;
+    const presenceAt = (t: number, f: number | undefined) => {
+      if (f === undefined) return 1;
+      const d = Math.abs(t - f);
+      const near = Math.max(0, 1 - d / FALLOFF);
+      // Smoothstep, so the bright region has no hard edge.
+      const eased = near * near * (3 - 2 * near);
+      return FLOOR + (1 - FLOOR) * eased;
+    };
+
+    const drawSpine = (sealed: number, f: number | undefined) => {
+      /* Stroked in segments rather than as one path, so presence can
+         vary ALONG the line. This is still one line — not an underlay,
+         not a halo, not a second decorative stroke. Segments below the
+         visibility threshold are skipped entirely, which costs less
+         than the single full-length stroke it replaces. */
+      const STEPS = lite ? 44 : 64;
+      const pts: { x: number; y: number; t: number }[] = [];
+      for (let i = 0; i <= STEPS; i++) {
+        const t = i / STEPS;
+        const p = projectToBox(pointAt(t), box());
+        pts.push({ x: p.x, y: p.y, t });
+      }
+
       ctx.strokeStyle = THROUGHLINE_COLOURS.idle.hex;
-      ctx.lineWidth = lite ? 0.8 : 1;
-      ctx.stroke();
+      ctx.lineCap = "round";
+      for (let i = 0; i < pts.length - 1; i++) {
+        const a = pts[i];
+        const b = pts[i + 1];
+        const pres = presenceAt((a.t + b.t) / 2, f);
+        if (pres < 0.05) continue;
+        ctx.globalAlpha = pres;
+        // The core thickens where the page is looking. A hair either
+        // way — the difference should be felt, not measured.
+        ctx.lineWidth = (lite ? 0.8 : 1) * (0.75 + pres * 0.75);
+        ctx.beginPath();
+        ctx.moveTo(a.x, a.y);
+        ctx.lineTo(b.x, b.y);
+        ctx.stroke();
+      }
+      ctx.globalAlpha = 1;
 
       // Gaps: erase a short span at each unattended handover. They close
       // as `sealed` rises — the visual form of the argument.
@@ -131,9 +198,58 @@ export function ThroughlineCanvas({
       }
     };
 
-    const step = (sealed: number) => {
+    /**
+     * THE OPPORTUNITY.
+     *
+     * Forty identical dots read as "flow", or worse as "particles" —
+     * plural, ambient, decorative. The brief is that the visitor should
+     * recognise ONE thing progressing through the system, so there is
+     * now one lead marker that is unmistakably the subject, and a much
+     * smaller number of faint followers behind it that give the line a
+     * sense of traffic without competing for identity.
+     *
+     * This is a REDUCTION, not an addition: fewer moving elements than
+     * before, one of which is legible.
+     *
+     * The lead does not run the whole line. It works the neighbourhood
+     * of the active stage, so wherever the page is, the opportunity is
+     * there — and when the stage changes the eased focus carries it
+     * along the line to the next one.
+     */
+    let leadT = 0;
+    const drawLead = (t: number, sealed: number, f: number | undefined) => {
+      const p = projectToBox(pointAt(Math.max(0, Math.min(1, t))), box());
+      const pres = presenceAt(t, f);
+      // At an open handover the opportunity is the thing being lost, so
+      // it carries the leak colour. Amber still only ever means loss.
+      const atGap = gapProximity(t) > 0.8 && sealed < 0.5;
+      const r = lite ? 2.6 : 3.2;
+
+      ctx.globalAlpha = Math.min(1, 0.35 + pres * 0.65);
+      ctx.fillStyle = atGap
+        ? THROUGHLINE_COLOURS.leaking.hex
+        : t >= 0.995
+          ? THROUGHLINE_COLOURS.complete.hex
+          : THROUGHLINE_COLOURS.flowing.hex;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, r, 0, Math.PI * 2);
+      ctx.fill();
+
+      /* A single thin ring. Not a glow and not a bloom — one stroked
+         circle, which is what makes the marker read as an object with
+         an edge rather than a blurred dot of light. */
+      ctx.globalAlpha = Math.min(1, 0.18 + pres * 0.4);
+      ctx.lineWidth = 1;
+      ctx.strokeStyle = ctx.fillStyle as string;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, r + (lite ? 2.4 : 3.2), 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.globalAlpha = 1;
+    };
+
+    const step = (sealed: number, f: number | undefined) => {
       ctx.clearRect(0, 0, width, height);
-      drawSpine(sealed);
+      drawSpine(sealed, f);
 
       for (const p of particles) {
         p.t += p.speed;
@@ -154,17 +270,30 @@ export function ThroughlineCanvas({
         const y = base.y + p.offset * 0.35 + (p.lost ? (1 - p.fade) * 26 : 0);
 
         ctx.beginPath();
-        ctx.arc(base.x, y, lite ? 1.5 : 1.9, 0, Math.PI * 2);
+        ctx.arc(base.x, y, lite ? 1.1 : 1.4, 0, Math.PI * 2);
         ctx.fillStyle = p.lost
           ? THROUGHLINE_COLOURS.leaking.hex
           : p.t >= 0.999
             ? THROUGHLINE_COLOURS.complete.hex
             : THROUGHLINE_COLOURS.flowing.hex;
-        ctx.globalAlpha = p.lost ? Math.max(0, p.fade) : 0.9;
+        /* Followers are subordinate to both the lead and the active
+           region: they fade with distance from focus so the far end of
+           the line never pulls the eye away from the scene. */
+        const pres = presenceAt(p.t, f);
+        ctx.globalAlpha = (p.lost ? Math.max(0, p.fade) : 0.55) * pres;
         ctx.fill();
         ctx.globalAlpha = 1;
       }
+
+      drawLead(leadT, sealed, f);
     };
+
+    /* Eased, not snapped. When the page moves to the next scene the
+       focus target jumps to that stage; easing it means the bright
+       region and the opportunity TRAVEL there along the line instead of
+       teleporting. That journey between scenes is the whole point —
+       it is the moment the visitor sees that it is the same thing. */
+    let eased = focusRef.current ?? 0;
 
     const frame = () => {
       if (!visible) {
@@ -175,7 +304,22 @@ export function ThroughlineCanvas({
         ? Math.max(0, Math.min(1, sealRef.current))
         : // Self-cycling: open, seal, hold, reset.
           (Math.sin(Date.now() / 4200) + 1) / 2;
-      step(sealed);
+
+      const target = focusRef.current;
+      let f: number | undefined;
+      if (target !== undefined) {
+        eased += (target - eased) * 0.035;
+        f = eased;
+
+        /* The opportunity works the stretch just before the active
+           stage and passes through it, so it is always arriving at the
+           thing the scene is about rather than sitting on it. */
+        const from = Math.max(0, f - 0.16);
+        const span = Math.max(0.08, f + 0.06 - from);
+        leadT = from + ((Date.now() / 5200) % 1) * span;
+      }
+
+      step(sealed, f);
       raf = requestAnimationFrame(frame);
     };
 
@@ -201,7 +345,8 @@ export function ThroughlineCanvas({
         t: i / maxParticles,
         lost: false,
       }));
-      step(1);
+      leadT = focusRef.current ?? 0.6;
+      step(1, focusRef.current);
     } else {
       start();
     }
@@ -225,7 +370,7 @@ export function ThroughlineCanvas({
 
     const onResize = () => {
       resize();
-      if (reduce) step(1);
+      if (reduce) step(1, focusRef.current);
     };
     window.addEventListener("resize", onResize);
 

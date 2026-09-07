@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ThroughlineCanvas } from "@/components/throughline/throughline-canvas";
 import { THROUGHLINE_STAGES } from "@/lib/throughline";
 import { cn } from "@/lib/utils";
@@ -118,6 +118,8 @@ export function ThroughlineRail() {
   const [enabled, setEnabled] = useState<boolean | null>(null);
   const [lite, setLite] = useState(false);
   const [frame, setFrame] = useState<Frame | null>(null);
+  /** Last mapped stage, so focus never rewinds while the line is hidden. */
+  const heldRef = useRef(THROUGHLINE_STAGES[1].t);
 
   useEffect(() => {
     // The hero owns the one Canvas 2D loop on devices without WebGL.
@@ -185,6 +187,13 @@ export function ThroughlineRail() {
 
   const presence = frame?.presence ?? 0;
   const stage = frame ? THROUGHLINE_STAGES[frame.stage] : undefined;
+  /* When no scene is mapped — the hero, the footer, the two scenes that
+     draw their own line — the canvas is invisible anyway, but its focus
+     must not reset to 0 or the eased travel would rewind while hidden
+     and the next scene would start with the line sliding in from the
+     beginning. Holding the last stage keeps the journey monotonic. */
+  if (stage) heldRef.current = stage.t;
+  const held = heldRef.current;
 
   return (
     <div
@@ -196,7 +205,17 @@ export function ThroughlineRail() {
       aria-hidden
       data-rail-stage={stage?.label ?? "none"}
     >
-      <ThroughlineCanvas seal={frame?.seal ?? 0} lite={lite} className="af-spine__c" />
+      {/* `focus` is what makes this an object rather than a backdrop:
+          the line brightens around the stage this scene is about and
+          recedes elsewhere, and the opportunity works that stretch.
+          Held at the last stage while nothing is mapped, so the line
+          does not snap back to the start between scenes. */}
+      <ThroughlineCanvas
+        seal={frame?.seal ?? 0}
+        focus={stage?.t ?? held}
+        lite={lite}
+        className="af-spine__c"
+      />
     </div>
   );
 }
