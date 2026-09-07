@@ -1,12 +1,8 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { Scene, useSceneTurn } from "@/components/home/scenes/scene";
-import {
-  ThroughlineSvg,
-  type ThroughlineLayout,
-} from "@/components/throughline/throughline-svg";
 import { THROUGHLINE_STAGES } from "@/lib/throughline";
 import { publicLabel, hasDistinctLabel } from "@/lib/stage-labels";
 import { sceneJourney } from "@/lib/scene-content";
@@ -36,32 +32,18 @@ import { cn } from "@/lib/utils";
  * moved; only the caption did. scripts/verify.mjs check 4 reads the
  * keys and is unaffected.
  *
- * LAYOUT. The Attract→Capture proof on /attract uses a strong
- * perspective (0.6) because it is about the first two stages and wants
- * the far field to recede. This scene is about all ten equally, so it
- * uses a near-linear exponent and a wider box. Same renderer, same
- * model, different composition — which is the whole point of the
- * Throughline being layout-parameterised.
+ * THE LINE IS NOT DRAWN HERE (Phase 3F.3A).
+ *
+ * This scene used to own two ThroughlineSvg renders — a wide and a
+ * narrow layout preset — sitting above the list. Both are gone. The
+ * path is now the page's Throughline rail, swept across all ten stages
+ * as the visitor reads, so the thing moving through this scene is
+ * demonstrably the same opportunity that has been travelling since
+ * scene 02 rather than a fresh drawing of the same shape.
+ *
+ * That also removes the two competing lines this scene had: the rail
+ * previously stood down here precisely because the scene drew its own.
  */
-
-const JOURNEY_LAYOUT: ThroughlineLayout = {
-  width: 1240,
-  height: 260,
-  padLeft: 40,
-  padRight: 40,
-  /** Near-linear: ten stages need even spacing to be readable. */
-  perspective: 0.92,
-  amplitude: 190,
-};
-
-const JOURNEY_NARROW: ThroughlineLayout = {
-  width: 560,
-  height: 460,
-  padLeft: 30,
-  padRight: 30,
-  perspective: 0.95,
-  amplitude: 260,
-};
 
 const LAST = THROUGHLINE_STAGES.length - 1;
 
@@ -70,8 +52,48 @@ export function SceneJourney() {
   const { turn, settled } = useSceneTurn(ref);
   const [technical, setTechnical] = useState(false);
 
-  // One opportunity travelling the whole line as the scene is read.
-  const travelled = settled ? 1 : Math.min(1, turn * 1.15);
+  /**
+   * Which stage the opportunity has reached.
+   *
+   * Driven by the page's Throughline, not by a second animation of our
+   * own: the rail broadcasts the stage as the line sweeps, and this
+   * list follows it. That is what makes the marker on the line and the
+   * name in the list the same object rather than two things that happen
+   * to agree.
+   *
+   * Under reduced motion the rail never sweeps and no event arrives, so
+   * this resolves to the completed journey — every stage passed, which
+   * is the honest resting state.
+   */
+  const [railStage, setRailStage] = useState<number | null>(null);
+
+  useEffect(() => {
+    if (settled) return;
+    const onStage = (e: Event) => {
+      const i = (e as CustomEvent<{ stage: number }>).detail?.stage;
+      if (typeof i === "number") setRailStage(i);
+    };
+    window.addEventListener("arkflow:throughline", onStage);
+    return () => window.removeEventListener("arkflow:throughline", onStage);
+  }, [settled]);
+
+  /**
+   * THE LIST NEVER DEPENDS ON THE CANVAS.
+   *
+   * The rail does not mount at all on a device without WebGL — there the
+   * hero owns the single Canvas 2D loop and the spine stands down — so
+   * no sweep events ever arrive. Without a fallback those visitors would
+   * see nine of ten stages sitting permanently dim, which reads as a
+   * broken or unfinished list rather than a journey.
+   *
+   * So the rail's broadcast is an ENHANCEMENT, not the source. When it
+   * is speaking, the list follows the opportunity on the line, and the
+   * two are visibly the same object. When it is silent, the scene's own
+   * scroll progress walks the list instead. Same behaviour either way;
+   * one path is simply better synchronised with the visual.
+   */
+  const walked = Math.min(LAST, Math.floor(turn * (LAST + 1)));
+  const active = settled ? LAST : (railStage ?? walked);
 
   return (
     <Scene
@@ -83,35 +105,40 @@ export function SceneJourney() {
       lead={sceneJourney.lead}
     >
       <div ref={ref} className="af-journey">
-        {/* The line. Decorative: every stage below is real text. */}
-        <div className="af-journey__line af-journey__line--wide">
-          <ThroughlineSvg
-            progress={travelled}
-            seal={1}
-            focusStageIndex={LAST}
-            layout={JOURNEY_LAYOUT}
-            title="The ten stages of the ArkFlow customer journey"
-          />
-        </div>
-        <div className="af-journey__line af-journey__line--narrow">
-          <ThroughlineSvg
-            progress={travelled}
-            seal={1}
-            focusStageIndex={LAST}
-            layout={JOURNEY_NARROW}
-          />
-        </div>
+        {/* PHASE 3F.3A — THIS SCENE NO LONGER DRAWS ITS OWN LINE.
+            It used to render a static ThroughlineSvg of the same path
+            above a numbered list, which meant the "journey" was a
+            picture of a line beside ten descriptions: a feature list
+            with an illustration on top. 76% of the scene's text sat
+            inside <li> elements, the highest on the page.
 
-        {/* The stages, in plain English. This list is the accessible
-            equivalent of the line above and carries the meaning on its
-            own — the visual is an illustration of it, not the source. */}
+            The line is now the page's Throughline — the same one the
+            visitor has been following since scene 02, carrying the same
+            opportunity — swept end to end as they read. The list below
+            stays complete and authoritative; what changed is that it is
+            no longer pretending to be the visual. */}
+
+        {/* All ten stages, always in the DOM with their meanings. The
+            visual emphasises one at a time; nothing is ever hidden,
+            removed or collapsed to zero, so a screen reader and a
+            keyboard user get the entire journey regardless of scroll
+            position or whether the canvas ever ran. */}
         <ol className="af-journey__stages">
           {THROUGHLINE_STAGES.map((stage, i) => {
-            const reached = travelled >= stage.t - 0.02;
+            /* Three states, so the list reads as a position on a
+               journey rather than ten equal rows: what the opportunity
+               has passed, where it is now, and what is still ahead. */
+            const passed = i < active;
+            const here = i === active;
             return (
               <li
                 key={stage.label}
-                className={cn("af-jstage", reached && "is-on")}
+                className={cn(
+                  "af-jstage",
+                  passed && "is-passed",
+                  here && "is-here"
+                )}
+                aria-current={here ? "step" : undefined}
               >
                 <span className="af-jstage__n">
                   {String(i + 1).padStart(2, "0")}

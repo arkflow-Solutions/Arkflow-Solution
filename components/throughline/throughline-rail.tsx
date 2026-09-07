@@ -73,6 +73,22 @@ type Frame = {
   stage: number;
   seal: number;
   presence: number;
+  /**
+   * PHASE 3F.3A — the journey sweeps instead of holding one stage.
+   *
+   * Every other scene is ABOUT a stage, so the line brightens there and
+   * stays. The journey is about the whole line, so its focus is driven
+   * by how far the visitor has scrolled through the scene: the
+   * opportunity travels Website → Growth as they read it.
+   *
+   * This is why scene 09 no longer draws a Throughline of its own. It
+   * used to render a static SVG of the same path, which meant the
+   * "journey" was a picture of a line next to a list. Now it is the
+   * same line, carrying the same opportunity, that the visitor has been
+   * following since scene 02 — which is the only way the scene can
+   * honestly claim to be the continuation of the story.
+   */
+  sweep?: boolean;
 };
 
 const FRAMES: readonly Frame[] = [
@@ -91,8 +107,8 @@ const FRAMES: readonly Frame[] = [
   { id: "ai-conversation", stage: 4, seal: 1, presence: 0.24 },
   // Respond again — the branch, where a person takes over.
   { id: "human-and-ai", stage: 2, seal: 1, presence: 0.26 },
-  // The journey draws its own full line. Stand down.
-  { id: "the-journey", stage: 9, seal: 1, presence: 0 },
+  // The journey IS the line. Dominant, and swept end to end.
+  { id: "the-journey", stage: 9, seal: 1, presence: 0.85, sweep: true },
   // Grow. The line resolves as the visitor arrives at the close.
   { id: "revenue-leak-audit", stage: 9, seal: 1, presence: 0.44 },
 ] as const;
@@ -118,8 +134,11 @@ export function ThroughlineRail() {
   const [enabled, setEnabled] = useState<boolean | null>(null);
   const [lite, setLite] = useState(false);
   const [frame, setFrame] = useState<Frame | null>(null);
+  const [sweepT, setSweepT] = useState(0);
   /** Last mapped stage, so focus never rewinds while the line is hidden. */
   const heldRef = useRef(THROUGHLINE_STAGES[1].t);
+  /** Last stage index broadcast, so we only announce real changes. */
+  const announced = useRef(-1);
 
   useEffect(() => {
     // The hero owns the one Canvas 2D loop on devices without WebGL.
@@ -144,17 +163,33 @@ export function ThroughlineRail() {
       const vh = window.innerHeight || 1;
       let best: Frame | null = null;
       let bestArea = 0;
+      let bestEl: HTMLElement | null = null;
       for (const { f, el } of sections) {
         const r = el.getBoundingClientRect();
         const area = Math.min(r.bottom, vh) - Math.max(r.top, 0);
         if (area > bestArea) {
           bestArea = area;
           best = f;
+          bestEl = el;
         }
       }
       // Nothing mapped is on screen — the hero, or the footer. The rail
       // is absent there, which is correct: the hero has its own scene.
-      setFrame(bestArea > vh * 0.25 ? best : null);
+      const won = bestArea > vh * 0.25 ? best : null;
+
+      /* For a sweeping scene, how far the visitor has read through it.
+         Measured against the section's own travel past the viewport
+         middle, so the opportunity reaches Growth as the scene ends
+         rather than long before or after. */
+      let sweep = 0;
+      if (won?.sweep && bestEl) {
+        const r = bestEl.getBoundingClientRect();
+        const span = r.height + vh * 0.4;
+        sweep = Math.max(0, Math.min(1, (vh * 0.7 - r.top) / span));
+      }
+
+      setFrame(won);
+      setSweepT(sweep);
     };
 
     /* Throttled on a timestamp rather than requestAnimationFrame.
@@ -193,7 +228,36 @@ export function ThroughlineRail() {
      and the next scene would start with the line sliding in from the
      beginning. Holding the last stage keeps the journey monotonic. */
   if (stage) heldRef.current = stage.t;
+
+  /* A sweeping scene overrides its fixed stage: focus runs the whole
+     line as the visitor reads. Everything else holds its own stage. */
+  const focusT = frame?.sweep ? sweepT : (stage?.t ?? heldRef.current);
+  if (frame?.sweep) heldRef.current = focusT;
   const held = heldRef.current;
+
+  /* Tell the page which stage the opportunity has reached, so the
+     journey's DOM list can follow the SAME object rather than running
+     its own parallel animation. One event, only on change, matching
+     the house pattern already used by arkflow:open-booking. The list
+     is authoritative either way: if this never fires, every stage is
+     still present and readable. */
+  if (typeof window !== "undefined" && frame?.sweep) {
+    let nearest = 0;
+    let bestD = Infinity;
+    THROUGHLINE_STAGES.forEach((s, i) => {
+      const d = Math.abs(s.t - focusT);
+      if (d < bestD) {
+        bestD = d;
+        nearest = i;
+      }
+    });
+    if (nearest !== announced.current) {
+      announced.current = nearest;
+      window.dispatchEvent(
+        new CustomEvent("arkflow:throughline", { detail: { stage: nearest } })
+      );
+    }
+  }
 
   return (
     <div
@@ -212,7 +276,7 @@ export function ThroughlineRail() {
           does not snap back to the start between scenes. */}
       <ThroughlineCanvas
         seal={frame?.seal ?? 0}
-        focus={stage?.t ?? held}
+        focus={held}
         lite={lite}
         className="af-spine__c"
       />
