@@ -7,44 +7,80 @@ import { cn } from "@/lib/utils";
 
 /* ==================================================== SCENE 05
  *
- * THE DESK. The first four scenes are the customer's experience of the
- * gaps. This one is the staff experience of the same gaps: a person
- * spending their day being the connection between systems that do not
- * talk to each other.
+ * THE DESK — one detail, four places.
  *
- * NO PEOPLE ARE DRAWN. Explicit founder instruction, and correct — a
- * cartoon figure at a desk is the single fastest way to turn a premium
- * dark composition into a stock SaaS illustration. What is shown is the
- * SURFACES: a conversation, a calendar, a record, a notification, a
- * spreadsheet. The human presence is implied by the fragments being
- * carried between them by hand.
+ * The first four scenes are the customer's experience of the gaps. This
+ * one is the staff experience of the same gaps: a person spending their
+ * day being the connection between things that do not talk to each
+ * other.
  *
  * ────────────────────────────────────────────────────────────────
- * NO PRODUCTIVITY CLAIMS. There is no time saved, no hours reclaimed,
- * no task count, no "X% less admin" anywhere in this scene, and none
- * may be added. What changes visually is that the manual carrying
- * stops. How much that is worth is a conversation, not a number on a
- * homepage.
+ * WHAT THIS REPLACED, AND WHY
  *
- * The invoice / payment-reminder line from the original approved copy
- * is deliberately absent — it is not in the current capability set and
- * verify.mjs check 13 blocks the phrasing. See lib/scene-content.ts.
+ * Phase 3E drew five surfaces in a CSS grid with three hardcoded SVG
+ * paths over them. Measured, those paths connected nothing: the viewBox
+ * was a fixed 600x260 while the grid was two columns below 768px and
+ * three above it, so every wire terminus landed either inside a card
+ * (painted beneath it, invisible) or in a gutter. Calendar and Customer
+ * record — the two surfaces that mattered — were joined to nothing at
+ * all. At 375px the viewBox letterboxed into a band floating across the
+ * middle of the composition. It was an architecture diagram whose arrows
+ * were decorative and wrong.
+ *
+ * It is gone. There is no SVG in this scene, no path, no arrow and no
+ * wire, and none may be added: a diagram is the one thing a business
+ * owner cannot read.
+ *
  * ────────────────────────────────────────────────────────────────
+ * WHAT IT SHOWS INSTEAD
+ *
+ * The clearest non-jargon image of "not connected" is the same fact
+ * written in four places and the four not matching. The calendar says
+ * Thu 10:30, the thread says "thurs 10.30am", the follow-up says
+ * "Thu 10am?", and the record says nothing.
+ *
+ * THE LAYOUT PERFORMS THE MEANING. Disconnected is four separated rows
+ * with gaps between them. Connected is the gaps collapsing to zero, the
+ * borders merging into one panel, and the values agreeing. Nothing is
+ * explained; the geometry changes and the words stop disagreeing.
+ *
+ * ────────────────────────────────────────────────────────────────
+ * THIS IS STILL A PROBLEM SCENE.
+ *
+ * Scene 06 is the page's turn and must stay that way. So the resolution
+ * here is an exhale, not the subject: the rows hold their disagreement
+ * through the first third of the traversal, and what the visitor should
+ * carry out of scene 05 is "four places, and they do not match".
+ *
+ * NO PEOPLE ARE DRAWN. Founder instruction, and correct — a figure at a
+ * desk turns a premium dark composition into stock SaaS illustration.
+ * The person is present only as the thing carrying the detail around.
+ *
+ * NO PRODUCTIVITY CLAIMS. No time saved, no hours reclaimed, no task
+ * count, no percentage, and none may be added.
+ *
+ * COLOUR CARRIES NOTHING. The disagreement is legible as text —
+ * "thurs 10.30am" against "Thu 10:30" — so the whole argument survives
+ * greyscale, colour blindness and a stylesheet that fails to load.
  */
-
-/** The surfaces on the desk. Recognisable objects, not abstractions. */
-const SURFACES = [
-  { key: "conversation", name: "Conversation", detail: "3 unread" },
-  { key: "calendar", name: "Calendar", detail: "Thu 10:30" },
-  { key: "record", name: "Customer record", detail: "J. Tan" },
-  { key: "notification", name: "Form notification", detail: "New enquiry" },
-  { key: "sheet", name: "Spreadsheet", detail: "Follow-ups" },
-] as const;
 
 export function SceneDesk() {
   const ref = useRef<HTMLDivElement>(null);
-  const { turn, settled } = useSceneTurn(ref);
+  const { progress, turn, settled } = useSceneTurn(ref);
   const connected = settled ? 1 : turn;
+
+  /* Five beats in one scroll, no pinning.
+     The first two ride `progress` so the composition is present as the
+     scene arrives; the last three ride the shared `turn`, which is what
+     keeps this scene's resolution on the same rhythm as scenes 02 and
+     03. Under reduced motion `settled` is true from the first frame and
+     every beat resolves at once — see the media block in globals.css,
+     which keeps BOTH values visible so the comparison survives. */
+  const arrived = settled || progress > 0.15;
+  const listed = settled || progress > 0.24;
+  const joined = settled || turn > 0.35;
+  const agreed = settled || turn > 0.45;
+  const named = settled || turn > 0.6;
 
   return (
     <Scene
@@ -56,63 +92,60 @@ export function SceneDesk() {
       title={sceneDesk.title}
       lead={sceneDesk.lead}
     >
-      <div ref={ref} className="af-desk">
-        {/* --- the surfaces ------------------------------------- */}
-        <div
-          className={cn("af-desk__field", connected > 0.5 && "is-connected")}
-          style={{ ["--wire" as string]: connected.toFixed(2) }}
-        >
-          {SURFACES.map((s) => (
-            <div key={s.key} className={cn("af-surface", `af-surface--${s.key}`)}>
-              <span className="af-surface__n">{s.name}</span>
-              <span className="af-surface__d">{s.detail}</span>
+      <div
+        ref={ref}
+        className={cn(
+          "af-once",
+          arrived && "is-arrived",
+          listed && "is-listed",
+          joined && "is-joined",
+          agreed && "is-agreed",
+          named && "is-named"
+        )}
+      >
+        {/* The appointment. It lands alone, because a business owner
+            recognises an appointment before anything else on the page. */}
+        <p className="af-once__detail">{sceneDesk.detail}</p>
+
+        {/* One state label, swapped rather than cross-faded — two words
+            sharing a cell is the collision this codebase has already
+            paid for once. The dot reinforces; the text carries. */}
+        <p className="af-once__state">
+          <i
+            className={cn("af-dot", named ? "af-dot--flow" : "af-dot--leak")}
+            aria-hidden
+          />
+          {named ? sceneDesk.resolvedLabel : sceneDesk.problemLabel}
+        </p>
+
+        {/* A description list, because that is exactly what this is: a
+            surface, and what that surface currently says. With styles
+            off it still reads "Conversation: thurs 10.30am. Calendar:
+            Thu 10:30." — the argument intact, in the DOM. */}
+        <dl className="af-once__rows">
+          {sceneDesk.places.map((p, i) => (
+            <div
+              key={p.name}
+              className="af-once__row"
+              style={{ ["--i" as string]: i }}
+            >
+              <dt className="af-once__label">{p.name}</dt>
+              <dd className="af-once__value">
+                <span className="af-once__was">
+                  {p.was ?? (
+                    <>
+                      <span aria-hidden>—</span>
+                      <span className="sr-only">{sceneDesk.blank}</span>
+                    </>
+                  )}
+                </span>
+                <span className="af-once__is">{sceneDesk.agreed}</span>
+              </dd>
             </div>
           ))}
+        </dl>
 
-          {/* The connections. Drawn at zero length while the work is
-              manual, then completing as the system takes it over. The
-              lines are decorative — every surface is real text above. */}
-          <svg className="af-desk__wires" viewBox="0 0 600 260" aria-hidden>
-            <path d="M110 60 H300 V130 H490" className="af-wire" />
-            <path d="M110 200 H300" className="af-wire" />
-            <path d="M300 130 V200 H490" className="af-wire" />
-          </svg>
-        </div>
-
-        {/* --- what moves off the person, and what never should --- */}
-        <div className="af-desk__split">
-          <div className="af-desk__col">
-            <p className="af-desk__label af-desk__label--ai">
-              <i className="af-dot af-dot--flow" aria-hidden />
-              {sceneDesk.handledLabel}
-            </p>
-            <ul className="af-desk__list">
-              {sceneDesk.handled.map((h) => (
-                <li
-                  key={h}
-                  className={cn("af-desk__item", connected > 0.4 && "is-moved")}
-                >
-                  {h}
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div className="af-desk__col">
-            <p className="af-desk__label af-desk__label--human">
-              <i className="af-dot af-dot--human" aria-hidden />
-              {sceneDesk.humanLabel}
-            </p>
-            <ul className="af-desk__list af-desk__list--human">
-              {sceneDesk.human.map((h) => (
-                <li key={h} className="af-desk__item is-human">
-                  {h}
-                </li>
-              ))}
-            </ul>
-            <p className="af-desk__close">{sceneDesk.close}</p>
-          </div>
-        </div>
+        <p className="af-once__close">{sceneDesk.close}</p>
       </div>
     </Scene>
   );

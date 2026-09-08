@@ -2427,102 +2427,289 @@
     background: var(--border-subtle);
   }
 
-  /* --------------------------------------- scene 05 the desk */
-  .af-desk {
+  /* --------------------------- scene 05 the desk · one detail
+     PHASE 3F.3B. The five-surface grid, its three hardcoded SVG wires
+     and the two list columns are gone. The wires connected nothing —
+     a fixed 600x260 viewBox over a grid that was two columns below
+     768px and three above it — and the lists were scene 08's argument
+     three scenes early.
+
+     WHAT REPLACES THEM. One appointment, and the four places it has to
+     be written when nothing is connected. The layout carries the
+     meaning: separated rows with gaps, then the gaps collapse to zero
+     and the borders merge into a single panel.
+
+     THERE IS NO SVG, NO PATH AND NO ARROW IN THIS SCENE. Do not add
+     one. */
+  .af-once {
+    max-width: 34rem;
     margin-top: 3rem;
   }
-  .af-desk__field {
-    position: relative;
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 0.75rem;
-    padding: 1.25rem;
-    border: 1px solid var(--border-subtle);
-    border-radius: 14px;
-    background: color-mix(in srgb, var(--surface) 55%, transparent);
-  }
-  .af-surface {
-    position: relative;
-    z-index: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 0.2rem;
-    padding: 0.85rem;
+
+  /* The detail. Mono, because it is a record of something, and it
+     lands before anything else in the scene. */
+  .af-once__detail {
+    display: inline-block;
+    padding: 0.6rem 0.9rem;
     border: 1px solid var(--border-subtle);
     border-radius: 10px;
-    background: color-mix(in srgb, var(--surface) 85%, transparent);
-  }
-  .af-surface__n {
+    background: color-mix(in srgb, var(--surface) 70%, transparent);
+    font-family: var(--font-mono), ui-monospace, monospace;
     font-size: 0.875rem;
     color: #fff;
+    opacity: 0;
+    transform: translateY(6px);
+    transition: opacity 600ms cubic-bezier(0.22, 1, 0.36, 1),
+      transform 600ms cubic-bezier(0.22, 1, 0.36, 1),
+      border-color 560ms cubic-bezier(0.22, 1, 0.36, 1),
+      background-color 560ms cubic-bezier(0.22, 1, 0.36, 1),
+      color 560ms cubic-bezier(0.22, 1, 0.36, 1);
   }
-  .af-surface__d {
-    font-family: var(--font-mono), ui-monospace, monospace;
-    font-size: 0.6875rem;
-    color: var(--text-tertiary);
+  .af-once.is-arrived .af-once__detail {
+    opacity: 1;
+    transform: none;
   }
-  .af-desk__wires {
-    position: absolute;
-    inset: 0;
-    z-index: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
+  /* Once the detail is in the system, it stops being the object on
+     screen and becomes the caption above one. Its chrome leaves and
+     its text steps back, so the panel below is unambiguously the
+     subject. Hierarchy, not brightness. */
+  .af-once.is-joined .af-once__detail {
+    border-color: transparent;
+    background: transparent;
+    color: var(--text-secondary);
   }
-  /* The connections draw themselves in as the work stops being
-     manual. --wire is written by the component from scroll. */
-  .af-wire {
-    fill: none;
-    stroke: #3b82f6;
-    stroke-width: 1;
-    stroke-dasharray: 1000;
-    stroke-dashoffset: calc(1000 - (var(--wire, 0) * 1000));
-    opacity: calc(var(--wire, 0) * 0.5);
-    transition: stroke-dashoffset 700ms cubic-bezier(0.22, 1, 0.36, 1),
-      opacity 700ms cubic-bezier(0.22, 1, 0.36, 1);
-  }
-  .af-desk__split {
-    display: grid;
-    gap: 2rem;
-    margin-top: 2.5rem;
-  }
-  .af-desk__label {
+
+  .af-once__state {
     display: flex;
     align-items: center;
     gap: 0.5rem;
+    margin-top: 1.5rem;
     font-family: var(--font-mono), ui-monospace, monospace;
     font-size: 0.6875rem;
     letter-spacing: 0.1em;
     text-transform: uppercase;
     color: var(--text-tertiary);
+    opacity: 0;
+    transition: opacity 500ms cubic-bezier(0.22, 1, 0.36, 1);
   }
-  .af-desk__list {
-    margin-top: 1rem;
+  .af-once.is-arrived .af-once__state {
+    opacity: 1;
+  }
+  .af-once.is-named .af-once__state {
+    color: var(--blue-soft);
+  }
+
+  /* ── THE FOUR PLACES ────────────────────────────────────────────
+     Two states of one object, and the difference between them has to
+     be felt rather than read.
+
+     DISCONNECTED is four separate CARDS: each with its own border, its
+     own background, its own slight horizontal offset, held apart by a
+     12px gap. Nothing lines up, because nothing is connected — the
+     offsets are the point, not a flourish.
+
+     CONNECTED is ONE PANEL: the cards stop being cards. Their borders
+     and backgrounds fade out, the container's fade in, the offsets
+     resolve to zero and the gap closes. What is left is four labelled
+     values inside a single surface, separated by the faintest possible
+     hairline.
+
+     WHY THE CARDS HAVE TO GO. Four bordered boxes in a stack with a
+     right-aligned column of identical values is a data table, and a
+     data table is exactly what a business owner should not be looking
+     at here. The chrome has to leave for the composition to read as
+     one system state rather than a spreadsheet.
+
+     IT DOES NOT GET BRIGHTER. The resolved panel sits DARKER than the
+     problem cards (42% against 50% of the surface) and the labels
+     recede to tertiary. The only thing that gains light is the value
+     itself. Contrast, not glow. */
+  .af-once__rows {
+    position: relative;
     display: flex;
     flex-direction: column;
-    gap: 0.55rem;
+    gap: 0.75rem;
+    margin-top: 1rem;
+    padding: 0;
+    border: 1px solid transparent;
+    border-radius: 12px;
+    background: transparent;
+    transition: gap 560ms cubic-bezier(0.22, 1, 0.36, 1),
+      border-color 560ms cubic-bezier(0.22, 1, 0.36, 1) 120ms,
+      background-color 560ms cubic-bezier(0.22, 1, 0.36, 1) 120ms;
   }
-  .af-desk__item {
-    font-size: 0.9375rem;
-    line-height: 1.5;
+  .af-once.is-joined .af-once__rows {
+    gap: 0;
+    border-color: var(--border-subtle);
+    background: color-mix(in srgb, var(--surface) 42%, transparent);
+  }
+
+  /* THE BINDING STROKE.
+     It sits OUTSIDE the panel, in the page gutter, so it reads as a
+     separate object holding the four rows rather than as the panel's
+     own left border — which is what it looked like when it lived on
+     the edge.
+
+     It is timed to arrive at each row as that row's value settles (see
+     the value delays below), so it behaves like the source feeding
+     them rather than a decorative edge that happens to appear. Linear,
+     deliberately: an eased stroke would not pass the rows evenly. It
+     points at nothing and it is not an arrow. */
+  .af-once__rows::before {
+    content: "";
+    position: absolute;
+    left: -0.625rem;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    border-radius: 3px;
+    background: linear-gradient(
+      180deg,
+      color-mix(in srgb, #3b82f6 25%, transparent),
+      #3b82f6,
+      color-mix(in srgb, #3b82f6 25%, transparent)
+    );
+    transform: scaleY(0);
+    transform-origin: top;
+    transition: transform 940ms linear 160ms;
+  }
+  .af-once.is-joined .af-once__rows::before {
+    transform: scaleY(1);
+  }
+
+  .af-once__row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.75rem 0.9rem;
+    border: 1px solid var(--border-subtle);
+    border-radius: 10px;
+    background: color-mix(in srgb, var(--surface) 50%, transparent);
+    opacity: 0;
+    /* Two transforms in one: the entrance lift, and the offset that
+       says these four were never aligned to begin with. */
+    transform: translate(var(--off, 0px), 6px);
+    transition: opacity 500ms cubic-bezier(0.22, 1, 0.36, 1),
+      transform 560ms cubic-bezier(0.22, 1, 0.36, 1),
+      border-color 560ms cubic-bezier(0.22, 1, 0.36, 1),
+      border-radius 560ms cubic-bezier(0.22, 1, 0.36, 1),
+      background-color 560ms cubic-bezier(0.22, 1, 0.36, 1);
+    transition-delay: calc(var(--i) * 80ms);
+  }
+  .af-once.is-listed .af-once__row {
+    opacity: 1;
+    transform: translate(var(--off, 0px), 0);
+  }
+  /* Scattered, but only just. Every offset stays inside the page
+     gutter at 375px, so nothing can reach the viewport edge. */
+  .af-once__row:nth-child(1) {
+    --off: 0px;
+  }
+  .af-once__row:nth-child(2) {
+    --off: 10px;
+  }
+  .af-once__row:nth-child(3) {
+    --off: -6px;
+  }
+  .af-once__row:nth-child(4) {
+    --off: 6px;
+  }
+  /* The cards stop being cards. */
+  .af-once.is-joined .af-once__row {
+    transform: translate(0, 0);
+    border-color: transparent;
+    border-radius: 0;
+    background: transparent;
+  }
+  .af-once.is-joined .af-once__row + .af-once__row {
+    border-top-color: color-mix(in srgb, var(--border-subtle) 55%, transparent);
+  }
+
+  /* Two columns at every width, including 375px. Stacking the value
+     under the label would destroy the alignment, and the alignment is
+     what makes the disagreement visible at a glance. */
+  .af-once__label {
+    flex: none;
+    font-size: 0.875rem;
     color: var(--text-secondary);
-    transition: opacity 700ms cubic-bezier(0.22, 1, 0.36, 1),
-      transform 700ms cubic-bezier(0.22, 1, 0.36, 1);
+    transition: color 560ms cubic-bezier(0.22, 1, 0.36, 1);
   }
-  /* Repetition moves off the person: it recedes and shifts away. It
-     does not vanish, because the work still happens. */
-  .af-desk__item.is-moved {
-    opacity: 0.5;
-    transform: translateX(6px);
+  /* Hierarchy in the resolved state: the labels become annotation and
+     the value becomes the subject. One system state with four names on
+     it, rather than four equally loud pairs. */
+  .af-once.is-agreed .af-once__label {
+    color: var(--text-tertiary);
   }
-  .af-desk__item.is-human {
+  .af-once__value {
+    display: grid;
+    justify-items: end;
+    text-align: right;
+    font-family: var(--font-mono), ui-monospace, monospace;
+    font-size: 0.8125rem;
+  }
+  /* THE TWO READINGS SHARE ONE CELL, SO THEY MUST CROSS AT ZERO.
+     Overlapping text in a shared cell is the collision defect this
+     codebase has already paid for twice (the hero beats, the pivot's
+     word pairs).
+
+     THE DELAY LIVES ON WHICHEVER SIDE IS ARRIVING, NOT ON ONE ELEMENT.
+     Putting it permanently on `__is` looked right scrolling down and
+     broke scrolling back up: the delay then applied to the departing
+     value, so both printed on top of each other for 220ms. Measured on
+     a reverse scroll before this was fixed — `was` at 0.10 while `is`
+     was still at 1.
+
+     So each element fades OUT immediately (200ms) and fades IN after
+     280ms. Whichever direction the visitor scrolls, the outgoing value
+     is gone 80ms before the incoming one starts. Do not merge these
+     into a single transition declaration. */
+  .af-once__was,
+  .af-once__is {
+    grid-area: 1 / 1;
+    white-space: nowrap;
+  }
+  .af-once__was {
+    color: var(--text-tertiary);
+    opacity: 1;
+    /* arriving (scrolling back up): wait, then fade in */
+    transition: opacity 200ms linear 280ms;
+  }
+  .af-once.is-agreed .af-once__was {
+    opacity: 0;
+    /* departing (scrolling down): go at once */
+    transition: opacity 200ms linear;
+  }
+  .af-once__is {
     color: #fff;
+    opacity: 0;
+    /* departing (scrolling back up): go at once */
+    transition: opacity 200ms cubic-bezier(0.22, 1, 0.36, 1);
   }
-  .af-desk__close {
+  .af-once.is-agreed .af-once__is {
+    opacity: 1;
+    /* Arriving (scrolling down): wait, then fade in — ONE ROW AT A
+       TIME. 280, 500, 720, 940ms. The information reaches the four
+       places in sequence instead of all four flipping at once, which
+       is the difference between propagation and a snap, and it is
+       timed to the binding stroke passing each row.
+
+       The 280ms floor is the safety margin: the outgoing value is
+       gone at 200ms, so nothing overlaps even on the first row. */
+    transition: opacity 260ms cubic-bezier(0.22, 1, 0.36, 1)
+      calc(280ms + var(--i) * 220ms);
+  }
+
+  .af-once__close {
     margin-top: 1.5rem;
     font-size: 1.0625rem;
     font-weight: 500;
     line-height: 1.4;
+    opacity: 0;
+    transition: opacity 600ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .af-once.is-named .af-once__close {
+    opacity: 1;
   }
 
   /* --------------------------------- scene 06 the transformation */
@@ -3069,12 +3256,10 @@
     .af-cmp {
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
-    .af-desk__field {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
-    .af-desk__split {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
+    /* Scene 05 needs no wide variant. The label/value row IS the
+       composition at every width, so there is nothing here to widen —
+       which is the point: the phone gets the same scene, not a
+       shrunken one. */
     .af-handover {
       grid-template-columns: 1fr auto 1fr;
       align-items: center;
@@ -3191,7 +3376,6 @@
     .af-cmp__side.is-dim,
     .af-moment__broken,
     .af-moment__whole,
-    .af-desk__item,
     .af-jstage,
     .af-thread__verdict {
       transition: none !important;
@@ -3201,6 +3385,44 @@
     .af-day__ev {
       animation: none;
     }
+
+    /* SCENE 05 — the comparison must survive.
+       `settled` is true on the first frame, so every beat resolves at
+       once and the rows arrive already joined and agreeing. That alone
+       would delete the argument: the visitor would see four places
+       that match and never learn they had not.
+
+       So the two readings leave their shared cell and sit side by
+       side, the old one struck through — the same treatment scene 06
+       uses for its broken/whole word pairs, and for the same reason.
+       Forcing both to full opacity inside one grid cell would print
+       them on top of each other, which is the collision this rule
+       exists to prevent. */
+    .af-once__value {
+      display: flex;
+      align-items: baseline;
+      justify-content: flex-end;
+      gap: 0.5rem;
+    }
+    .af-once__was,
+    .af-once__is {
+      grid-area: auto;
+      opacity: 1 !important;
+      transition: none !important;
+    }
+    .af-once__was {
+      text-decoration: line-through;
+      opacity: 0.55 !important;
+    }
+    .af-once__detail,
+    .af-once__state,
+    .af-once__rows,
+    .af-once__row,
+    .af-once__label,
+    .af-once__close,
+    .af-once__rows::before {
+      transition: none !important;
+    }
     /* Scene 10 already renders resolved here — useViewportProgress
        returns settled:true under reduced motion, so `is-arrived`,
        `is-on` and the human mark are all applied on the first frame.
@@ -3209,11 +3431,6 @@
     .af-sys__node,
     .af-sys__human {
       transition: none !important;
-    }
-    .af-wire {
-      transition: none;
-      stroke-dashoffset: 0;
-      opacity: 0.5;
     }
     /* The two words normally share one grid cell and cross-fade. The
        rule above forces both to full opacity, which in a shared cell

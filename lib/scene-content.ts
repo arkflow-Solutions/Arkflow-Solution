@@ -107,36 +107,48 @@ export const sceneDisappearing = {
 
 /* ==================================================== 05 · THE DESK */
 
+/**
+ * PHASE 3F.3B — one detail, four places.
+ *
+ * One appointment, and the four places it has to be written when nobody
+ * has connected them. Three disagree and one is blank, which is the
+ * whole argument — readable as text, with no dependence on colour.
+ *
+ * THE HUMAN-VERSUS-SYSTEM ARGUMENT BELONGS TO SCENE 08 AND IS NOT MADE
+ * HERE. Any list of what the system handles against what people handle
+ * duplicates it. Do not reintroduce one.
+ *
+ * NOTHING HERE IS A METRIC. No hours, no counts, no productivity claim,
+ * no outcome. What changes is where the information lives. How much
+ * that is worth is a conversation, not a number on a homepage.
+ */
 export const sceneDesk = {
   title: "Someone is doing this by hand.",
-  lead: "Not because it is difficult. Because nothing is connected, so a person has to be the connection.",
+  /** Salvaged verbatim from the approved lead's second sentence. */
+  lead: "Nothing is connected, so a person has to be the connection.",
+  /** The appointment itself. The site's existing placeholder identity. */
+  detail: "J. Tan · Thu 10:30",
+  problemLabel: "By hand",
+  resolvedLabel: "Entered once",
   /**
-   * From the approved `secondAdmin_RETIRED` block in lib/home-content.ts,
-   * recovered rather than rewritten.
+   * The same appointment, as four surfaces hold it while a person is
+   * carrying it between them. `was: null` is the record nobody updated.
    *
-   * THE INVOICE LINE IS DELIBERATELY OMITTED. The original list included
-   * chasing a late invoice; invoicing and payment reminders are not in
-   * the ten current capability areas in revenue-content.ts, and
-   * verify.mjs check 13 blocks the phrase outright. Founder decision,
-   * 7 September 2026: do not reinstate it here.
+   * These are four PLACES, not four capabilities, and the scene must
+   * never imply otherwise — no invoicing, no payments, no voice agent,
+   * no integration that is not in the classified capability set.
    */
-  handled: [
-    "Answering the same question for the fiftieth time",
-    "Checking what’s free and sending the booking link",
-    "Sending confirmations and reminders",
-    "Following up on a quote nobody replied to",
-    "Copying the same details between systems",
+  places: [
+    { name: "Conversation", was: "thurs 10.30am" },
+    { name: "Calendar", was: "Thu 10:30" },
+    { name: "Customer record", was: null },
+    { name: "Follow-up", was: "Thu 10am?" },
   ],
-  human: [
-    "The customer in front of them",
-    "The conversation that needs judgement",
-    "The complaint that needs care",
-    "The service itself",
-  ],
-  handledLabel: "Repetition",
-  humanLabel: "Your people",
-  /** No hours, no counts, no productivity claim. Ever. */
-  close: "Let your people handle people.",
+  /** What all four read once it is entered in one place. */
+  agreed: "Thu 10:30",
+  /** For the blank row. Shown as an em dash, announced as this. */
+  blank: "Nothing recorded",
+  close: "It only has to be entered once.",
 } as const;
 
 /* ============================================ 06 · THE TRANSFORMATION */

@@ -113,7 +113,6 @@ const secondAdmin_RETIRED = {
     "The complaint that needs care",
     "The service itself",
   ],
-  close: "Let your people handle people. Let ArkFlow handle the repetition.",
 } as const;
 
 /* ---------------------------------------------- 8 · WHAT WE PROVIDE */
