@@ -1,7 +1,6 @@
 "use client";
 
 import { useRef } from "react";
-import Link from "next/link";
 import { Container } from "@/components/ui/container";
 import { Section } from "@/components/ui/section";
 import { Reveal } from "@/components/motion/reveal";
@@ -11,6 +10,7 @@ import { DiscoveryCallButton, SectionHead } from "@/components/home/v3/shared";
 import { track } from "@/lib/analytics";
 import { whyArkflow, auditCta, finalCta } from "@/lib/revenue-content";
 import { sceneClose } from "@/lib/scene-content";
+import { SystemComposition } from "@/components/home/scenes/system-composition";
 import { useViewportProgress } from "@/lib/use-viewport-progress";
 import { SceneAtmosphere } from "@/components/motion/scene-atmosphere";
 import { THROUGHLINE_STAGES } from "@/lib/throughline";
@@ -188,30 +188,15 @@ export function SystemAndClose() {
           </header>
         </Reveal>
 
-        <Reveal delay={0.06}>
-          <ol className="af-surfaces">
-            {sceneClose.surfaces.map((s, i) => (
-              <li key={s.name} className="af-surfaces__item">
-                <span className="af-surfaces__n">
-                  {String(i + 1).padStart(2, "0")}
-                </span>
-                {/* The website is a real ArkFlow capability, not just a
-                    surface the system plugs into, so the first one is a
-                    route rather than a label. */}
-                <span className="af-surfaces__name">
-                  {i === 0 ? (
-                    <Link href="/attract" className="af-surfaces__link">
-                      {s.name}
-                    </Link>
-                  ) : (
-                    s.name
-                  )}
-                </span>
-                <span className="af-surfaces__body">{s.body}</span>
-              </li>
-            ))}
-          </ol>
-        </Reveal>
+        {/* PHASE 3F SCENE 10 — the six-item list became the composition.
+            The line the visitor followed through scene 09, now complete,
+            with the working surfaces attached at the stages they serve.
+            The list said the system was connected; this shows it.
+
+            The duplicate /attract link went with it: scene 09's stage
+            one already routes there, and one route to a capability is
+            enough. */}
+        <SystemComposition />
 
         {/* --- who is behind it --------------------------------- */}
         <Reveal delay={0.08}>
@@ -222,12 +207,15 @@ export function SystemAndClose() {
           </div>
         </Reveal>
 
+        {/* Three words. Each is demonstrated above rather than argued:
+            CONNECTED is the line with everything hanging off it,
+            OPERATED is the statement directly above, HUMAN is the green
+            mark on the line — which scene 08 has already explained. */}
         <Reveal delay={0.1}>
           <ul className="af-pillars">
             {sceneClose.pillars.map((p) => (
-              <li key={p.name} className="af-pillar">
-                <span className="af-pillar__n">{p.name}</span>
-                <span className="af-pillar__b">{p.body}</span>
+              <li key={p} className="af-pillar">
+                <span className="af-pillar__n">{p}</span>
               </li>
             ))}
           </ul>
@@ -235,25 +223,18 @@ export function SystemAndClose() {
 
         {/* --- the close ---------------------------------------- */}
         <Reveal delay={0.12}>
+          {/* One column now, centred. The ten "what we look at" areas
+              are gone: five of them were word-for-word the public stage
+              labels from scene 09, so the close was restating the
+              journey one scene later in more abstract language. The
+              question and the note carry the offer between them. */}
           <div className="af-close__cta">
-            <div>
-              <h2 className="af-close__title">{sceneClose.ctaTitle}</h2>
-              <p className="af-scene__lead">{sceneClose.ctaLead}</p>
-              <p className="af-close__note">{sceneClose.ctaNote}</p>
-              <div className="mt-10">
-                <DiscoveryCallButton location="homepage_close">
-                  {sceneClose.cta}
-                </DiscoveryCallButton>
-              </div>
-            </div>
-
-            <div>
-              <p className="af-close__areas-l">{sceneClose.areasLabel}</p>
-              <ul className="af-audit__areas">
-                {auditCta.areas.map((area) => (
-                  <li key={area}>{area}</li>
-                ))}
-              </ul>
+            <h2 className="af-close__title">{sceneClose.ctaTitle}</h2>
+            <p className="af-close__note">{sceneClose.ctaNote}</p>
+            <div className="mt-10">
+              <DiscoveryCallButton location="homepage_close">
+                {sceneClose.cta}
+              </DiscoveryCallButton>
             </div>
           </div>
         </Reveal>

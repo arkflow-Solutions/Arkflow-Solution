@@ -109,8 +109,10 @@ const FRAMES: readonly Frame[] = [
   { id: "human-and-ai", stage: 2, seal: 1, presence: 0.26 },
   // The journey IS the line. Dominant, and swept end to end.
   { id: "the-journey", stage: 9, seal: 1, presence: 0.85, sweep: true },
-  // Grow. The line resolves as the visitor arrives at the close.
-  { id: "revenue-leak-audit", stage: 9, seal: 1, presence: 0.44 },
+  /* The close draws its own backbone, with the system attached to it,
+     so the rail stands down exactly as it does for the pivot. Two lines
+     at once was the defect corrected in scene 09. */
+  { id: "revenue-leak-audit", stage: 9, seal: 1, presence: 0 },
 ] as const;
 
 /** Mirrors lib/use-scene-gate.ts. If that test changes, change this. */

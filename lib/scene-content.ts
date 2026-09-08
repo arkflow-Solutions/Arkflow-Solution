@@ -183,15 +183,26 @@ export const sceneJourney = {
 export const sceneClose = {
   systemTitle: "One connected system.",
   systemLead: "Every enquiry becomes a record. Every conversation stays attached to it. Nothing depends on someone remembering.",
-  /** The surfaces, in the order an opportunity touches them. */
-  surfaces: [
-    { name: "Website", body: "The front door, built as part of the system." },
-    { name: "Conversation", body: "Every channel, one thread." },
-    { name: "Customer record", body: "One place, whole history." },
-    { name: "Calendar", body: "Booked inside the conversation." },
-    { name: "Follow-up", body: "A next action that fires on its own." },
-    { name: "Retention", body: "The relationship continues after the sale." },
-  ],
+  /**
+   * PHASE 3F SCENE 10 — the surfaces became the composition.
+   *
+   * This was a six-item list of name + sentence. The sentences are gone
+   * because the artefact says the same thing better: a record card with
+   * a name, a channel and a line of history IS "one place, whole
+   * history", and reading that sentence beside it was the scene
+   * explaining what it was already showing.
+   *
+   * Website and Retention were dropped rather than shrunk. Both are also
+   * PUBLIC STAGE LABELS, so putting them on the line would have restated
+   * scene 09 a third time — the same duplication that took the audit
+   * areas out. Website already has its own route from scene 09's stage
+   * one, which is the better placement.
+   *
+   * The four names now live in components/home/scenes/system-composition
+   * as labels on the composition. Kept here as the record of what was
+   * approved, and unexported so nothing renders them as a list again.
+   */
+  humanLabel: "Human",
   /**
    * THE POSITIONING LANDS HERE.
    *
@@ -205,24 +216,28 @@ export const sceneClose = {
     line: "A Revenue Operating Company.",
     body: "We design the customer journey, build the system that runs it, and keep operating it as the business changes.",
   },
-  /** Why ArkFlow, compressed from six rows to three ideas. */
-  pillars: [
-    {
-      name: "Connected",
-      body: "The value is in the joins between the moments, not in any one tool.",
-    },
-    {
-      name: "Operated",
-      body: "You are not handed a login and a training video. We run the system.",
-    },
-    {
-      name: "Human",
-      body: "AI handles the repetition. People handle the relationship.",
-    },
-  ],
+  /**
+   * Three ideas, three words.
+   *
+   * The bodies are gone: the composition above demonstrates each one.
+   * CONNECTED is the line with everything attached to it. OPERATED is
+   * the positioning statement that follows. HUMAN is the green mark on
+   * the line at Respond — which scene 08 has already explained in full,
+   * so repeating "AI handles the repetition, people handle the
+   * relationship" here would be the third telling of it.
+   */
+  pillars: ["Connected", "Operated", "Human"],
   ctaTitle: "Where is your business leaking revenue?",
-  ctaLead: "A structured look at what happens to an enquiry, from the moment it arrives to the moment a customer comes back.",
+  /* `ctaLead` REMOVED — it described the audit as a process in 24 words
+     while ctaTitle asks the question and ctaNote answers the only
+     objection. Nothing about the offer is lost. */
   ctaNote: "It is a diagnosis, not a contact form.",
   cta: "Book a Discovery Call",
-  areasLabel: "What we look at",
+  /* `areasLabel` and the ten audit areas REMOVED. Five of those ten were
+     word-for-word the public stage labels from scene 09 — Qualification,
+     Booking, Follow-up, Retention, Reactivation — and two more were
+     RevOps phrasing for stages already shown. The close was restating
+     the journey one scene later in more abstract language, which made
+     the journey feel like it had not landed. Founder decision, 8
+     September 2026: delete rather than reword. */
 } as const;

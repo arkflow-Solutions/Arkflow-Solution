@@ -2738,16 +2738,6 @@
     border-color: color-mix(in srgb, #3b82f6 70%, transparent);
     color: #fff;
   }
-  .af-surfaces__link {
-    color: inherit;
-    text-decoration: underline;
-    text-decoration-color: color-mix(in srgb, #3b82f6 55%, transparent);
-    text-underline-offset: 3px;
-    transition: text-decoration-color 200ms;
-  }
-  .af-surfaces__link:hover {
-    text-decoration-color: #3b82f6;
-  }
   .af-jstage__meaning {
     flex-basis: 100%;
     font-size: 0.875rem;
@@ -2784,35 +2774,157 @@
   .af-close {
     position: relative;
   }
-  .af-surfaces {
-    display: grid;
-    gap: 0.5rem;
+
+  /* -------------------------------- scene 10 · the composition
+     The completed Throughline with the working surfaces attached at
+     the stages they serve. This is the scene's own line — the page
+     rail stands down here (presence 0), exactly as it does for the
+     pivot, so there are never two lines on screen at once.
+
+     TWO LAYOUTS, ONE CLAIM.
+
+     Wide: the artefacts are pinned to the line. BOTH --x and --y are
+     computed in the component from layoutThroughline, the same
+     function the SVG renderer uses, so a stem always lands on the
+     stroke rather than near it.
+
+     Narrow: four cards cannot be pinned to points forty pixels apart.
+     The line is drawn in its narrow composition and the artefacts
+     stack beneath it in stage order. Attachment is claimed only where
+     it can actually be shown; it is never faked with a fake stem. */
+  .af-sys {
     margin-top: 3rem;
   }
-  .af-surfaces__item {
+  .af-sys__stage {
+    position: relative;
+  }
+  .af-sys__line {
+    opacity: 0;
+    transition: opacity 900ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .af-sys.is-arrived .af-sys__line {
+    opacity: 1;
+  }
+  .af-sys__line--wide {
+    display: none;
+  }
+
+  .af-sys__nodes {
     display: grid;
-    grid-template-columns: auto 1fr;
-    gap: 0.3rem 1rem;
-    padding: 0.9rem 1rem;
+    gap: 1rem;
+    margin-top: 1.75rem;
+  }
+  .af-sys__node {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+    opacity: 0;
+    transform: translateY(6px);
+    transition: opacity 600ms ease, transform 600ms ease;
+    /* Left to right along the line, so the eye reads the system in the
+       order the opportunity moves through it. */
+    transition-delay: calc(var(--i) * 90ms);
+  }
+  .af-sys__nodes.is-on .af-sys__node {
+    opacity: 1;
+    transform: none;
+  }
+  /* The stem IS the attachment, so it exists only where there is a
+     line to attach to. Absent from the stacked layout by design. */
+  .af-sys__stem {
+    display: none;
+  }
+  .af-sys__label {
+    font-family: var(--font-mono), ui-monospace, monospace;
+    font-size: 0.625rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-tertiary);
+  }
+
+  /* Fragments of a working system. Never a panel, never a dashboard,
+     never a chart, and never a number. */
+  .af-sys__card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    width: 100%;
+    padding: 0.7rem 0.85rem;
     border: 1px solid var(--border-subtle);
     border-radius: 10px;
-    background: color-mix(in srgb, var(--surface) 55%, transparent);
+    background: color-mix(in srgb, var(--surface) 72%, transparent);
+    text-align: left;
   }
-  .af-surfaces__n {
-    grid-row: 1 / 3;
-    padding-top: 0.15rem;
-    font-family: var(--font-mono), ui-monospace, monospace;
-    font-size: 0.6875rem;
-    color: #3b82f6;
+  .af-sys__who {
+    font-size: 0.8125rem;
+    line-height: 1.35;
+    color: #fff;
   }
-  .af-surfaces__name {
-    font-size: 1rem;
-    font-weight: 500;
-  }
-  .af-surfaces__body {
-    font-size: 0.875rem;
+  .af-sys__meta {
+    font-size: 0.75rem;
+    line-height: 1.4;
     color: var(--text-secondary);
   }
+  .af-sys__chan {
+    font-family: var(--font-mono), ui-monospace, monospace;
+    font-size: 0.625rem;
+    letter-spacing: 0.06em;
+    color: var(--blue-soft);
+  }
+  .af-sys__card--thread {
+    gap: 0.35rem;
+  }
+  .af-sys__bubble {
+    max-width: 94%;
+    padding: 0.3rem 0.55rem;
+    border-radius: 8px;
+    background: color-mix(in srgb, #fff 6%, transparent);
+    font-size: 0.75rem;
+    line-height: 1.35;
+    color: var(--text-secondary);
+  }
+  .af-sys__bubble--ours {
+    align-self: flex-end;
+    background: color-mix(in srgb, #3b82f6 20%, transparent);
+    color: #fff;
+  }
+  .af-sys__card--date {
+    gap: 0.1rem;
+  }
+  .af-sys__day {
+    font-family: var(--font-mono), ui-monospace, monospace;
+    font-size: 0.625rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-tertiary);
+  }
+  .af-sys__time {
+    font-size: 1.125rem;
+    font-weight: 600;
+    line-height: 1.2;
+    color: #fff;
+  }
+
+  /* The branch. Green has meant "a person has taken over" since scene
+     08, so one word in that green reinforces it. It must not try to
+     explain it a second time. */
+  .af-sys__human {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-family: var(--font-mono), ui-monospace, monospace;
+    font-size: 0.625rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #34d399;
+    opacity: 0;
+    transition: opacity 700ms ease;
+  }
+  .af-sys__human.is-on {
+    opacity: 1;
+  }
+
   .af-position {
     margin-top: 4rem;
     padding-top: 2.5rem;
@@ -2845,32 +2957,34 @@
     gap: 1rem;
     margin-top: 3rem;
   }
+  /* Three words, not three cards.
+     Each pillar used to be a bordered box holding a small label and a
+     sentence. The sentences are gone — the composition above
+     demonstrates all three — and a bordered box around one 11px word
+     reads as an empty card, which is worse than no box. A hairline and
+     the word itself is the whole element. */
   .af-pillar {
-    display: flex;
-    flex-direction: column;
-    gap: 0.4rem;
-    padding: 1.1rem;
-    border: 1px solid var(--border-subtle);
-    border-radius: 10px;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border-subtle);
   }
   .af-pillar__n {
-    font-family: var(--font-mono), ui-monospace, monospace;
-    font-size: 0.6875rem;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: #3b82f6;
+    font-size: 1.0625rem;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    color: #fff;
   }
-  .af-pillar__b {
-    font-size: 0.9375rem;
-    line-height: 1.55;
-    color: var(--text-secondary);
-  }
+  /* One centred column. It was a two-column split with the ten audit
+     areas on the right; those areas are gone (five of them were the
+     public stage labels from scene 09 verbatim), and a lone question
+     hanging in the left column of an empty grid reads as a layout
+     mistake rather than as a close. */
   .af-close__cta {
-    display: grid;
-    gap: 2.5rem;
+    margin-inline: auto;
     margin-top: 4rem;
     padding-top: 3rem;
+    max-width: 40rem;
     border-top: 1px solid var(--border-subtle);
+    text-align: center;
   }
   .af-close__title {
     font-size: clamp(1.6rem, 1.1rem + 2.2vw, 2.6rem);
@@ -2881,14 +2995,6 @@
   .af-close__note {
     margin-top: 1rem;
     font-size: 0.875rem;
-    color: var(--text-tertiary);
-  }
-  .af-close__areas-l {
-    margin-bottom: 1rem;
-    font-family: var(--font-mono), ui-monospace, monospace;
-    font-size: 0.6875rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
     color: var(--text-tertiary);
   }
 
@@ -2991,15 +3097,88 @@
     .af-jstage__meaning {
       flex-basis: auto;
     }
-    .af-surfaces {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
     .af-pillars {
       grid-template-columns: repeat(3, minmax(0, 1fr));
     }
-    .af-close__cta {
-      grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
-      gap: 4rem;
+
+    /* ------------- scene 10: the artefacts pin to the line -------------
+       Measured, not guessed. On this layout the four stages sit at
+       17.0 / 27.3 / 47.1 / 66.2 percent of the width. Capture and
+       Respond are 10.3 percent apart — closer than one card is wide —
+       which is the whole reason `side` alternates: they clear each
+       other vertically, never horizontally.
+
+       The vertical padding is the room the artefacts need above and
+       below the 1200x210 line box. The overlay is inset by exactly the
+       same amounts so that --y, a percentage of the SVG box, still
+       resolves against the box and not against the padded stage. */
+    .af-sys {
+      margin-top: 4rem;
+    }
+    .af-sys__stage {
+      --sys-pt: 9rem;
+      --sys-pb: 6rem;
+      padding-block: var(--sys-pt) var(--sys-pb);
+    }
+    .af-sys__line--wide {
+      display: block;
+    }
+    .af-sys__line--narrow {
+      display: none;
+    }
+    .af-sys__nodes {
+      --sys-card: clamp(8.75rem, 12vw, 11rem);
+      position: absolute;
+      inset: var(--sys-pt) 0 var(--sys-pb);
+      display: block;
+      margin: 0;
+    }
+    .af-sys__node {
+      position: absolute;
+      left: var(--x);
+      width: var(--sys-card);
+      margin-left: calc(var(--sys-card) / -2);
+      align-items: center;
+      gap: 0;
+    }
+    /* Anchored by the edge that touches the line, so the stem meets the
+       stroke at --y whatever height the artefact turns out to be. */
+    .af-sys__node--above {
+      flex-direction: column-reverse;
+      bottom: calc(100% - var(--y));
+    }
+    .af-sys__node--below {
+      top: var(--y);
+    }
+    .af-sys__stem {
+      display: block;
+      width: 1px;
+      height: 2.4rem;
+    }
+    .af-sys__node--above .af-sys__stem {
+      background: linear-gradient(
+        0deg,
+        color-mix(in srgb, #3b82f6 60%, transparent),
+        color-mix(in srgb, #3b82f6 6%, transparent)
+      );
+    }
+    .af-sys__node--below .af-sys__stem {
+      background: linear-gradient(
+        180deg,
+        color-mix(in srgb, #3b82f6 60%, transparent),
+        color-mix(in srgb, #3b82f6 6%, transparent)
+      );
+    }
+    .af-sys__label {
+      margin-block: 0.5rem;
+    }
+    /* The green mark rides the stem, where the branch actually meets
+       the line, rather than floating at the bottom of the card. */
+    .af-sys__human {
+      position: absolute;
+      top: 0.05rem;
+      left: calc(50% + 0.55rem);
+      white-space: nowrap;
     }
   }
 
@@ -3021,6 +3200,15 @@
     }
     .af-day__ev {
       animation: none;
+    }
+    /* Scene 10 already renders resolved here — useViewportProgress
+       returns settled:true under reduced motion, so `is-arrived`,
+       `is-on` and the human mark are all applied on the first frame.
+       Only the transitions need removing. */
+    .af-sys__line,
+    .af-sys__node,
+    .af-sys__human {
+      transition: none !important;
     }
     .af-wire {
       transition: none;
