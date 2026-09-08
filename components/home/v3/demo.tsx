@@ -6,6 +6,7 @@ import { Section } from "@/components/ui/section";
 import { Reveal } from "@/components/motion/reveal";
 import { Button } from "@/components/ui/button";
 import { SectionHead, IllustrativeTag } from "@/components/home/v3/shared";
+import { ChannelIcon } from "@/components/ui/channel-icon";
 import { useInView } from "@/lib/use-in-view";
 import { useViewportProgress } from "@/lib/use-viewport-progress";
 import { SceneAtmosphere } from "@/components/motion/scene-atmosphere";
@@ -149,7 +150,16 @@ export function AiConversation() {
                   <b>New enquiry</b>
                   <span>First contact · 9:41 PM</span>
                 </span>
-                <span className="af-phone__ch">Messaging channel</span>
+                {/* PHASE 3G — a named channel rather than "Messaging
+                    channel", so this thread visibly belongs to the same
+                    world as scene 02's arrivals and scene 11's record
+                    card, all three of which say WhatsApp. The glyph is
+                    decorative; the name is real text. Nothing about the
+                    conversation itself changes. */}
+                <span className="af-phone__ch">
+                  <ChannelIcon name="WhatsApp" size={11} />
+                  WhatsApp
+                </span>
               </div>
 
               <div

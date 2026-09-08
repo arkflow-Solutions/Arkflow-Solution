@@ -1044,6 +1044,12 @@
   .af-phone__who b { font-size: 0.875rem; font-weight: 500; }
   .af-phone__who span { font-size: 0.6875rem; color: var(--text-tertiary); }
   .af-phone__ch {
+    /* PHASE 3G — now carries a decorative glyph beside the channel
+       name, so it has to lay its children out rather than rely on the
+       text baseline. */
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
     margin-left: auto;
     font-family: var(--font-mono), ui-monospace, monospace;
     font-size: 0.5625rem;
@@ -2229,6 +2235,338 @@
     color: var(--text-tertiary);
   }
 
+  /* ---------------------------- scene 02 every channel, one inbox
+     PHASE 3G. Ways in on the left, a substantial ArkFlow inbox on the
+     right.
+
+     THE INBOX IS THE SUBJECT AND MUST STAY RECOGNISABLE. An earlier
+     pass floated message slivers in the gap between the two zones and
+     converged them abstractly. It was more cinematic and it stopped
+     looking like a communication system, which is the one thing this
+     scene cannot afford. The cinema here comes from composition,
+     depth, light and restraint — never from abstracting the interface
+     away.
+
+     So the panel is built from the product-surface vocabulary this
+     codebase already owns: .af-frame for the chrome, .af-rec for the
+     rows, .af-rec__ch for the channel pills. Nothing new is invented,
+     and it reads as an ArkFlow surface rather than a dashboard.
+
+     THE FRAGMENTATION HAPPENS INSIDE THE PANEL. Five conversations
+     start as separate cards drifting left out of a frame that is
+     barely there, and the frame closes around them as they settle.
+
+     NOTHING HERE IS INTERACTIVE. .af-rec carries a hover state for the
+     board it was built for; these rows are an illustration, so they
+     take pointer-events: none rather than fighting that hover in the
+     cascade — a hover that redrew the card border would undo the
+     gathering. */
+  .af-inbox {
+    display: grid;
+    gap: 2rem;
+    margin-top: 3rem;
+  }
+
+  /* ---- ways in ---- */
+  /* Never a row of identical pills: alternating vertical offsets and
+     three depths, so the eight read as doors around a business. */
+  .af-inbox__ways {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 0.45rem;
+  }
+  .af-inbox__way {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.32rem 0.7rem;
+    border: 1px solid var(--border-subtle);
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--surface) 55%, transparent);
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    white-space: nowrap;
+    opacity: 0;
+    transform: translateY(6px);
+    transition: opacity 500ms cubic-bezier(0.22, 1, 0.36, 1),
+      transform 500ms cubic-bezier(0.22, 1, 0.36, 1);
+    transition-delay: calc(var(--i) * 60ms);
+  }
+  .af-inbox__way:nth-child(even) {
+    margin-top: 0.55rem;
+  }
+  .af-inbox.is-arrived .af-inbox__way {
+    opacity: 0.74;
+    transform: none;
+  }
+  .af-inbox.is-arrived .af-inbox__way:nth-child(3n + 1) {
+    opacity: 1;
+  }
+  .af-inbox.is-arrived .af-inbox__way:nth-child(3n + 3) {
+    opacity: 0.58;
+  }
+  /* Website arrives as an enquiry, not as a chat. Squared and dashed,
+     so it is visibly a different kind of thing from the messaging
+     apps rather than an eighth identical bubble. */
+  .af-inbox__way--form {
+    border-radius: 8px;
+    border-style: dashed;
+  }
+  /* The doors were the setup. Once the inbox is readable they step
+     back rather than compete with it. */
+  .af-inbox.is-gathered .af-inbox__way,
+  .af-inbox.is-gathered .af-inbox__way:nth-child(3n + 1),
+  .af-inbox.is-gathered .af-inbox__way:nth-child(3n + 3) {
+    /* Subordinate to the inbox, never faint. The panel is brighter
+       now, so the doors can hold a little more of themselves and
+       still lose the hierarchy contest. */
+    opacity: 0.62;
+  }
+
+  /* ---- the panel ---- */
+  /* Barely there while the conversations are still separate; it closes
+     around them as they gather. */
+  .af-inbox__frame {
+    border-color: color-mix(in srgb, var(--border-strong) 28%, transparent);
+    background: color-mix(in srgb, var(--surface) 28%, transparent);
+    box-shadow: none;
+    transition: border-color 620ms cubic-bezier(0.22, 1, 0.36, 1) 160ms,
+      background-color 620ms cubic-bezier(0.22, 1, 0.36, 1) 160ms,
+      box-shadow 620ms cubic-bezier(0.22, 1, 0.36, 1) 160ms;
+  }
+  /* THE PANEL HAS TO SIT ABOVE THE PAGE, NOT IN IT.
+     var(--surface) is #0f172a and the page is #0a0e1a — four points
+     apart, which on a dark screen means the inbox all but vanishes
+     into the background. Seven percent of white lifts it to roughly
+     #202739: unmistakably a surface, still dark, still restrained.
+     No glow, no gradient, no new colour — the existing surface token,
+     raised. */
+  .af-inbox.is-gathered .af-inbox__frame {
+    border-color: rgba(255, 255, 255, 0.2);
+    background: color-mix(in srgb, var(--surface) 93%, #ffffff);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 24px 70px rgba(0, 0, 0, 0.5);
+  }
+  .af-inbox__frame .af-frame__bar {
+    opacity: 0.32;
+    transition: opacity 620ms cubic-bezier(0.22, 1, 0.36, 1) 160ms,
+      background-color 620ms cubic-bezier(0.22, 1, 0.36, 1) 160ms;
+  }
+  .af-inbox.is-gathered .af-inbox__frame .af-frame__bar {
+    opacity: 1;
+    background: rgba(255, 255, 255, 0.055);
+  }
+  /* The label is what says "inbox" before any row is read. */
+  .af-inbox__frame .af-frame__url {
+    color: var(--text-secondary);
+  }
+  .af-inbox__tag {
+    margin-left: auto;
+    display: inline-flex;
+  }
+  /* NEUTRAL HERE, AMBER EVERYWHERE ELSE.
+     The site-wide Illustrative tag is amber, and on this page amber
+     means one thing: revenue leaking. On the header of the only
+     capability scene in the first half, that is the wrong signal
+     entirely. Scoped to this instance — every other .af-illus on the
+     site keeps the amber treatment it was designed with. */
+  .af-inbox__tag .af-illus {
+    color: var(--text-tertiary);
+    border-color: var(--border-subtle);
+    background: rgba(255, 255, 255, 0.03);
+  }
+  /* The shared .af-frame__body is sized for the four-column board; a
+     five-row list needs its own height. */
+  .af-inbox__body.af-frame__body {
+    min-height: 0;
+    padding: 0.9rem;
+  }
+
+  .af-inbox__rows {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    transition: gap 560ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .af-inbox.is-gathered .af-inbox__rows {
+    gap: 0.1rem;
+  }
+
+  /* Each conversation: its own surface while nothing gathers it, a row
+     of one surface once something does. */
+  .af-inbox__row.af-rec {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 0.1rem 0.8rem;
+    /* Room to breathe once the borders come off. A gathered row with
+       card-tight padding reads as a table; with air it reads as a
+       conversation. */
+    padding: 0.72rem 0.85rem;
+    margin-bottom: 0;
+    /* Legible as its own surface while it is still separate. */
+    background: rgba(255, 255, 255, 0.045);
+    pointer-events: none;
+    opacity: 0;
+    transform: translate(var(--drift, 0px), 6px);
+    transition: opacity 520ms cubic-bezier(0.22, 1, 0.36, 1),
+      transform 620ms cubic-bezier(0.22, 1, 0.36, 1),
+      border-color 560ms cubic-bezier(0.22, 1, 0.36, 1),
+      border-radius 560ms cubic-bezier(0.22, 1, 0.36, 1),
+      background-color 560ms cubic-bezier(0.22, 1, 0.36, 1);
+    transition-delay: calc(var(--i) * 80ms);
+  }
+  .af-inbox.is-listed .af-inbox__row.af-rec {
+    opacity: 1;
+    transform: translate(var(--drift, 0px), 0);
+  }
+  .af-inbox.is-gathered .af-inbox__row.af-rec {
+    transform: translate(0, 0);
+    border-color: transparent;
+    border-radius: 0;
+    background: transparent;
+  }
+  /* One faint divider between gathered rows. The panel's own border is
+     doing the containing; these only have to separate. */
+  .af-inbox.is-gathered .af-inbox__row.af-rec + .af-inbox__row.af-rec {
+    border-top-color: rgba(255, 255, 255, 0.07);
+  }
+
+  /* Two readings of the same enquiry share one cell: the account a
+     fragmented setup shows you, and the person one connected record
+     does.
+
+     THE DELAY LIVES ON WHICHEVER SIDE IS ARRIVING. Put it permanently
+     on one element and scrolling back up prints both on top of each
+     other — the collision this codebase has already paid for twice.
+
+     These selectors are doubled up on purpose: `.af-rec > span` and
+     `.af-rec b` are more specific than a lone class would be, so the
+     scene's own rules have to be qualified to win. */
+  .af-inbox__row .af-inbox__id {
+    display: grid;
+    min-width: 0;
+  }
+  .af-inbox__row .af-inbox__handle,
+  .af-inbox__row .af-inbox__who {
+    grid-area: 1 / 1;
+    display: block;
+    margin-bottom: 0;
+    overflow: hidden;
+    /* The customer is the loudest thing in the row. */
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .af-inbox__row .af-inbox__handle {
+    font-family: var(--font-mono), ui-monospace, monospace;
+    font-size: 0.75rem;
+    font-weight: 400;
+    color: var(--text-tertiary);
+    opacity: 1;
+    transition: opacity 200ms linear 280ms;
+  }
+  .af-inbox.is-named .af-inbox__row .af-inbox__handle {
+    opacity: 0;
+    transition: opacity 200ms linear;
+  }
+  .af-inbox__row .af-inbox__who {
+    color: #fff;
+    opacity: 0;
+    transition: opacity 200ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  /* The row with nothing to resolve to. It is present from the start
+     and never fades, because a first contact from someone the
+     business has never dealt with is exactly as identifiable before
+     the inbox gathers it as after. */
+  .af-inbox__row .af-inbox__who--only {
+    font-family: var(--font-mono), ui-monospace, monospace;
+    font-size: 0.75rem;
+    font-weight: 400;
+    color: var(--text-secondary);
+    opacity: 1;
+    transition: color 560ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .af-inbox.is-named .af-inbox__row .af-inbox__who--only {
+    color: #fff;
+  }
+  /* One row at a time, so the identities resolve as a sequence rather
+     than a simultaneous flip. */
+  .af-inbox.is-named .af-inbox__row .af-inbox__who:not(.af-inbox__who--only) {
+    opacity: 1;
+    transition: opacity 260ms cubic-bezier(0.22, 1, 0.36, 1)
+      calc(280ms + var(--i) * 130ms);
+  }
+
+  .af-inbox__row .af-inbox__meta {
+    grid-column: 1;
+    display: block;
+    min-width: 0;
+    overflow: hidden;
+    /* What they said, second. Readable at a glance rather than
+       squinted at — this is the conversation content. */
+    font-size: 0.8125rem;
+    line-height: 1.45;
+    color: var(--text-secondary);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  /* The channel, third: present and identifiable, never competing
+     with the person or the message. */
+  .af-inbox__row .af-inbox__ch {
+    grid-column: 2;
+    grid-row: 1 / 3;
+    align-self: center;
+    margin-top: 0;
+    font-size: 0.5625rem;
+  }
+
+  .af-inbox__state {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    font-family: var(--font-mono), ui-monospace, monospace;
+    font-size: 0.6875rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-tertiary);
+    opacity: 0;
+    transition: opacity 500ms cubic-bezier(0.22, 1, 0.36, 1),
+      color 600ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .af-inbox.is-listed .af-inbox__state {
+    opacity: 1;
+  }
+  .af-inbox.is-named .af-inbox__state {
+    color: var(--blue-soft);
+  }
+  .af-inbox__states {
+    display: grid;
+    min-width: 0;
+  }
+  .af-inbox__was,
+  .af-inbox__is {
+    grid-area: 1 / 1;
+  }
+  .af-inbox__was {
+    opacity: 1;
+    transition: opacity 200ms linear 280ms;
+  }
+  .af-inbox.is-named .af-inbox__was {
+    opacity: 0;
+    transition: opacity 200ms linear;
+  }
+  .af-inbox__is {
+    opacity: 0;
+    transition: opacity 200ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .af-inbox.is-named .af-inbox__is {
+    opacity: 1;
+    transition: opacity 260ms cubic-bezier(0.22, 1, 0.36, 1) 280ms;
+  }
+
   /* --------------------------------------- scene 02 the thread */
   .af-thread {
     display: flex;
@@ -3256,7 +3594,17 @@
     .af-cmp {
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
-    /* Scene 05 needs no wide variant. The label/value row IS the
+    /* SCENE 02 — ways in on the left, the inbox on the right.
+       Below this width the two zones stack, which is not a fallback:
+       the ways in still come first and the inbox is still full width
+       and full size. Nothing is shrunk to fit. */
+    .af-inbox {
+      grid-template-columns: minmax(0, 0.44fr) minmax(0, 1fr);
+      gap: 2.5rem;
+      align-items: start;
+    }
+
+    /* Scene 06 needs no wide variant. The label/value row IS the
        composition at every width, so there is nothing here to widen —
        which is the point: the phone gets the same scene, not a
        shrunken one. */
@@ -3384,6 +3732,84 @@
     }
     .af-day__ev {
       animation: none;
+    }
+
+    /* SCENE 02 — the comparison must survive.
+       `settled` is true on the first frame, so the scene renders
+       already gathered and resolved. On its own that deletes the
+       argument: the visitor would never learn the five conversations
+       had arrived separately, or that two of them looked like two
+       different people.
+
+       So three things change here. The two state labels leave their
+       shared cell and sit side by side, the old one struck through —
+       the treatment scenes 06 and 07 already use. Each row shows its
+       origin handle struck through BEFORE the resolved name, so the
+       J. Tan pairing is readable as text with no animation at all.
+       And the ways in stay at full strength rather than receding,
+       because a dimming nobody sees just reads as low contrast.
+
+       THE LABELS MUST BE ALLOWED TO WRAP. Stacked in one cell each
+       only has to fit alone. Side by side they need more width than a
+       327px container has, and the `nowrap` that is correct in a
+       shared cell would push the second one off screen. Measured on
+       the previous iteration, not assumed. */
+    .af-inbox__state {
+      align-items: flex-start;
+    }
+    .af-inbox__states {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      gap: 0.15rem 0.5rem;
+    }
+    .af-inbox__was,
+    .af-inbox__is {
+      grid-area: auto;
+      opacity: 1 !important;
+    }
+    .af-inbox__was {
+      text-decoration: line-through;
+      opacity: 0.55 !important;
+    }
+    /* Handle, then person, on one line. Both are real text, so the
+       two J. Tan rows are identifiable as one customer by reading. */
+    .af-inbox__row .af-inbox__id {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      gap: 0.1rem 0.45rem;
+    }
+    .af-inbox__row .af-inbox__handle,
+    .af-inbox__row .af-inbox__who {
+      grid-area: auto;
+      white-space: normal;
+      opacity: 1 !important;
+    }
+    .af-inbox__row .af-inbox__handle {
+      text-decoration: line-through;
+      opacity: 0.55 !important;
+    }
+    .af-inbox__row .af-inbox__meta {
+      white-space: normal;
+    }
+    .af-inbox.is-gathered .af-inbox__way,
+    .af-inbox.is-gathered .af-inbox__way:nth-child(3n + 1),
+    .af-inbox.is-gathered .af-inbox__way:nth-child(3n + 3) {
+      opacity: 1;
+    }
+    .af-inbox__ways,
+    .af-inbox__way,
+    .af-inbox__frame,
+    .af-inbox__frame .af-frame__bar,
+    .af-inbox__rows,
+    .af-inbox__row,
+    .af-inbox__state,
+    .af-inbox__handle,
+    .af-inbox__who,
+    .af-inbox__was,
+    .af-inbox__is {
+      transition: none !important;
     }
 
     /* SCENE 05 — the comparison must survive.

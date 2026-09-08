@@ -22,7 +22,7 @@
  *  · No superseded package, guarantee or product name (check 11).
  *  · No invented client, testimonial or result.
  *
- * Dialogue is NOT written here. Scene 02 reuses beats from the approved
+ * Dialogue is NOT written here. Scene 03 reuses beats from the approved
  * `aiDemoScript` in lib/revenue-content.ts verbatim, because inventing
  * customer dialogue is inventing a product demonstration.
  */
@@ -55,7 +55,118 @@ export const sceneOpening = {
   ],
 } as const;
 
-/* ======================================= 02 · THE UNANSWERED ENQUIRY */
+/* ======================================== 02 · EVERY CHANNEL, ONE INBOX */
+
+/**
+ * PHASE 3G — the Unified Inbox, as a scene.
+ *
+ * WHY IT EXISTS. The 18-section to 10-scene compression dropped the
+ * omnichannel concept entirely. Measured on the homepage before this
+ * scene: not one channel was named anywhere, except a single WhatsApp
+ * badge on the closing composition's record card. The capability
+ * survived on /solutions, /packages, /how-it-works and /attract — every
+ * surface except the one most visitors actually see.
+ *
+ * THE COUNT, AND WHY THERE IS NO NUMBER IN THE COPY. The approved lead
+ * on /solutions says "six apps". That is rhetorical, not an inventory:
+ * the same content set says "six inboxes and a notebook", "four tabs
+ * and a spreadsheet" and "ten notifications", none of which count
+ * anything. The real approved inventory is EIGHT. A number is harmless
+ * beside a paragraph and a liability beside a row of glyphs a visitor
+ * can count, so the copy carries none and the row shows all eight.
+ *
+ * WHAT MUST NEVER APPEAR HERE. The previous live site's inbox panel
+ * carried a "4 UNREAD" counter and "answered in under 90 seconds".
+ * Neither renders anywhere in v3 and neither may be added. No counter,
+ * no unread dot, no timestamp, no response time, no metric, no KPI, no
+ * chart, and no real person's data.
+ *
+ * THIS IS A CAPABILITY SCENE, NOT A LEAK SCENE. It is lit above 1 and
+ * its Capture handover closes rather than leaking. Scenes 03 to 06 are
+ * the problem block; this one is the recognition that precedes it.
+ */
+
+export const sceneInbox = {
+  title: "Every channel. One inbox.",
+  lead: "A customer picks the channel. Your team should not have to follow them from channel to channel to keep up.",
+  /**
+   * The approved inventory, in full. These are the eight named in
+   * lib/solutions-content.ts and lib/packages-content.ts. Do not add a
+   * ninth for visual density and do not drop one to round a number.
+   *
+   * Website is last and is treated differently everywhere it appears:
+   * it arrives as an enquiry form, not as a chat, and it must never be
+   * dressed as a messaging app.
+   */
+  doors: [
+    "WhatsApp",
+    "Instagram",
+    "Messenger",
+    "TikTok",
+    "Telegram",
+    "SMS",
+    "Email",
+    "Website",
+  ],
+  /** Matches the approved `arkflow · revenue pipeline` convention. */
+  frameLabel: "arkflow · inbox",
+  problemLabel: "Separate conversations",
+  resolvedLabel: "One inbox, one history",
+  /**
+   * Five arrivals. `handle` is what a fragmented setup shows you — an
+   * account, a number, a form — and `who` is what the same enquiry
+   * looks like once every channel lands against one record.
+   *
+   * THE TWO J. TAN ROWS ARE THE POINT. Two conversations that looked
+   * like two strangers are one customer, and the page can say so in
+   * plain text rather than by colour or motion.
+   *
+   * TIKTOK STAYS UNRESOLVED, DELIBERATELY. It is a first contact from
+   * someone the business has never dealt with, so there is nothing to
+   * match it to. Resolving all five would claim something the system
+   * cannot do, and leaving one open is what makes the J. Tan pairing
+   * read as a real match rather than decoration.
+   *
+   * Names and metas are the site's existing illustrative placeholders,
+   * recovered from `productUi` in lib/revenue-content.ts. Its relative
+   * timestamps are deliberately NOT carried across: "2 min ago" beside
+   * an inbox reads as a response-time claim.
+   */
+  arrivals: [
+    {
+      channel: "Instagram",
+      handle: "@jt.tan",
+      who: "J. Tan",
+      meta: "Asked about availability",
+    },
+    {
+      channel: "WhatsApp",
+      handle: "••• 4021",
+      who: "J. Tan",
+      meta: "Asked again",
+    },
+    {
+      channel: "Messenger",
+      handle: "m.lim.94",
+      who: "M. Lim",
+      meta: "First visit",
+    },
+    {
+      channel: "TikTok",
+      handle: "tiktok_user_88",
+      who: "tiktok_user_88",
+      meta: "New enquiry",
+    },
+    {
+      channel: "Website",
+      handle: "Enquiry form",
+      who: "R. Kaur",
+      meta: "Submitted",
+    },
+  ],
+} as const;
+
+/* ======================================= 03 · THE UNANSWERED ENQUIRY */
 
 export const sceneUnanswered = {
   title: "Nobody answered.",
@@ -70,7 +181,7 @@ export const sceneUnanswered = {
   resolvedClock: ["9:41 PM", "9:41 PM", "9:42 PM", "9:44 PM"],
 } as const;
 
-/* ============================================== 03 · THE DAYS PASS */
+/* ============================================== 04 · THE DAYS PASS */
 
 export const sceneDays = {
   title: "“I’ll follow up later.”",
@@ -91,7 +202,7 @@ export const sceneDays = {
   resolvedNote: "The appointment is confirmed and live on the calendar.",
 } as const;
 
-/* ================================== 04 · THE CUSTOMER WHO DISAPPEARS */
+/* ================================== 05 · THE CUSTOMER WHO DISAPPEARS */
 
 export const sceneDisappearing = {
   title: "They bought once. Then nothing.",
@@ -105,7 +216,7 @@ export const sceneDisappearing = {
   ],
 } as const;
 
-/* ==================================================== 05 · THE DESK */
+/* ==================================================== 06 · THE DESK */
 
 /**
  * PHASE 3F.3B — one detail, four places.
@@ -151,7 +262,7 @@ export const sceneDesk = {
   close: "It only has to be entered once.",
 } as const;
 
-/* ============================================ 06 · THE TRANSFORMATION */
+/* ============================================ 07 · THE TRANSFORMATION */
 
 export const sceneTransformation = {
   title: "Same business.",
@@ -168,7 +279,7 @@ export const sceneTransformation = {
   ],
 } as const;
 
-/* =============================================== 09 · THE WHOLE JOURNEY */
+/* =============================================== 10 · THE WHOLE JOURNEY */
 
 export const sceneJourney = {
   title: "One opportunity, all the way through.",
@@ -190,7 +301,7 @@ export const sceneJourney = {
     "The ten stages above are the canonical ArkFlow Revenue Engine. The names on the left are the plain-English versions of the same model.",
 } as const;
 
-/* ============================================ 10 · THE SYSTEM + CLOSE */
+/* ============================================ 11 · THE SYSTEM + CLOSE */
 
 export const sceneClose = {
   systemTitle: "One connected system.",

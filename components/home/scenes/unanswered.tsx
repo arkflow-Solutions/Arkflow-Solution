@@ -132,10 +132,16 @@ export function SceneUnanswered() {
   return (
     <Scene
       id="unanswered"
-      /* Capture. A gap in the canonical model, and left unsealed here
-         because this scene is the leak, not the fix. */
+      /* Respond. A gap in the canonical model, and left unsealed here
+         because this scene is the leak, not the fix.
+
+         PHASE 3G — moved from Capture. This scene's subject has always
+         been response speed rather than capture, and Capture now
+         belongs to scene 02, which is actually about it. The rail was
+         remapped with it, so the light and the line agree on where the
+         opportunity is. */
       emphasis={0.62}
-      stageIndex={1}
+      stageIndex={2}
       seal={settled ? 1 : 1 - turn}
       title={sceneUnanswered.title}
       lead={sceneUnanswered.lead}

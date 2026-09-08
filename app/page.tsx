@@ -1,4 +1,5 @@
 import { Hero } from "@/components/home/v3/hero";
+import { SceneInbox } from "@/components/home/scenes/inbox";
 import { SceneUnanswered } from "@/components/home/scenes/unanswered";
 import { SceneDays } from "@/components/home/scenes/days";
 import { Reactivation } from "@/components/home/v3/lifecycle";
@@ -109,6 +110,7 @@ export default function HomePage() {
           devices where the hero already owns the one Canvas 2D loop. */}
       <ThroughlineRail />
       <Hero />
+      <SceneInbox />
       <SceneUnanswered />
       <SceneDays />
       <Reactivation />

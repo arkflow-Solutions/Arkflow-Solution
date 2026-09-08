@@ -92,8 +92,26 @@ type Frame = {
 };
 
 const FRAMES: readonly Frame[] = [
-  // Capture — the enquiry nobody answered. The gap is open.
-  { id: "unanswered", stage: 1, seal: 0, presence: 0.32 },
+  /* PHASE 3G — Capture now belongs to the scene that is actually about
+     it. "Every way in" IS the Attract -> Capture handover: many doors,
+     one record. The gap is open, because nothing has connected them
+     yet. */
+  /* Seal 1, not 0, and the reason matters: a frame's seal is static,
+     and seal 0 paints the Capture gap amber. Amber means revenue
+     leaking, and this is a capability scene — the one beat in the
+     first half that is not about something going wrong. The gap
+     closing across the scene is carried by the scene's own atmosphere
+     seal, which runs 0 to 1 with the scroll. Presence sits below the
+     other problem scenes so the line never competes with the inbox,
+     which is the object this scene is actually about. */
+  { id: "every-way-in", stage: 1, seal: 1, presence: 0.3 },
+  /* Respond, not Capture. This scene was mapped to Capture only
+     because nothing else claimed it; its subject has always been
+     response speed, which is Respond. Leaving it on Capture beside the
+     new scene 02 would also hold the rail at one point across two
+     consecutive scenes, so the opportunity would appear to stop
+     travelling exactly where the story says it moves. */
+  { id: "unanswered", stage: 2, seal: 0, presence: 0.32 },
   // Book — the week nothing happened. Also open.
   { id: "the-days", stage: 4, seal: 0, presence: 0.32 },
   // Reactivate — the only place the line loops back on itself.
