@@ -2261,67 +2261,101 @@
      take pointer-events: none rather than fighting that hover in the
      cascade — a hover that redrew the card border would undo the
      gathering. */
+  /* ── THE GRID ────────────────────────────────────────────────────
+     One container, one grid, one composition.
+
+     The headline, the lead and the eight ways in occupy the LEFT
+     TRACK; the inbox owns the right. Before this, the shell's header
+     ran the full container width above a two-column body, and that is
+     what made the scene read as two unrelated blocks placed beside
+     each other — the inbox began at an arbitrary x with no
+     relationship to anything above it.
+
+     THE NUMBERS, AND WHY THEY RELATE.
+       container   72rem (1152px), padding 1.5rem / 2.5rem at >=768
+       tracks      5fr / 7fr of twelve — the inbox is dominant, the
+                   left track still has real presence
+       gap         3rem
+       align       start, so the two tracks share a top baseline
+
+     At a 1100px viewport the inner width is 1020: 405 / 48 / 567.
+     At 1280 and 1440 the container caps at 1152, inner 1072: 427 /
+     48 / 597. The ratio holds at every width, which is the point —
+     nothing here is tuned to one screenshot.
+
+     The left stack measures out at roughly the height of the panel
+     beside it, so tops align and bottoms land within a few pixels.
+     That is the balance, and it falls out of the ratio rather than
+     being nudged into place. */
   .af-inbox {
     display: grid;
-    gap: 2rem;
-    margin-top: 3rem;
+    gap: 2.5rem;
+  }
+  /* No eyebrow above it, so the shared 0.75rem offset would only
+     push the whole left track off the grid's top line. */
+  .af-inbox__title.af-scene__title {
+    margin-top: 0;
+  }
+  /* The column is the constraint now, not a separate prose width. */
+  .af-inbox__lead.af-scene__lead {
+    max-width: none;
   }
 
   /* ---- ways in ---- */
-  /* Never a row of identical pills: alternating vertical offsets and
-     three depths, so the eight read as doors around a business. */
+  /* A deliberate 2 x 4 block, left-aligned to the headline above it,
+     at every width. The earlier wrapped cloud with alternating
+     offsets was scattered by hand; this is on the grid, which is what
+     makes it read as part of the composition rather than a loose row
+     of chips under it. */
   .af-inbox__ways {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: flex-start;
-    gap: 0.45rem;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.5rem;
+    margin-top: 2rem;
   }
   .af-inbox__way {
     display: inline-flex;
     align-items: center;
-    gap: 0.4rem;
-    padding: 0.32rem 0.7rem;
+    gap: 0.45rem;
+    padding: 0.42rem 0.75rem;
     border: 1px solid var(--border-subtle);
     border-radius: 999px;
     background: color-mix(in srgb, var(--surface) 55%, transparent);
-    font-size: 0.75rem;
+    font-size: 0.8125rem;
     color: var(--text-secondary);
     white-space: nowrap;
     opacity: 0;
     transform: translateY(6px);
     transition: opacity 500ms cubic-bezier(0.22, 1, 0.36, 1),
       transform 500ms cubic-bezier(0.22, 1, 0.36, 1);
-    transition-delay: calc(var(--i) * 60ms);
-  }
-  .af-inbox__way:nth-child(even) {
-    margin-top: 0.55rem;
+    transition-delay: calc(var(--i) * 55ms);
   }
   .af-inbox.is-arrived .af-inbox__way {
-    opacity: 0.74;
+    opacity: 1;
     transform: none;
   }
-  .af-inbox.is-arrived .af-inbox__way:nth-child(3n + 1) {
-    opacity: 1;
-  }
-  .af-inbox.is-arrived .af-inbox__way:nth-child(3n + 3) {
-    opacity: 0.58;
-  }
-  /* Website arrives as an enquiry, not as a chat. Squared and dashed,
-     so it is visibly a different kind of thing from the messaging
-     apps rather than an eighth identical bubble. */
+  /* Website arrives as an enquiry, not as a chat. Squared, so it is
+     visibly a different kind of thing from the messaging apps rather
+     than an eighth identical bubble. */
   .af-inbox__way--form {
     border-radius: 8px;
     border-style: dashed;
   }
   /* The doors were the setup. Once the inbox is readable they step
-     back rather than compete with it. */
-  .af-inbox.is-gathered .af-inbox__way,
-  .af-inbox.is-gathered .af-inbox__way:nth-child(3n + 1),
-  .af-inbox.is-gathered .af-inbox__way:nth-child(3n + 3) {
-    /* Subordinate to the inbox, never faint. The panel is brighter
-       now, so the doors can hold a little more of themselves and
-       still lose the hierarchy contest. */
-    opacity: 0.62;
+     back rather than compete with it — dimmed, never faint. */
+  .af-inbox.is-gathered .af-inbox__way {
+    opacity: 0.66;
+  }
+
+  /* THE COLOUR IS ON THE GLYPH AND NOWHERE ELSE.
+     Pills stay dark, borders stay subtle, type stays neutral. Each
+     hue is pulled 12% toward the platinum so eight saturated marks
+     cannot turn a premium composition into a social-media graphic.
+     The glyphs are the site's existing SVGs taking `currentColor`;
+     no icon set, asset or dependency was added. */
+  .af-inbox__way svg,
+  .af-inbox__ch svg {
+    color: color-mix(in srgb, var(--ch, currentColor) 88%, var(--platinum));
   }
 
   /* ---- the panel ---- */
@@ -3594,13 +3628,14 @@
     .af-cmp {
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
-    /* SCENE 02 — ways in on the left, the inbox on the right.
-       Below this width the two zones stack, which is not a fallback:
-       the ways in still come first and the inbox is still full width
-       and full size. Nothing is shrunk to fit. */
+    /* SCENE 02 — the two tracks, 5:7 of twelve, sharing a top line.
+       Below this width they stack, which is not a fallback: the
+       headline, the lead and the ways in still come first, the inbox
+       is still full width and full size, and every element still
+       shares one left edge. Nothing is shrunk to fit. */
     .af-inbox {
-      grid-template-columns: minmax(0, 0.44fr) minmax(0, 1fr);
-      gap: 2.5rem;
+      grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+      column-gap: 3rem;
       align-items: start;
     }
 
@@ -3793,9 +3828,7 @@
     .af-inbox__row .af-inbox__meta {
       white-space: normal;
     }
-    .af-inbox.is-gathered .af-inbox__way,
-    .af-inbox.is-gathered .af-inbox__way:nth-child(3n + 1),
-    .af-inbox.is-gathered .af-inbox__way:nth-child(3n + 3) {
+    .af-inbox.is-gathered .af-inbox__way {
       opacity: 1;
     }
     .af-inbox__ways,
