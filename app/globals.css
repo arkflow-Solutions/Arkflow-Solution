@@ -3085,30 +3085,51 @@
   }
 
   /* --------------------------------- scene 06 the transformation */
+  /* 5rem, not 7rem. The pivot has to resolve while its own headline is
+     still on screen, and 7rem of padding around a composition taller
+     than the viewport is what made that impossible — see the timing
+     note in transformation.tsx. Still the roomiest scene on the page
+     (the shared value is 5.5rem at >=768), just no longer so roomy
+     that the argument scrolls apart. */
   .af-scene--pivot .af-scene__atmos {
-    padding-block: 7rem;
+    padding-block: 5rem;
   }
+  /* The accent rises out of the same seal that closes the moments:
+     subdued and amber while the journey is broken, full and blue when
+     it is whole, so the sentence never asserts an ending the rows
+     below it are still contradicting.
+
+     Colour and opacity are written inline from the scalar — see the
+     note in transformation.tsx for why a custom property could not do
+     it. The declared colour is only the pre-hydration fallback. The
+     transition matches the moments' 140ms, so the quantised scroll
+     steps smooth out without either value lagging the other. */
   .af-pivot-word {
     color: #d97706;
-    transition: color 900ms cubic-bezier(0.22, 1, 0.36, 1);
-  }
-  .af-pivot-word.is-on {
-    color: #3b82f6;
+    opacity: 0.34;
+    transition: opacity 140ms linear, color 140ms linear;
   }
   .af-pivot__moments {
     display: grid;
-    gap: 0.5rem;
-    margin-top: 3rem;
+    gap: 1rem;
+    margin-top: 2.5rem;
   }
+  /* FOUR LINES OF TEXT, NOT FOUR CARDS.
+     These carried a border, a background and a 10px radius, with a
+     14px label left and a mono value right — pixel for pixel the row
+     treatment the desk scene uses one scene earlier. Two adjacent
+     scenes cannot share a component idiom and still read as different
+     arguments. Stripped back, the pivot is lighter than the scene
+     before it, which is what a realisation should feel like.
+     Do not reintroduce a surface here. */
   .af-moment {
     display: flex;
     align-items: baseline;
     justify-content: space-between;
     gap: 1rem;
-    padding: 0.7rem 1rem;
-    border: 1px solid var(--border-subtle);
-    border-radius: 10px;
-    background: color-mix(in srgb, var(--surface) 55%, transparent);
+    padding: 0;
+    border: 0;
+    background: none;
   }
   .af-moment__l {
     font-size: 0.875rem;
@@ -3137,15 +3158,38 @@
   .af-moment__whole {
     color: #3b82f6;
   }
+  /* Two compositions of the same geometry, toggled here rather than in
+     JS so the choice survives server rendering. The phone gets
+     NARROW_LAYOUT (1.6:1); the default 4:1 box scaled into a 327px
+     column is 82px tall, which flattens the ten stages into a squiggle
+     and hides the gap circles entirely. */
   .af-pivot__line {
     margin-top: 2.5rem;
   }
+  .af-pivot__line--wide {
+    display: none;
+  }
+  /* PULLED UP INTO THE BOX'S OWN DEAD SPACE.
+     Measured at 1280: the SVG box is 268px tall but the stroke only
+     occupies viewBox y 60 to 140, so 143px of the box below the line
+     is empty and the payoff sat 167px clear of it — far enough that
+     the line and the sentence it earns read as two separate things.
+
+     The gap is closed by moving the label, not by shrinking the box:
+     the viewBox is the renderer's and the glow, the halo and the gate
+     all live in that margin. -3rem here and -4rem on wide screens
+     land at roughly 80px of clear space — measured, not guessed, and
+     less than half the original 167px. Do not tighten this further:
+     -5rem was tried and came out at 63px, where the label starts
+     crowding the stroke's descent, and every pixel taken here also
+     shortens the section and so shifts where the line completes
+     relative to the scroll. */
   .af-pivot__state {
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 0.55rem;
-    margin-top: 1.5rem;
+    margin-top: -3rem;
     font-family: var(--font-mono), ui-monospace, monospace;
     font-size: 0.6875rem;
     letter-spacing: 0.1em;
@@ -3639,7 +3683,20 @@
       align-items: start;
     }
 
-    /* Scene 06 needs no wide variant. The label/value row IS the
+    /* The pivot swaps to the wide Throughline composition here. */
+    .af-pivot__line--wide {
+      display: block;
+    }
+    .af-pivot__line--narrow {
+      display: none;
+    }
+    /* The wide box is taller, so its dead band is deeper. See the
+       note on .af-pivot__state. */
+    .af-pivot__state {
+      margin-top: -4rem;
+    }
+
+    /* The desk scene needs no wide variant. The label/value row IS the
        composition at every width, so there is nothing here to widen —
        which is the point: the phone gets the same scene, not a
        shrunken one. */
@@ -3767,6 +3824,41 @@
     }
     .af-day__ev {
       animation: none;
+    }
+
+    /* THE PIVOT — the comparison must survive.
+       `settled` is true on the first frame here, so the scene renders
+       already sealed: four resolved words, a complete line. On its own
+       that deletes the argument entirely — a reduced-motion visitor
+       would read "Answered / Scheduled / Confirmed / Reached" and
+       never learn there had been anything wrong. This is the one scene
+       on the page whose whole content IS the change.
+
+       So the two words leave their shared cell and sit side by side,
+       the broken one struck through, exactly as scenes 03, 06 and 07
+       already do. No new copy: the same eight approved state words,
+       both halves visible, in the amber and blue they already carry.
+       The component drops its aria-hidden when settled, so the DOM
+       matches what is on screen rather than announcing only half. */
+    .af-moment__states {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      justify-content: flex-end;
+      gap: 0.15rem 0.5rem;
+    }
+    .af-moment__broken,
+    .af-moment__whole {
+      grid-area: auto;
+      opacity: 1 !important;
+      transition: none !important;
+    }
+    .af-moment__broken {
+      text-decoration: line-through;
+      opacity: 0.6 !important;
+    }
+    .af-pivot-word {
+      transition: none !important;
     }
 
     /* SCENE 02 — the comparison must survive.
