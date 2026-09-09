@@ -1071,13 +1071,8 @@
     max-height: 26rem;
     scroll-behavior: smooth;
   }
-  .af-phone__foot {
-    display: flex;
-    align-items: center;
-    gap: 0.9rem;
-    padding: 0.9rem 1.1rem;
-    border-top: 1px solid var(--border-subtle);
-  }
+  /* .af-phone__foot removed with the Play button it framed. The thread
+     is scroll-driven now, so there is no control to sit under it. */
 
   .af-msg {
     max-width: 82%;
@@ -1156,13 +1151,23 @@
     padding: 1.25rem;
   }
   .af-syslog__items {
-    flex: 1;
+    /* A RESERVED BOX, NOT A GROWING ONE.
+       This used to be `flex: 1; max-height: 22rem`, so the card grew
+       from its empty height to its full height as lines landed — which
+       made the whole scene taller while the visitor was scrolling
+       through it. The scroll window is derived from this block's
+       height, so a block that grows mid-sequence moves its own
+       finishing line: the climax drifted upward exactly as it
+       arrived. The space is reserved from the start instead. It is the
+       same height the log reaches anyway; nothing about the log's
+       appearance changes. */
+    flex: none;
     display: flex;
     flex-direction: column;
     gap: 0.55rem;
     margin-top: 1.25rem;
     overflow-y: auto;
-    max-height: 22rem;
+    height: 22rem;
   }
   .af-syslog__items li {
     display: grid;
@@ -1804,7 +1809,7 @@
   .af-dormant__grid { grid-template-columns: repeat(auto-fill, minmax(11px, 1fr)); gap: 4px; }
   .af-phone__log { max-height: 20rem; }
   .af-syslog { min-height: 20rem; }
-  .af-syslog__items { max-height: 15rem; }
+  .af-syslog__items { height: 15rem; }
   .af-audit__areas { grid-template-columns: 1fr; }
   .af-toggle button { padding-inline: 0.9rem; font-size: 0.8125rem; }
 }

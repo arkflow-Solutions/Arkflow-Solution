@@ -39,8 +39,42 @@ export const activeSocials = socials.filter(
   (s): s is SocialProfile & { url: string } => Boolean(s.url)
 );
 
-/** For Organization schema `sameAs`. Verified profiles only. */
-export const sameAs = activeSocials.map((s) => s.url);
+/**
+ * The company page on LinkedIn.
+ *
+ * DELIBERATELY NOT IN `socials`. That array is the audience-facing
+ * follow list: it drives the footer and the "more practical automation
+ * notes" prompt under every article, and that prompt fires a click
+ * event chosen by a two-way ternary between instagram and facebook.
+ * A third entry would be reported as a Facebook click, and the
+ * analytics event union is closed, so making it correct would mean
+ * widening the union and the ternary — a change to the analytics
+ * architecture for the sake of one link.
+ *
+ * LinkedIn is also a different kind of thing here: a corporate identity
+ * shown once on the About page, not a content channel we ask readers to
+ * follow. It lives on its own so it can be linked deliberately, and it
+ * still lives in this file so there is exactly one place a social URL
+ * is ever written down.
+ */
+export const companyLinkedIn = {
+  label: "LinkedIn",
+  url: "https://www.linkedin.com/company/arkflow-solutions/",
+} as const;
+
+/**
+ * For Organization schema `sameAs`. Verified profiles only.
+ *
+ * LinkedIn is included even though it is not in `socials`: sameAs is a
+ * statement of corporate identity, not a follow list, and the company
+ * page is exactly what it is for. Keeping it out of `socials` is about
+ * the follow prompt's click tracking, not about whether the profile is
+ * real — see the note on companyLinkedIn.
+ */
+export const sameAs = [
+  ...activeSocials.map((s) => s.url),
+  companyLinkedIn.url,
+];
 
 /* ------------------------------------------------------------------ UTM */
 

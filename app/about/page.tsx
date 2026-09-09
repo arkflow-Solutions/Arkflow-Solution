@@ -8,6 +8,7 @@ import { about } from "@/lib/content";
 
 import { buildMetadata } from "@/lib/seo";
 import { COMPANY } from "@/lib/site";
+import { companyLinkedIn } from "@/lib/social";
 
 export const metadata = buildMetadata({
   title: "About ArkFlow",
@@ -88,6 +89,19 @@ export default function AboutPage() {
               Founded and operated in Singapore, for Singapore service
               businesses — on the channels they actually use, inside the rules
               they actually operate under.
+            </p>
+            {/* The company page. URL comes from lib/social.ts so a social
+                address is still written down in exactly one place. Same
+                text-link treatment the footer uses for its profiles. */}
+            <p className="mt-8">
+              <a
+                href={companyLinkedIn.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-small text-platinum underline underline-offset-4 transition-colors hover:text-white"
+              >
+                {companyLinkedIn.label}
+              </a>
             </p>
           </Reveal>
         </Container>

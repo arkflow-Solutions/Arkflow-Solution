@@ -1,13 +1,11 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Container } from "@/components/ui/container";
 import { Section } from "@/components/ui/section";
 import { Reveal } from "@/components/motion/reveal";
-import { Button } from "@/components/ui/button";
 import { SectionHead, IllustrativeTag } from "@/components/home/v3/shared";
 import { ChannelIcon } from "@/components/ui/channel-icon";
-import { useInView } from "@/lib/use-in-view";
 import { useViewportProgress } from "@/lib/use-viewport-progress";
 import { SceneAtmosphere } from "@/components/motion/scene-atmosphere";
 import { THROUGHLINE_STAGES } from "@/lib/throughline";
@@ -29,73 +27,161 @@ import { cn } from "@/lib/utils";
 
 const SCRIPT = aiDemoScript;
 
-export function AiConversation() {
-  const { ref, inView } = useInView<HTMLDivElement>("-120px");
-  const atmosRef = useRef<HTMLDivElement>(null);
-  const { progress: atmos } = useViewportProgress(atmosRef, 1, 0.02);
-  const [shown, setShown] = useState(0);
-  const [typing, setTyping] = useState<null | "ai" | "human">(null);
-  const [state, setState] = useState<"ready" | "running" | "complete">("ready");
+/**
+ * THE AUTHORED PACING, TURNED INTO A MAP.
+ *
+ * Every beat already carries a `wait` — 900ms for a quick reply, 1700ms
+ * for a customer thinking about a health question. Those values are the
+ * script's rhythm and they are not being rewritten; they are simply
+ * being measured against scroll instead of against a clock.
+ *
+ * `marks[i]` is the cumulative time at which beat i has landed, so a
+ * position anywhere in the timeline resolves to "how many beats have
+ * happened" with one comparison, and a long pause occupies
+ * proportionally more scroll than a short one.
+ */
+const TIMELINE = (() => {
+  const marks: number[] = [];
+  let t = 0;
+  for (const b of SCRIPT) {
+    t += b.wait;
+    marks.push(t);
+  }
+  return { marks, total: t };
+})();
 
-  const timers = useRef<number[]>([]);
-  const started = useRef(false);
+/* WHERE THE CONVERSATION RUNS, IN PIXELS OF SCROLL.
+ *
+ * This used to be a fixed pair of fractions of the block's traversal.
+ * The block is two columns and 555px tall on a desktop but a stacked
+ * 958px on a phone, so one pair of fractions meant two completely
+ * different scenes: on mobile the sequence finished with the block top
+ * 338px above the viewport, which put the phone card behind the global
+ * header exactly as the human takeover landed. The escalation and the
+ * takeover — the point of the whole scene — could not be seen together.
+ *
+ * The window is measured instead. Two rules, the same at every width:
+ *
+ *   FINISH where the system log's last line sits just above the fold,
+ *   and never lower than HEADER_CLEAR, so the payoff is always clear of
+ *   the fixed header. On a phone that frames the tail of the
+ *   conversation and the whole log together; on a desktop the block is
+ *   short enough that the rule frames all of it.
+ *
+ *   START one RUN of scroll earlier. A fixed pixel distance means the
+ *   conversation costs the same amount of scrolling on every device
+ *   rather than scaling with a layout that happens to be taller.
+ */
+const RUN = 440;
+const HEADER_CLEAR = 96;
+const TAIL_CLEAR = 24;
+
+/* Used until the first measurement lands — the previous constants, so
+   a server render and the first paint behave as they did before. */
+const DEFAULT_WINDOW = { from: 0.3, to: 0.65 };
+
+/* Finer than the shared 0.02, and finer than the pivot's 0.01. Twenty
+   beats across a 440px window need more commits than beats or two will
+   land on the same step and read as a jump; 0.004 gives about three
+   steps per beat. The hook is rAF-throttled and gated by the
+   intersection observer, so it costs nothing off screen. */
+const STEP = 0.004;
+
+const clamp01 = (n: number) => (n < 0 ? 0 : n > 1 ? 1 : n);
+
+export function AiConversation() {
+  const ref = useRef<HTMLDivElement>(null);
+  const atmosRef = useRef<HTMLDivElement>(null);
   const logRef = useRef<HTMLDivElement>(null);
   const sysRef = useRef<HTMLUListElement>(null);
+  const completed = useRef(false);
+  const { progress: atmos } = useViewportProgress(atmosRef, 1, 0.02);
 
-  const clearTimers = useCallback(() => {
-    timers.current.forEach(window.clearTimeout);
-    timers.current = [];
+  /* The measured window, as progress values the hook can be compared
+     against. `useViewportProgress` reports (vh - top) / (height + vh),
+     so a wanted top position converts straight into a threshold. */
+  const [win, setWin] = useState(DEFAULT_WINDOW);
+
+  useEffect(() => {
+    const block = ref.current;
+    const items = sysRef.current;
+    if (!block || !items) return;
+
+    const measure = () => {
+      const vh = window.innerHeight || 1;
+      const rect = block.getBoundingClientRect();
+      const height = rect.height;
+      if (!height) return;
+
+      const itemsBottom = items.getBoundingClientRect().bottom - rect.top;
+      const endTop = Math.min(vh - itemsBottom - TAIL_CLEAR, HEADER_CLEAR);
+      const startTop = endTop + RUN;
+      const span = height + vh;
+
+      const to = (vh - endTop) / span;
+      const from = (vh - startTop) / span;
+
+      setWin((prev) =>
+        Math.abs(prev.from - from) < 0.001 && Math.abs(prev.to - to) < 0.001
+          ? prev
+          : { from, to }
+      );
+    };
+
+    measure();
+    window.addEventListener("resize", measure);
+    return () => window.removeEventListener("resize", measure);
   }, []);
 
-  const run = useCallback(() => {
-    clearTimers();
-    setShown(0);
-    setTyping(null);
-    setState("running");
-    track("ai_demo_play", { location: "homepage_ai_demo" });
+  /* SCROLL IS THE DRIVER.
+     This used to be a setTimeout timeline that autoplayed once behind a
+     `started` guard. It could not be scrolled backwards, it replayed
+     for nobody, and a visitor who scrolled past quickly got an empty
+     thread and a button. The homepage is a scroll narrative and the
+     pivot before this one is scroll-driven; this now behaves the same
+     way. No timers, no autoplay, nothing to press. */
+  const { progress, settled } = useViewportProgress(ref, 1, STEP);
+  const played = settled
+    ? 1
+    : clamp01((progress - win.from) / Math.max(0.01, win.to - win.from));
 
-    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    let elapsed = 0;
+  /* The first beat is always on screen. The window spans from the
+     customer's opening message to the end, so the scene is never an
+     empty chat waiting to be started — the thing a visitor sees first
+     is the enquiry itself, which is the point of the scene. */
+  const elapsed =
+    TIMELINE.marks[0] + played * (TIMELINE.total - TIMELINE.marks[0]);
 
-    SCRIPT.forEach((beat, i) => {
-      elapsed += reduce ? 70 : beat.wait;
+  let shown = 0;
+  while (shown < TIMELINE.marks.length && TIMELINE.marks[shown] <= elapsed) {
+    shown++;
+  }
 
-      // System-side messages are preceded by a typing indicator, so the
-      // reply reads as composed rather than pasted.
-      if (!reduce && beat.kind === "msg" && beat.from !== "them") {
-        const from = beat.from;
-        timers.current.push(
-          window.setTimeout(() => setTyping(from), elapsed)
-        );
-        elapsed += 620;
-      }
-
-      timers.current.push(
-        window.setTimeout(() => {
-          setTyping(null);
-          setShown(i + 1);
-        }, elapsed)
-      );
-    });
-
-    timers.current.push(
-      window.setTimeout(() => {
-        setState("complete");
-        track("ai_demo_complete", { location: "homepage_ai_demo" });
-      }, elapsed + 600)
-    );
-  }, [clearTimers]);
-
-  // Autoplay once, when the section is genuinely on screen. Playing it
-  // on page load would spend the demonstration on someone not watching.
-  useEffect(() => {
-    if (inView && !started.current) {
-      started.current = true;
-      run();
+  /* The typing indicator is derived, not scheduled: if the next beat is
+     a reply from the system or a person, it shows once the visitor is
+     most of the way through that beat's own wait. Reversing the scroll
+     reverses it too, because it is a function of position and nothing
+     else. */
+  let typing: null | "ai" | "human" = null;
+  if (!settled && shown < SCRIPT.length) {
+    const next = SCRIPT[shown];
+    if (next.kind === "msg" && next.from !== "them") {
+      const start = shown === 0 ? 0 : TIMELINE.marks[shown - 1];
+      const span = TIMELINE.marks[shown] - start;
+      if (span > 0 && (elapsed - start) / span > 0.45) typing = next.from;
     }
-  }, [inView, run]);
+  }
 
-  useEffect(() => clearTimers, [clearTimers]);
+  /* The one surviving event. `ai_demo_play` went with the button it was
+     attached to — inventing a scroll equivalent would report something
+     the visitor never did. No new events, and the analytics union is
+     untouched. */
+  useEffect(() => {
+    if (shown >= SCRIPT.length && !completed.current) {
+      completed.current = true;
+      track("ai_demo_complete", { location: "homepage_ai_demo" });
+    }
+  }, [shown]);
 
   // Keep both columns pinned to their newest entry.
   useEffect(() => {
@@ -184,19 +270,12 @@ export function AiConversation() {
                 )}
               </div>
 
-              <div className="af-phone__foot">
-                <Button
-                  variant="secondary"
-                  size="default"
-                  onClick={run}
-                  aria-label={state === "ready" ? "Play the conversation" : "Replay the conversation"}
-                >
-                  {state === "ready" ? "Play the conversation" : "Replay"}
-                </Button>
-                <span className="font-mono text-eyebrow uppercase text-[color:var(--text-tertiary)]">
-                  {state === "ready" ? "Ready" : state === "running" ? "Running" : "Complete"}
-                </span>
-              </div>
+              {/* The footer and its Play button are gone. A button said
+                  "this happens when you click"; the conversation now
+                  happens because you scroll, and a control that no
+                  longer controls anything is worse than none. Nothing
+                  replaces it — the messages arriving as the visitor
+                  moves is the affordance. */}
             </div>
           </Reveal>
 

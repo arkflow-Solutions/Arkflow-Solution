@@ -117,8 +117,28 @@ export function Navbar() {
     <header
       className={cn(
         "fixed inset-x-0 top-0 z-50 transition-all duration-300 ease-premium",
+        /* The scrolled background was bg-ink/80 with blur alone.
+           Twenty percent of whatever sat behind it still reached the
+           eye, and a blur does very little to a large bold headline —
+           it stays a legible shape rather than becoming texture. Scene
+           titles ghosted through the bar as they passed under it,
+           competing with the wordmark and the navigation.
+
+           Opacity alone does not fix it. A white headline is so much
+           brighter than the ink that even five percent of it is a
+           visible smudge. So the backdrop is darkened before it is
+           composited: brightness .3 crushes the bright text toward the
+           background, and the 95% ink then covers what is left. The
+           residual is roughly a sixteenth of what it was.
+
+           The blur and a trace of translucency are deliberately kept,
+           so the bar still samples the colour of the scene behind it
+           rather than becoming a flat slab. Height, layout, type,
+           logo and position are untouched. Where backdrop-filter is
+           unsupported this degrades to a near-solid bar, which is a
+           better fallback than the near-transparent one it replaces. */
         scrolled || open
-          ? "border-b border-[color:var(--border-subtle)] bg-ink/80 backdrop-blur-xl"
+          ? "border-b border-[color:var(--border-subtle)] bg-ink/95 backdrop-blur-xl backdrop-brightness-[0.3]"
           : "border-b border-transparent bg-transparent"
       )}
     >
