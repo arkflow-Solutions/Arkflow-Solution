@@ -1,195 +1,247 @@
 /**
- * /solutions — one page, six anchored sections (approved sitemap).
+ * /solutions — what happens after someone raises their hand.
  *
- * TIER 2A, 6 September 2026 — public positioning cleanup.
+ * THE PAGE'S GRAMMAR: one opportunity record, gaining history.
  *
- * WHAT CHANGED AND WHY:
+ * This replaced six repeated sections of `name / availability /
+ * description` — a feature matrix that asserted "one connected system"
+ * and then rendered a list. The connection is now structural: a single
+ * record is created when the enquiry arrives and every station writes
+ * into the same object. Continuity is proved by the record still being
+ * there, not by drawing a line between things.
  *
- *  - The tier ladder is gone. Items were labelled "Every level",
- *    "Operate and above" and "Scale". Those are superseded package
- *    names and must not appear on a public surface, so the field is now
- *    `availability` and carries a factual capability grouping instead.
- *    No replacement tier was invented.
+ * WHY NOT A LINE. The homepage already owns that: scene 09 is the first
+ * full view of the ten-stage Throughline, scene 10 is the connected
+ * system, and /attract closes on the Attract → Conversion handoff. A
+ * fourth line-with-nodes would repeat the homepage, not just /attract.
+ * A line is geometry; a record is history.
  *
- *  - "BookingBot" and "InvoiceFlow" are removed. Neither is an approved
- *    public product name. Booking is described functionally, because
- *    ArkFlow does ship it. Invoicing is not described at all, because
- *    invoice and payment automation is classified FUTURE, and renaming
- *    it functionally would still claim a capability above its
- *    classification.
+ * THE STATIONS ARE THE CANONICAL ENGINE, in public wording. /attract
+ * owns ATTRACT (the website, stage one), so this page covers what
+ * happens next: Enquiry → Response → Qualification → Booking →
+ * Conversion → Follow-up → Retention → Reactivation → Growth. The six
+ * section ids are contractual — see ANCHORS below.
  *
- *  - "AI Voice Agent" is removed. It is IN DEVELOPMENT / VALIDATION,
- *    not a shipped product, and /solutions describes what a client
- *    actually receives today.
+ * GROWTH WRITES NOTHING. Every other station adds entries to the
+ * record. Reporting adds none, because it reads the record rather than
+ * producing it. That is what "the instrument panel, not the engine"
+ * means, and here it is a fact about the data rather than a claim in a
+ * sentence. Do not give the reporting station record entries.
  *
- *  - Delivery commitments are removed ("within 10 business days").
- *    Timelines are agreed per engagement, not published.
+ * ANCHORS — CONTRACTUAL, DO NOT RENAME OR REMOVE:
+ *   #inbox #ai #booking #automation #crm #reporting
+ * Linked from components/layout/footer.tsx (#inbox, #booking) and
+ * lib/insights/articles/why-speed-to-lead-matters.ts (#inbox).
+ * Verify check 7 requires every article to keep a working solution link.
  *
- * GOVERNANCE:
- *  - No prices, packages, tiers or guarantees anywhere.
- *  - Nothing above its capability classification. Current only.
+ * KNOWN ISSUE, DEFERRED BY DECISION: arriving at /solutions#inbox from
+ * another page lands at the top. components/motion/smooth-scroll.tsx
+ * has no on-load or hashchange handling — it only intercepts clicks on
+ * same-page anchors — and its Lenis instance is local to the effect, so
+ * nothing outside that file can drive it. The in-page section nav works
+ * correctly. The fix belongs in that shared file and affects every
+ * route, so it is a separate scoped task. Do not work around it here.
+ *
+ * GOVERNANCE — carried forward from the Tier 2A cleanup of 6 September
+ * 2026 and still binding:
+ *  - No prices, packages, tiers, guarantees or scarcity.
+ *  - Nothing above its capability classification. Invoice and payment
+ *    automation and the AI Voice Agent are NOT current and must not be
+ *    described as included.
  *  - No claim that any advertising platform is managed by ArkFlow.
  *  - Reporting is a supporting capability, not the reason to buy.
+ *  - No fabricated proof: no clients, results, traffic, rankings,
+ *    revenue, leads or conversion rates. The record below is a worked
+ *    example and is labelled as one.
+ *  - "Professional website" was removed from this page: /attract now
+ *    owns Website as stage one, and listing it here as a sub-item both
+ *    duplicated that page and understated it.
+ *
+ * TWO NOTES ARE MANDATORY and must survive any future edit, verbatim:
+ *  - stations[1].note — the clinical safety boundary.
+ *  - stations[5].note — ArkFlow does not run or manage paid advertising.
  */
 
-export type SolutionSection = {
-  id: string;
-  nav: string;
-  eyebrow: string;
-  title: string;
-  lead: string;
-  /**
-   * Factual capability grouping. NOT a package, tier or plan.
-   *   "Current capability"       — shipped and operating today.
-   *   "Implementation-dependent" — shipped, but scoped per engagement.
-   */
-  items: { name: string; availability: string; body: string }[];
-  note?: string;
-};
-
+/** Factual capability grouping. NOT a package, tier or plan. */
 const CURRENT = "Current capability";
 const SCOPED = "Implementation-dependent";
 
-export const solutionSections: SolutionSection[] = [
+/* ------------------------------------------------------------ HERO */
+
+export const solutionsHero = {
+  eyebrow: "The revenue system",
+  title: "Someone just raised their hand.",
+  titleAccent: "What happens next?",
+  lead: "A lead should not have to survive your business process to become a customer.",
+  primaryCta: "Book a Discovery Call",
+  /* Kept from the previous page. It is the sentence that stops a
+     reader filing ArkFlow under software, so it earns its place in
+     the opening rather than halfway down. */
+  positioning: "None of these is sold as software.",
+} as const;
+
+/* --------------------------------------------- THE RECORD OPENS */
+
+export const opening = {
+  label: "Opportunity record",
+  illustrative: "Worked example",
+  who: "J. Tan",
+  channel: "WhatsApp",
+  opened: "21:41",
+  line: "One enquiry. Everything below happens to this record.",
+} as const;
+
+/* --------------------------------------------------- THE STATIONS */
+
+export type RecordEntry = {
+  /** Public stage label — lib/stage-labels.ts wording, not a key. */
+  stage: string;
+  at: string;
+  text: string;
+};
+
+export type Station = {
+  /** CONTRACTUAL. See ANCHORS at the head of this file. */
+  id: string;
+  nav: string;
+  /** The business owner's question. This is the dominant line. */
+  question: string;
+  /** Public stage labels this station covers. */
+  stages: string[];
+  title: string;
+  body: string;
+  /** What the record gains here. Empty for Growth, deliberately. */
+  entries: RecordEntry[];
+  /** What the same record does without the system. Used sparingly. */
+  leak?: string;
+  capabilities: { name: string; availability: string }[];
+  note?: string;
+};
+
+export const stations: Station[] = [
   {
     id: "inbox",
-    nav: "Unified inbox",
-    eyebrow: "Where it arrives",
+    nav: "Where it arrives",
+    question: "Did we actually capture the enquiry?",
+    stages: ["Enquiry"],
     title: "Every way in, one place to look.",
-    lead: "A customer picks the channel. Your team should not have to follow them across six apps to keep up.",
-    items: [
-      {
-        name: "Unified inbox",
-        availability: CURRENT,
-        body: "WhatsApp, Instagram, TikTok, Messenger, Telegram, SMS, email and website enquiries land in one place, against one customer record — so the history is already there when someone opens it.",
-      },
-      {
-        name: "Professional website",
-        availability: SCOPED,
-        body: "A fast, credible site built to produce enquiries and feed them straight into the same system, rather than into a form nobody checks.",
-      },
-      {
-        name: "Lead source captured",
-        availability: CURRENT,
-        body: "Where the enquiry came from is recorded with the enquiry itself, so the answer to \"what is actually working\" is not a guess.",
-      },
+    body: "Whatever door it came through, it becomes a record the moment it lands — and the door it came through is recorded with it.",
+    entries: [
+      { stage: "Enquiry", at: "21:41", text: "Message received · WhatsApp" },
+      { stage: "Enquiry", at: "21:41", text: "Source recorded with the enquiry" },
+    ],
+    capabilities: [
+      { name: "Unified inbox", availability: CURRENT },
+      { name: "Lead source captured", availability: CURRENT },
     ],
   },
   {
     id: "ai",
-    nav: "AI assistants",
-    eyebrow: "Who answers",
+    nav: "Who answers",
+    question: "Did someone respond, and do we know what they need?",
+    stages: ["Response", "Qualification"],
     title: "Answered straight away, handed over when it matters.",
-    lead: "The assistant handles what is routine. A person handles what is not. The line between the two is set by you, not by us.",
-    items: [
-      {
-        name: "Digital assistant",
-        availability: CURRENT,
-        body: "Replies to new enquiries in your own voice, at any hour, and asks the questions that turn a message into something your team can act on — what they want, when, and how urgent.",
-      },
-      {
-        name: "Lead qualification",
-        availability: CURRENT,
-        body: "The conversation establishes what the enquiry is actually for and how ready it is, and the customer record reflects it — so your team opens a qualified opportunity rather than an unread message.",
-      },
-      {
-        name: "Escalation to a person",
-        availability: CURRENT,
-        body: "Anything sensitive, anything requiring judgement, and anything where the customer asks for a human goes to your team immediately.",
-      },
+    body: "The assistant answers what it has been configured to answer and collects what the business needs to know. Where judgement is required, a person takes over with the record already in front of them.",
+    entries: [
+      { stage: "Response", at: "21:42", text: "Replied · availability confirmed" },
+      { stage: "Qualification", at: "21:45", text: "First visit · weekday preference" },
+      { stage: "Response", at: "21:47", text: "Health question · passed to a person" },
     ],
+    capabilities: [
+      { name: "Digital assistant", availability: CURRENT },
+      { name: "Lead qualification", availability: CURRENT },
+      { name: "Escalation to a person", availability: CURRENT },
+    ],
+    /* v1.4 clinical safety boundary. Mandatory, verbatim. */
     note: "In a clinical setting the assistant never gives medical advice, never makes outcome claims and never quotes outside your approved price list.",
   },
   {
     id: "booking",
-    nav: "Booking",
-    eyebrow: "Getting to the appointment",
+    nav: "Getting to the appointment",
+    question: "Did they take the next step?",
+    stages: ["Booking"],
     title: "The booking gets made, without anyone chasing it.",
-    lead: "One of the jobs that quietly consumes a service business, handled without anyone having to remember to do it.",
-    items: [
-      {
-        name: "Appointment booking and scheduling",
-        availability: CURRENT,
-        body: "Booking, rescheduling and cancellation over messaging, synced to your calendar — with confirmations, 24-hour and 2-hour reminders, and a follow-up sequence when someone does not show.",
-      },
+    body: "The appointment is offered, held and confirmed inside the same conversation, against the diary the business already keeps.",
+    entries: [
+      { stage: "Booking", at: "21:52", text: "Thursday 10:30 held · confirmation sent" },
+    ],
+    capabilities: [
+      { name: "Appointment booking and scheduling", availability: CURRENT },
     ],
   },
   {
     id: "automation",
-    nav: "Automation",
-    eyebrow: "What keeps moving",
+    nav: "What keeps moving",
+    question: "What happens when they go quiet?",
+    stages: ["Conversion", "Follow-up"],
     title: "The follow-up that does not depend on memory.",
-    lead: "Almost every leak in a service business is something that should have been sent and was not.",
-    items: [
-      {
-        name: "Follow-up sequences",
-        availability: CURRENT,
-        body: "An enquiry that goes quiet gets followed up on a schedule, in a way that reads like a person wrote it, until it is either answered or closed.",
-      },
-      {
-        name: "Reminders and no-show recovery",
-        availability: CURRENT,
-        body: "Confirmations and reminders before the appointment, and a recovery sequence afterwards for the ones that still slipped.",
-      },
-      {
-        name: "Retention and reactivation",
-        availability: CURRENT,
-        body: "Customers who are due get a personalised message on a rule you set, and customers who have gone quiet are surfaced before they are gone for good — revenue that was already earned once.",
-      },
-      {
-        name: "Review requests",
-        availability: CURRENT,
-        body: "Asked at the point a customer is most likely to say yes, rather than whenever someone gets round to it.",
-      },
+    body: "Reminders, no-show recovery and the nudge after the appointment all run from the record, so nothing waits for someone to remember it.",
+    entries: [
+      { stage: "Follow-up", at: "Wed 09:00", text: "Reminder sent · 24 hours before" },
+      { stage: "Conversion", at: "Thu 10:30", text: "Attended" },
+      { stage: "Follow-up", at: "Thu 14:00", text: "Review request sent" },
+    ],
+    leak: "Without it, the record stops at the booking. Nothing after that is anyone's job.",
+    capabilities: [
+      { name: "Follow-up sequences", availability: CURRENT },
+      { name: "Reminders and no-show recovery", availability: CURRENT },
+      { name: "Review requests", availability: CURRENT },
     ],
   },
   {
     id: "crm",
-    nav: "CRM & journey",
-    eyebrow: "What is remembered",
+    nav: "What is remembered",
+    question: "Do we remember them, and can we bring them back?",
+    stages: ["Retention", "Reactivation"],
     title: "One record per customer, for as long as they are a customer.",
-    lead: "Not a database anyone has to maintain by hand. The record fills itself as the conversation happens.",
-    items: [
-      {
-        name: "CRM and pipeline",
-        availability: CURRENT,
-        body: "Every contact visible on one pipeline — new, contacted, qualified, booked, won, lost. No lead exists only in somebody's phone.",
-      },
-      {
-        name: "Customer journey",
-        availability: CURRENT,
-        body: "What they asked, what they were quoted, what they booked and when they last came in — held together rather than scattered.",
-      },
-      {
-        name: "Smart lists",
-        availability: CURRENT,
-        body: "The enquiries that came in this week, the ones that have gone three days without a reply, and the ones worth calling today.",
-      },
+    body: "The same record carries on past the first visit. When someone goes quiet, they are surfaced while there is still a relationship to continue.",
+    entries: [
+      { stage: "Retention", at: "+6 weeks", text: "Return window opens" },
+      { stage: "Reactivation", at: "+5 months", text: "Quiet since March · surfaced" },
+    ],
+    leak: "Without it, a quiet customer is indistinguishable from a customer who never existed.",
+    capabilities: [
+      { name: "CRM and pipeline", availability: CURRENT },
+      { name: "Customer journey", availability: CURRENT },
+      { name: "Smart lists", availability: CURRENT },
     ],
   },
   {
     id: "reporting",
-    nav: "Reporting",
-    eyebrow: "What you can see",
+    nav: "What you can see",
+    question: "Can we see where the system is leaking?",
+    stages: ["Growth"],
     title: "Reporting is the instrument panel, not the engine.",
-    lead: "Every platform already reports on itself. The problem is that understanding your business means opening all of them and doing the joining in your head.",
-    items: [
-      {
-        name: "Monthly performance report",
-        availability: CURRENT,
-        body: "Enquiry volume, response time, bookings, no-shows and conversion — read against the stages of your own revenue engine rather than platform by platform.",
-      },
-      {
-        name: "Ad source tracking",
-        availability: SCOPED,
-        body: "Connect your Facebook, Instagram, Google Ads and TikTok accounts and the lead source travels with the customer — into the same record as the conversation and the booking. One dashboard rather than four tabs and a spreadsheet.",
-      },
-      {
-        name: "Monthly strategy call",
-        availability: CURRENT,
-        body: "Thirty minutes on your own numbers, and what to change next.",
-      },
+    /* NO ENTRIES, ON PURPOSE. Every other station writes to the
+       record; this one reads it. The absence is the argument. */
+    body: "Everything above is what reporting reads. It tells you which stage is losing people — it is not the thing that moves them.",
+    entries: [],
+    capabilities: [
+      { name: "Monthly performance report", availability: CURRENT },
+      { name: "Ad source tracking", availability: SCOPED },
+      { name: "Monthly strategy call", availability: CURRENT },
     ],
+    /* v1.4 advertising boundary. Mandatory, verbatim. */
     note: "What each platform reports back varies, and ArkFlow connects what they expose rather than replacing the native ad managers. ArkFlow does not run or manage paid advertising — it shows you which of yours is working.",
   },
 ];
+
+/* ----------------------------------------------------- THE PAYOFF */
+
+export const payoff = {
+  eyebrow: "One record",
+  title: "Nothing was connected. It was the same record the whole time.",
+  body: "No handover between tools, because there was no handover. The opportunity never had to survive the gap between one step and the next.",
+} as const;
+
+/* -------------------------------------------------------- ACTION */
+
+export const solutionsCta = {
+  title: "Where is your revenue actually leaking?",
+  body: "A discovery call maps your enquiry-to-payment flow against these stages and shows you which one is losing people.",
+  primary: "Book a Discovery Call",
+  /* Secondary diagnostic path only. The canonical CTA is the call —
+     founder decision, 6 September 2026. */
+  secondaryLabel: "See the Revenue Leak Audit",
+  secondaryHref: "/#revenue-leak-audit",
+} as const;

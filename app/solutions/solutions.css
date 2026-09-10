@@ -1,0 +1,382 @@
+/*
+ * Solutions — the opportunity record.
+ *
+ * ROUTE-SCOPED. Imported by app/solutions/page.tsx and nothing else, so
+ * this page can have its own visual language without adding a rule to
+ * app/globals.css, where the locked homepage scenes live. The `af-sol-`
+ * prefix belongs to this route alone.
+ *
+ * DELIBERATELY NOT A CRM. No rounded cards, no status pills, no badges,
+ * no avatars, no tables, no dashboard widgets. The record is set as a
+ * document: hairline rules, monospace timestamps, plain text, generous
+ * leading. It should read as an opportunity record that becomes more
+ * complete, not as a product screenshot.
+ *
+ * MOBILE FIRST. Below 1024px there is one column and each station
+ * carries its own record entries inline. At 1024px and up the entries
+ * collect into a sticky record beside the stations, and the inline
+ * copies are hidden — the sticky copy is aria-hidden so the two are
+ * never announced twice.
+ *
+ * MOTION. Inline styles computed from scroll position in the component,
+ * plus CSS transitions between them. No keyframe loops, no timers, no
+ * canvas.
+ */
+
+/* ------------------------------------------------------- layout */
+
+.af-sol-grid {
+  display: block;
+}
+
+@media (min-width: 1024px) {
+  .af-sol-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 21rem;
+    gap: 4rem;
+    align-items: start;
+  }
+}
+
+/* ----------------------------------------------------- stations */
+
+.af-sol-station {
+  padding: 3rem 0;
+  border-top: 1px solid var(--border-subtle);
+}
+
+@media (min-width: 1024px) {
+  .af-sol-station {
+    padding: 4.5rem 0;
+  }
+}
+
+/* The stage names, in public wording. Small and above the question,
+   so the visitor meets the engine as a label on their own problem
+   rather than as vocabulary to learn. */
+.af-sol-station__stages {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.9rem;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.625rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--blue-soft);
+}
+
+/* The dominant line on every station. The business owner's question,
+   never the capability. */
+.af-sol-station__q {
+  margin-top: 1rem;
+  max-width: 22ch;
+  font-size: 1.625rem;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+  color: #fff;
+}
+
+@media (min-width: 768px) {
+  .af-sol-station__q {
+    font-size: 2.125rem;
+    max-width: 24ch;
+  }
+}
+
+.af-sol-station__title {
+  margin-top: 1.5rem;
+  max-width: 34rem;
+  font-size: 1.0625rem;
+  font-weight: 500;
+  line-height: 1.45;
+  color: var(--platinum);
+}
+
+.af-sol-station__body {
+  margin-top: 0.75rem;
+  max-width: 34rem;
+  font-size: 0.9375rem;
+  line-height: 1.65;
+  color: var(--text-secondary);
+}
+
+/* Capability attribution. Quiet by design: the question is the
+   communication, the capability is the answer underneath it. Not a
+   pill, not a badge — a line of small type with a hairline rule. */
+.af-sol-caps {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem 1.5rem;
+  margin-top: 1.75rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-subtle);
+  list-style: none;
+  padding-left: 0;
+}
+
+.af-sol-cap {
+  font-size: 0.8125rem;
+  color: var(--text-tertiary);
+}
+
+.af-sol-cap b {
+  font-weight: 500;
+  color: var(--platinum);
+}
+
+.af-sol-cap span {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.5625rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  opacity: 0.75;
+}
+
+.af-sol-note {
+  margin-top: 1.25rem;
+  max-width: 34rem;
+  font-size: 0.8125rem;
+  line-height: 1.55;
+  color: var(--text-tertiary);
+}
+
+/* What the same record does without the system. Amber, and only here:
+   this is revenue leaking. Dashed, because it describes an absence. */
+.af-sol-leak {
+  margin-top: 1.5rem;
+  max-width: 32rem;
+  padding-left: 1rem;
+  border-left: 1px dashed rgba(217, 119, 6, 0.5);
+  font-size: 0.875rem;
+  line-height: 1.6;
+  color: #d97706;
+}
+
+/* -------------------------------------------------- the record */
+
+/*
+ * PRESENCE. A hairline on its own was not enough: against a dark page,
+ * beside a 670px column of text, a 336px rule with a few lines of type
+ * read as an empty gutter rather than as the object the whole page is
+ * about. It now has a faint ground and an inset, so it is unmistakably
+ * a thing on the page — still a document, not a dashboard card: no
+ * radius on the outer edge, no shadow, no chrome.
+ */
+.af-sol-record {
+  border-left: 1px solid var(--border-strong);
+  padding-left: 1.5rem;
+}
+
+@media (min-width: 1024px) {
+  .af-sol-record {
+    position: sticky;
+    /* Clear of the 64px fixed header with air to spare. */
+    top: 6.5rem;
+    padding: 1.5rem 1.5rem 1.25rem;
+    background: linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.028),
+      rgba(255, 255, 255, 0.012)
+    );
+    border-left-color: var(--blue-soft);
+  }
+}
+
+.af-sol-record__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.5rem 0.9rem;
+}
+
+.af-sol-record__label {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.625rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+
+/* Neutral, never amber — amber belongs to leakage alone. */
+.af-sol-mark {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.5625rem;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  opacity: 0.75;
+}
+
+/* The identity line. Plain text — no avatar, no chip. */
+.af-sol-record__id {
+  margin-top: 0.85rem;
+  font-size: 0.9375rem;
+  color: #fff;
+}
+
+.af-sol-record__meta {
+  margin-top: 0.2rem;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.6875rem;
+  letter-spacing: 0.04em;
+  color: var(--text-tertiary);
+}
+
+.af-sol-record__list {
+  margin: 1.5rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+/*
+ * A FIXED PAGE, NOT A GROWING ONE.
+ *
+ * The reserved rules are shorter than a written entry, so the record
+ * grew from 717px to 938px as it filled — past the 900px viewport,
+ * which pushed its own header off the top and defeated the sticky.
+ * The list is now a fixed window: the record is the same size from
+ * first sight to last, it can never outgrow the screen at any viewport
+ * height, and the entries scroll inside it with the newest kept in
+ * view. Height is a page, not a container that stretches.
+ */
+@media (min-width: 1024px) {
+  .af-sol-record__list {
+    height: min(30rem, calc(100vh - 20rem));
+    overflow-y: auto;
+    scrollbar-width: thin;
+  }
+}
+
+.af-sol-entry {
+  padding: 0.6rem 0;
+  border-top: 1px solid var(--border-subtle);
+  transition: opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.af-sol-entry:first-child {
+  border-top: 0;
+}
+
+/* A line the record has not written yet. Reserved so the record is
+   full-size from the moment it appears and the reader can see how much
+   history is still to come — a ledger page, ruled before it is filled.
+   Carries no text, so nothing is revealed early. */
+.af-sol-entry--empty {
+  height: 3.05rem;
+}
+
+/* The opening line, at the head of the stations column. */
+.af-sol-open {
+  max-width: 30rem;
+  padding-bottom: 2.5rem;
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+
+.af-sol-entry__at {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.625rem;
+  letter-spacing: 0.06em;
+  color: var(--text-tertiary);
+}
+
+.af-sol-entry__stage {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.625rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--blue-soft);
+  margin-left: 0.6rem;
+}
+
+.af-sol-entry__text {
+  margin-top: 0.25rem;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--text-secondary);
+}
+
+/* The record is still open. A hairline, not a spinner. */
+.af-sol-record__open {
+  margin-top: 0.9rem;
+  padding-top: 0.75rem;
+  border-top: 1px dashed var(--border-subtle);
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.5625rem;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  opacity: 0.7;
+}
+
+/* ------------------------------- inline record deltas (mobile) */
+
+.af-sol-delta {
+  margin-top: 1.75rem;
+  padding-left: 1.25rem;
+  border-left: 1px solid var(--border-strong);
+}
+
+.af-sol-delta__label {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.5625rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+
+/* At 1024px and up the entries live in the sticky record instead. */
+@media (min-width: 1024px) {
+  .af-sol-delta {
+    display: none;
+  }
+}
+
+@media (max-width: 1023.98px) {
+  .af-sol-record--sticky {
+    display: none;
+  }
+}
+
+/* ------------------------------------------------- the payoff */
+
+.af-sol-payoff {
+  max-width: 40rem;
+}
+
+.af-sol-payoff__title {
+  margin-top: 1.25rem;
+  font-size: 1.5rem;
+  font-weight: 600;
+  line-height: 1.25;
+  letter-spacing: -0.015em;
+  color: #fff;
+}
+
+@media (min-width: 768px) {
+  .af-sol-payoff__title {
+    font-size: 2rem;
+  }
+}
+
+.af-sol-payoff__body {
+  margin-top: 1rem;
+  font-size: 1rem;
+  line-height: 1.65;
+  color: var(--text-secondary);
+}
+
+/* ------------------------------------------------ reduced motion
+   Every progressive state is forced on and every transition removed,
+   so nothing sits at reduced opacity waiting for a scroll that will
+   never be measured. The component resolves its own inline styles as
+   well, so this is the second of two guarantees. */
+@media (prefers-reduced-motion: reduce) {
+  .af-sol-entry {
+    opacity: 1 !important;
+    transition: none !important;
+    animation: none !important;
+  }
+}

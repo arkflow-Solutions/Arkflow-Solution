@@ -1,117 +1,129 @@
 import Link from "next/link";
 import { Container } from "@/components/ui/container";
 import { Section } from "@/components/ui/section";
-import { Eyebrow } from "@/components/ui/eyebrow";
-import { Reveal } from "@/components/motion/reveal";
 import { PageHero } from "@/components/pages/page-hero";
-import { CtaBand } from "@/components/pages/cta-band";
-import { solutionSections } from "@/lib/solutions-content";
-
+import { BookCallButton } from "@/components/pages/book-call-button";
+import { Magnetic } from "@/components/motion/magnetic";
+import { RecordJourney } from "@/components/solutions/record-journey";
 import { buildMetadata } from "@/lib/seo";
+import {
+  solutionsHero,
+  stations,
+  solutionsCta,
+} from "@/lib/solutions-content";
 
+import "./solutions.css";
+
+/**
+ * /solutions — what happens after someone raises their hand.
+ *
+ * THE THREE PAGES, KEPT DISTINCT:
+ *   /attract   how a website should guide a decision  (owns ATTRACT)
+ *   /solutions what the system does with what it produces (stages 2–10)
+ *   /packages  what a client actually buys
+ *
+ * The grammar here is one opportunity record gaining history, chosen
+ * because the homepage already owns the ten-stage line three times
+ * over — scene 09, scene 10, and the Attract → Conversion handoff at
+ * the foot of /attract. Drawing a fourth would repeat the homepage.
+ *
+ * Governance for every claim, the contractual anchors, and the
+ * deferred cross-page hash issue are documented at the head of
+ * lib/solutions-content.ts.
+ *
+ * SCOPE. Styles are route-scoped in ./solutions.css, so app/globals.css
+ * — where the locked homepage scenes live — is not touched.
+ */
 export const metadata = buildMetadata({
   title: "Solutions",
   description:
-    "The layers inside an ArkFlow system — unified inbox, AI assistants, booking, automation, CRM and reporting — and how they work as one connected revenue system.",
+    "Someone raises their hand — what happens next? ArkFlow connects the stages between an enquiry and revenue: response, qualification, booking, follow-up, retention and reactivation, all on one record.",
   path: "/solutions",
 });
 
-
-/**
- * One page, six anchored sections (approved sitemap). Deliberately not
- * six thin pages: with no case studies behind them yet, six shallow
- * pages would be weaker for a reader and for search.
- */
 export default function SolutionsPage() {
   return (
     <>
       <PageHero
-        eyebrow="Solutions"
-        title="One connected system, layer by layer."
-        lead="None of these is sold as software. Each is a layer of one outcome — enquiry to booking to conversion to the visit after that. Which layers your business needs is decided by how it actually operates."
+        eyebrow={solutionsHero.eyebrow}
+        title={`${solutionsHero.title} ${solutionsHero.titleAccent}`}
+        lead={solutionsHero.lead}
       />
 
-      {/* Anchor nav */}
       <Container>
-        <nav
-          aria-label="Sections"
-          className="flex flex-wrap gap-x-6 gap-y-3 border-y border-[color:var(--border-subtle)] py-5"
-        >
-          {solutionSections.map((s) => (
-            <Link
-              key={s.id}
-              href={`#${s.id}`}
-              className="font-mono text-eyebrow uppercase text-[color:var(--text-tertiary)] transition-colors hover:text-blue-soft"
-            >
-              {s.nav}
-            </Link>
-          ))}
-        </nav>
+        <div className="flex flex-wrap items-center gap-x-6 gap-y-4 pb-4">
+          <Magnetic>
+            <BookCallButton size="large" withArrow>
+              {solutionsHero.primaryCta}
+            </BookCallButton>
+          </Magnetic>
+          <p className="text-small text-[color:var(--text-tertiary)]">
+            {solutionsHero.positioning}
+          </p>
+        </div>
       </Container>
 
-      {solutionSections.map((s) => (
-        <Section key={s.id} id={s.id} className="hairline scroll-mt-24">
-          <Container>
-            <Reveal>
-              <Eyebrow>{s.eyebrow}</Eyebrow>
-              <h2 className="mt-6 max-w-3xl text-heading font-semibold">
-                {s.title}
-              </h2>
-              <p className="mt-6 max-w-prose text-lead text-[color:var(--text-secondary)]">
-                {s.lead}
-              </p>
-            </Reveal>
-
-            <div className="mt-14 space-y-px overflow-hidden rounded-card border border-[color:var(--border-subtle)]">
-              {s.items.map((item, i) => (
-                <Reveal key={item.name} delay={i * 0.04} className="bg-surface/60">
-                  <div className="grid gap-4 p-7 md:grid-cols-[260px_1fr] md:p-8">
-                    <div>
-                      <h3 className="text-body font-medium text-white">
-                        {item.name}
-                      </h3>
-                      <p className="mt-2 font-mono text-eyebrow uppercase text-blue-soft">
-                        {item.availability}
-                      </p>
-                    </div>
-                    <p className="max-w-prose text-body text-[color:var(--text-secondary)]">
-                      {item.body}
-                    </p>
-                  </div>
-                </Reveal>
-              ))}
-            </div>
-
-            {s.note && (
-              <Reveal className="mt-8">
-                <p className="max-w-prose text-small text-[color:var(--text-tertiary)]">
-                  {s.note}
-                </p>
-              </Reveal>
-            )}
-          </Container>
-        </Section>
-      ))}
-
-      <Section className="hairline !py-16">
+      {/* ------------------------------- THE STATIONS + THE RECORD
+          Six contractual anchors (#inbox #ai #booking #automation
+          #crm #reporting), each answering a business question, each
+          writing into the same record — except Growth, which reads it. */}
+      <Section className="hairline">
         <Container>
-          <Reveal>
-            <p className="max-w-prose text-body text-[color:var(--text-secondary)]">
-              Which of these your business actually needs depends on where
-              revenue is leaking today —{" "}
-              <Link
-                href="/#revenue-leak-audit"
-                className="text-blue-soft underline-offset-4 hover:underline"
-              >
-                start with a Revenue Leak Audit
-              </Link>
-              .
-            </p>
-          </Reveal>
+          <RecordJourney />
         </Container>
       </Section>
 
-      <CtaBand />
+      {/* ------------------------------------------ SECTION INDEX
+          Kept after the journey rather than before it: the labels mean
+          something once the reader has been through them. These are
+          the same six anchors, so in-page navigation still works. */}
+      <Section className="hairline !py-12">
+        <Container>
+          <nav
+            aria-label="Sections"
+            className="flex flex-wrap gap-x-6 gap-y-3"
+          >
+            {stations.map((s) => (
+              <Link
+                key={s.id}
+                href={`#${s.id}`}
+                className="font-mono text-eyebrow uppercase text-[color:var(--text-tertiary)] transition-colors hover:text-blue-soft"
+              >
+                {s.nav}
+              </Link>
+            ))}
+          </nav>
+        </Container>
+      </Section>
+
+      {/* ------------------------------------------------- ACTION
+          Canonical CTA first. The audit stays as the secondary
+          diagnostic path, not the closing recommendation. */}
+      <Section className="hairline">
+        <Container>
+          <div className="rounded-card border border-blue/30 bg-blue/[0.04] p-8 md:p-12">
+            <h2 className="max-w-2xl text-heading font-semibold">
+              {solutionsCta.title}
+            </h2>
+            <p className="mt-5 max-w-prose text-lead text-[color:var(--text-secondary)]">
+              {solutionsCta.body}
+            </p>
+            <div className="mt-9 flex flex-wrap items-center gap-x-8 gap-y-4">
+              <Magnetic>
+                <BookCallButton size="large" withArrow>
+                  {solutionsCta.primary}
+                </BookCallButton>
+              </Magnetic>
+              <Link
+                href={solutionsCta.secondaryHref}
+                className="text-small text-blue-soft underline underline-offset-4 transition-colors hover:text-white"
+              >
+                {solutionsCta.secondaryLabel} &rarr;
+              </Link>
+            </div>
+          </div>
+        </Container>
+      </Section>
     </>
   );
 }
