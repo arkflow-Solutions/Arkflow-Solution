@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { THROUGHLINE_STAGES } from "@/lib/throughline";
+import { publicLabel } from "@/lib/stage-labels";
 import { useViewportProgress } from "@/lib/use-viewport-progress";
 import { SceneAtmosphere } from "@/components/motion/scene-atmosphere";
 import {
@@ -55,15 +56,27 @@ const REVEAL_MS = 1500;
 
 const ATTRACT = THROUGHLINE_STAGES[0];
 const CAPTURE = THROUGHLINE_STAGES[1];
-const FOCUS_INDEX = 1;
 
 export function AttractHandoff({
   note,
   className,
+  /**
+   * How far along the ten stages the journey is lit, as an index.
+   *
+   * Default 1 keeps the original Attract → Capture handoff. The Website
+   * page passes 5, which carries the light through Website → Enquiry →
+   * Response → Qualification → Booking → Conversion: the stages a
+   * website visitor's enquiry actually travels before it becomes
+   * revenue. The later four stay visible and unlit, because they are
+   * real and the page should not pretend the journey ends at Conversion.
+   */
+  through = 1,
 }: {
   note?: string;
   className?: string;
+  through?: number;
 }) {
+  const FOCUS_INDEX = through;
   const ref = useRef<HTMLDivElement>(null);
   const [progress, setProgress] = useState(0);
 
@@ -164,8 +177,8 @@ export function AttractHandoff({
         {/* Surface. Positioned from the same layout as the geometry. */}
         <div className="af-hand__labels" aria-hidden>
           <span className="af-hand__label" style={{ left: `${attractPct}%` }}>
-            <span className="af-hand__name">{ATTRACT.label}</span>
-            <span className="af-hand__role">Your website</span>
+            <span className="af-hand__name">{publicLabel(ATTRACT.label)}</span>
+            <span className="af-hand__role">Where attention lands</span>
           </span>
           <span
             className={cn(
@@ -174,7 +187,7 @@ export function AttractHandoff({
             )}
             style={{ left: `${capturePct}%` }}
           >
-            <span className="af-hand__name">{CAPTURE.label}</span>
+            <span className="af-hand__name">{publicLabel(CAPTURE.label)}</span>
             <span className="af-hand__role">Enters the system</span>
           </span>
           <span className="af-hand__horizon">
@@ -188,11 +201,11 @@ export function AttractHandoff({
       <div className="af-hand__read">
         <dl className="af-hand__pair">
           <div>
-            <dt>{ATTRACT.label}</dt>
+            <dt>{publicLabel(ATTRACT.label)}</dt>
             <dd>{ATTRACT.meaning}</dd>
           </div>
           <div>
-            <dt className="is-focus">{CAPTURE.label}</dt>
+            <dt className="is-focus">{publicLabel(CAPTURE.label)}</dt>
             <dd>{CAPTURE.meaning}</dd>
           </div>
         </dl>
@@ -208,7 +221,9 @@ export function AttractHandoff({
                   aria-current={i === 0 ? "step" : undefined}
                   data-focus={i <= FOCUS_INDEX ? "true" : undefined}
                 >
-                  {s.label}
+                  {/* Public wording. The canonical key stays "Attract";
+                      a visitor reads "Website". See lib/stage-labels.ts. */}
+                  {publicLabel(s.label)}
                 </span>
                 {i < THROUGHLINE_STAGES.length - 1 && (
                   <span aria-hidden className="af-hand__arrow">

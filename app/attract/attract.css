@@ -1,0 +1,669 @@
+/*
+ * Website page — environments 02 to 06.
+ *
+ * ROUTE-SCOPED ON PURPOSE. This file is imported by app/attract/page.tsx
+ * and by nothing else, so the Website page can have its own visual
+ * language without adding a single rule to app/globals.css — where the
+ * locked Scene 02, 06 and 07 styles live. Nothing here is shared, and
+ * the `af-web-` prefix belongs to this route alone.
+ *
+ * The window chrome below is deliberately a duplicate of the eight
+ * rules behind `.af-frame` rather than a reuse of that class. Reusing
+ * it would couple this page to a locked homepage scene: a later change
+ * to Scene 02's chrome would silently restyle the Website page. Eight
+ * lines is a cheap price for keeping the lock absolute.
+ *
+ * MOTION. Everything animated here is either an inline style computed
+ * from scroll position in the component, or a CSS transition between
+ * two class states. No keyframe loops, no timers, no canvas.
+ */
+
+/* ------------------------------------------------- window chrome */
+
+.af-web-frame {
+  border: 1px solid var(--border-strong);
+  border-radius: 0.875rem;
+  overflow: hidden;
+  background: var(--surface);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 24px 70px rgba(0, 0, 0, 0.5);
+}
+
+.af-web-frame__bar {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.7rem 0.9rem;
+  background: rgba(255, 255, 255, 0.03);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.af-web-frame__dot {
+  height: 8px;
+  width: 8px;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.af-web-frame__url {
+  margin-left: 0.6rem;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.625rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+
+/* ------------------------------------------ 02 · the catalogue */
+
+.af-web-cat {
+  position: relative;
+  padding: 1.25rem;
+}
+
+/* The fictional site's own navigation. Six links, no hierarchy —
+   that flatness is the argument, so nothing here is emphasised. */
+.af-web-cat__nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.1rem;
+  padding-bottom: 1.1rem;
+  border-bottom: 1px solid var(--border-subtle);
+  font-size: 0.75rem;
+  color: var(--text-tertiary);
+}
+
+.af-web-cat__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.6rem;
+  margin-top: 1.1rem;
+  list-style: none;
+  padding: 0;
+}
+
+@media (min-width: 768px) {
+  .af-web-cat__grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.af-web-cat__tile {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 5.5rem;
+  padding: 1rem 0.75rem;
+  border: 1px solid var(--border-subtle);
+  border-radius: 0.6rem;
+  background: rgba(255, 255, 255, 0.02);
+  font-size: 0.8125rem;
+  color: var(--text-secondary);
+  text-align: center;
+  /* Opacity and transform are set inline from scroll position; the
+     transition smooths between the quantised steps. */
+  transition: border-color 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity, transform;
+}
+
+/* The one the re-staging brings forward. */
+.af-web-cat__tile.is-surfaced {
+  border-color: rgba(59, 130, 246, 0.5);
+  background: rgba(26, 60, 255, 0.08);
+  color: #fff;
+}
+
+/* The visitor's attention: a ring that crosses the grid, hesitates,
+   and leaves. Positioned inline. Decorative — aria-hidden. */
+.af-web-cat__eye {
+  position: absolute;
+  height: 26px;
+  width: 26px;
+  margin: -13px 0 0 -13px;
+  border-radius: 9999px;
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  box-shadow: 0 0 0 6px rgba(255, 255, 255, 0.04);
+  pointer-events: none;
+}
+
+.af-web-cat__exit {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1.1rem;
+  padding: 0.4rem 0.75rem;
+  border: 1px solid rgba(217, 119, 6, 0.4);
+  border-radius: 9999px;
+  background: rgba(217, 119, 6, 0.08);
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.625rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  /* Amber, and only here: this is revenue leaving. */
+  color: #d97706;
+}
+
+/* --------------------------------------- 04 · the environments */
+
+.af-web-rooms {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.af-web-room {
+  display: grid;
+  gap: 0.35rem 1.5rem;
+  padding: 1.5rem 0;
+  border-top: 1px solid var(--border-subtle);
+  transition: opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@media (min-width: 900px) {
+  .af-web-room {
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+    align-items: baseline;
+    padding: 2rem 0;
+  }
+}
+
+.af-web-room__q {
+  font-size: 1.25rem;
+  font-weight: 500;
+  line-height: 1.3;
+  color: var(--text-tertiary);
+  transition: color 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@media (min-width: 900px) {
+  .af-web-room__q {
+    font-size: 1.5rem;
+  }
+}
+
+.af-web-room.is-here .af-web-room__q {
+  color: #fff;
+}
+
+.af-web-room__aside {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.af-web-room__surfaces {
+  align-self: start;
+  padding: 0.3rem 0.65rem;
+  border: 1px solid var(--border-subtle);
+  border-radius: 0.4rem;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.625rem;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  transition: border-color 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+    color 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.af-web-room.is-here .af-web-room__surfaces {
+  border-color: rgba(59, 130, 246, 0.45);
+  color: var(--blue-soft);
+}
+
+.af-web-room__body {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+/* ------------------------------------- 05 · one pain, followed */
+
+.af-web-pick {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 2rem;
+}
+
+@media (min-width: 900px) {
+  .af-web-pick {
+    flex-direction: row;
+  }
+}
+
+.af-web-pick__btn {
+  flex: 1;
+  text-align: left;
+  padding: 1.1rem 1.25rem;
+  border: 1px solid var(--border-subtle);
+  border-radius: 0.75rem;
+  background: rgba(255, 255, 255, 0.02);
+  color: var(--text-secondary);
+  font-size: 0.9375rem;
+  line-height: 1.45;
+  cursor: pointer;
+  transition: border-color 0.35s ease, background-color 0.35s ease,
+    color 0.35s ease, transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.af-web-pick__btn:hover {
+  border-color: var(--border-strong);
+  color: #fff;
+}
+
+.af-web-pick__btn[aria-pressed="true"] {
+  border-color: rgba(59, 130, 246, 0.55);
+  background: rgba(26, 60, 255, 0.09);
+  color: #fff;
+}
+
+.af-web-pick__btn:focus-visible {
+  outline: 2px solid var(--blue-soft);
+  outline-offset: 3px;
+}
+
+/* The guided path. One rail, four beats, drawn once the visitor has
+   told us where they are. */
+.af-web-path {
+  margin-top: 2.5rem;
+}
+
+.af-web-path__list {
+  position: relative;
+  list-style: none;
+  margin: 0;
+  padding: 0 0 0 1.75rem;
+}
+
+/* The rail itself, plus the portion of it that has been travelled.
+   Height of the lit portion is set inline from the reveal state. */
+.af-web-path__list::before {
+  content: "";
+  position: absolute;
+  left: 3px;
+  top: 0.55rem;
+  bottom: 0.55rem;
+  width: 1px;
+  background: var(--border-subtle);
+}
+
+/* The beats arrive in order once a path is chosen. An animation rather
+   than a transition, because the element is revealed rather than
+   changed — a transition on a freshly unhidden node has no previous
+   value to move from, so the stagger would do nothing. */
+.af-web-beat {
+  position: relative;
+  padding-bottom: 1.75rem;
+  animation: af-web-beat-in 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes af-web-beat-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.af-web-beat:last-child {
+  padding-bottom: 0;
+}
+
+.af-web-beat::before {
+  content: "";
+  position: absolute;
+  left: -1.75rem;
+  top: 0.5rem;
+  height: 7px;
+  width: 7px;
+  border-radius: 9999px;
+  background: var(--blue-soft);
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.12);
+}
+
+.af-web-beat__label {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.625rem;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+
+.af-web-beat__text {
+  margin-top: 0.4rem;
+  font-size: 1rem;
+  line-height: 1.55;
+  color: var(--text-secondary);
+}
+
+.af-web-beat--pain .af-web-beat__text {
+  color: #fff;
+  font-size: 1.125rem;
+  font-weight: 500;
+}
+
+.af-web-beat--action {
+  padding-top: 0.25rem;
+}
+
+/* ------------------- 06 · the surface, and what is under it */
+
+/*
+ * A CROSS-SECTION, NOT A TIMELINE.
+ *
+ * Environment 05 is already a vertical rail with nodes and 07 is a
+ * line with nodes in perspective. A third would have made the page's
+ * own vocabulary repetitive in exactly the way a catalogue is
+ * repetitive — and it would have put an ArkFlow methodology diagram
+ * where the page's strongest customer moment belongs.
+ *
+ * So this reads top-to-bottom as depth rather than as sequence: the
+ * environment the customer stands in, a ground line, and the build
+ * layer beneath it. The method is still fully present and fully
+ * legible; it is simply underneath, which is where it actually is.
+ */
+
+.af-web-stage {
+  position: relative;
+  margin-top: 2.5rem;
+  padding: 1.75rem 1.5rem 1.5rem;
+  border: 1px solid var(--border-strong);
+  border-radius: 0.875rem 0.875rem 0 0;
+  border-bottom: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(26, 60, 255, 0.05),
+    rgba(255, 255, 255, 0.01)
+  );
+}
+
+@media (min-width: 900px) {
+  .af-web-stage {
+    padding: 2.5rem 2.5rem 2rem;
+  }
+}
+
+.af-web-stage__label,
+.af-web-substrate__label {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.625rem;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+
+/* The dominant line. Five states share one box and crossfade, so the
+   environment changes rather than accumulating a list. Reserved height
+   stops the substrate below from moving as the states swap. */
+.af-web-lines {
+  position: relative;
+  min-height: 7.5rem;
+  margin-top: 1.1rem;
+}
+
+@media (min-width: 900px) {
+  .af-web-lines {
+    min-height: 5.5rem;
+  }
+}
+
+.af-web-line {
+  position: absolute;
+  inset: 0;
+  transition: opacity 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.af-web-line__key {
+  display: block;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.625rem;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  color: var(--blue-soft);
+}
+
+.af-web-line__text {
+  margin-top: 0.6rem;
+  font-size: 1.375rem;
+  font-weight: 500;
+  line-height: 1.3;
+  color: #fff;
+}
+
+@media (min-width: 900px) {
+  .af-web-line__text {
+    font-size: 1.75rem;
+  }
+}
+
+/* The information in the environment. One comes forward, the rest
+   recede — the same eight-tiles-become-one move as environment 02,
+   played at the scale of a single screen. */
+/*
+ * STAGED INFORMATION, NOT CONTROLS.
+ *
+ * These were bordered pills with a filled active state, which made a
+ * guided showroom read as a settings panel — five competing widgets
+ * rather than the contents of a room with one thing lit. None of them
+ * has ever been interactive: they are list items driven by scroll, and
+ * the only control in this environment is the call button below.
+ *
+ * So the box is gone entirely. What remains is contrast plus a single
+ * hairline marker beside whichever information the environment has
+ * brought forward. Inactive items carry a transparent border of the
+ * same width, so nothing reflows as the marker moves — and font size
+ * and weight never change, for the same reason. The staging is done
+ * with light, which is how a showroom does it.
+ */
+.af-web-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem 1.75rem;
+  margin-top: 1.5rem;
+  list-style: none;
+  padding: 0;
+}
+
+.af-web-chip {
+  padding-left: 0.65rem;
+  border-left: 1px solid transparent;
+  font-size: 0.8125rem;
+  line-height: 1.4;
+  color: var(--text-tertiary);
+  transition: opacity 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.55s ease, color 0.55s ease;
+}
+
+.af-web-chip.is-forward {
+  border-left-color: rgba(59, 130, 246, 0.65);
+  color: #fff;
+}
+
+/* The next step. Present throughout, but only unmistakable at the end
+   — which is the claim the environment is making. */
+.af-web-act {
+  margin-top: 1.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--border-subtle);
+  transition: opacity 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* The ground the environment stands on. */
+.af-web-ground {
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    var(--border-strong),
+    rgba(59, 130, 246, 0.45),
+    var(--border-strong)
+  );
+}
+
+/*
+ * AN ANNOTATION, NOT A PROCESS SECTION.
+ *
+ * The substrate was a filled panel with near-platinum phase names — on
+ * a phone that still read as a conventional six-step process block,
+ * which competes with the environment above it for the thing the
+ * visitor takes away. It is the answer to "what makes that possible",
+ * and an answer should be quieter than the thing it explains.
+ *
+ * So the fill is gone, the type is a size smaller, and the lit state
+ * is a much shorter step: from 45% to about 70% of the foreground
+ * rather than to full platinum. It is still completely legible. It is
+ * simply no longer the loudest thing on screen.
+ */
+.af-web-substrate {
+  padding: 1.1rem 1.5rem 1.35rem;
+  border: 1px solid var(--border-subtle);
+  border-top: 0;
+  border-radius: 0 0 0.875rem 0.875rem;
+  background: none;
+}
+
+@media (min-width: 900px) {
+  .af-web-substrate {
+    padding: 1.25rem 2.5rem 1.5rem;
+  }
+}
+
+.af-web-substrate__label {
+  opacity: 0.7;
+}
+
+.af-web-phases {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 1.4rem;
+  margin-top: 0.8rem;
+  list-style: none;
+  padding: 0;
+}
+
+.af-web-phase {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.625rem;
+  letter-spacing: 0.08em;
+  color: var(--text-tertiary);
+  transition: opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1), color 0.6s ease;
+}
+
+.af-web-phase.is-on {
+  color: rgba(209, 213, 219, 0.72);
+}
+
+.af-web-substrate__note {
+  margin-top: 0.95rem;
+  max-width: 26rem;
+  font-size: 0.75rem;
+  line-height: 1.5;
+  color: var(--text-tertiary);
+  opacity: 0.8;
+}
+
+/* The branch that declines the sale.
+   Dashed and neutral on purpose: amber means revenue leaking and green
+   means a person has taken over, and this is neither. It is the path
+   the system chooses NOT to sell, so it reads as a departure from the
+   line rather than as a state of the line. */
+.af-web-branch {
+  position: relative;
+  margin-top: 3rem;
+  padding: 1.75rem 0 0 1.75rem;
+  border-left: 1px dashed var(--border-strong);
+  max-width: 42rem;
+}
+
+.af-web-branch::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 2.25rem;
+  border-top: 1px dashed var(--border-strong);
+}
+
+.af-web-branch__title {
+  font-size: 1.125rem;
+  font-weight: 500;
+  color: #fff;
+}
+
+.af-web-branch__body {
+  margin-top: 0.75rem;
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+
+.af-web-boundary {
+  margin-top: 2.5rem;
+  max-width: 42rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--border-subtle);
+  font-size: 0.8125rem;
+  color: var(--text-tertiary);
+}
+
+/* ----------------------------------------------- reduced motion
+   Every progressive state is forced on and every transition removed,
+   so nothing sits at reduced opacity waiting for a scroll that will
+   never be measured. The components additionally resolve their own
+   inline styles, so this is the second of two guarantees, not the
+   only one. */
+@media (prefers-reduced-motion: reduce) {
+  .af-web-cat__tile,
+  .af-web-room,
+  .af-web-beat,
+  .af-web-chip,
+  .af-web-phase,
+  .af-web-act,
+  .af-web-line {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+    animation: none !important;
+  }
+
+  /* The five states stop sharing one box and become a readable stack.
+     A reader who has asked for no motion cannot be shown a crossfade,
+     so the environment resolves into all five of its moments at once —
+     the complete state, not the first frame of it. */
+  .af-web-line {
+    position: static !important;
+  }
+
+  .af-web-lines {
+    min-height: 0 !important;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  /* Matches the lit state exactly, so a reader with reduced motion gets
+     the resolved composition rather than a louder version of it. */
+  .af-web-phase {
+    color: rgba(209, 213, 219, 0.72) !important;
+  }
+
+  /* The marker resolves onto every item, since no single one is
+     "current" when the whole environment is shown at once. */
+  .af-web-chip {
+    border-left-color: rgba(59, 130, 246, 0.65) !important;
+    color: #fff !important;
+  }
+
+  .af-web-cat__eye {
+    display: none !important;
+  }
+
+  .af-web-pick__btn {
+    transition: none !important;
+  }
+}
