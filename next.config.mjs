@@ -16,6 +16,11 @@ const nextConfig = {
     return [
       { source: "/industries", destination: "/aesthetic-clinics", permanent: true },
       { source: "/resources", destination: "/how-it-works", permanent: true },
+      /* 11 September 2026. The page labelled "What we build" moved to a
+         URL that agrees with its label: ArkFlow does not sell fixed
+         packages. /packages was in the published sitemap and may be
+         indexed or bookmarked, so it redirects rather than 404s. */
+      { source: "/packages", destination: "/what-we-build", permanent: true },
     ];
   },
 };

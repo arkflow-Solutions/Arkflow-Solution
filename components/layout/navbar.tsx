@@ -25,8 +25,9 @@ import { Wordmark } from "@/components/layout/wordmark";
  *
  * Four destinations now, in the order a visitor meets them: the front
  * door, what sits behind it, the scope of an engagement, and the
- * writing. /packages is labelled "What we build" because ArkFlow does
- * not sell fixed packages and the label should not imply otherwise.
+ * writing. /what-we-build (formerly /packages, which now redirects) is
+ * labelled "What we build" because ArkFlow does not sell fixed packages
+ * and neither the label nor the URL should imply otherwise.
  *
  * DELIBERATELY NOT HERE: /aesthetic-clinics stays in the Company group —
  * one vertical must never lead an industry-agnostic site.
@@ -45,7 +46,7 @@ const links = [
      verify.mjs check 4 asserts the KEYS, not display text. */
   { label: "Website", href: "/attract" },
   { label: "Solutions", href: "/solutions" },
-  { label: "What we build", href: "/packages" },
+  { label: "What we build", href: "/what-we-build" },
   { label: "Insights", href: "/insights" },
 ];
 

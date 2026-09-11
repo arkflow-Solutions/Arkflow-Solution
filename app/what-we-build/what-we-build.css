@@ -1,0 +1,504 @@
+/*
+ * What we build — the scope plan.
+ *
+ * ROUTE-SCOPED. Imported by app/what-we-build/page.tsx and nothing else,
+ * so this page has its own visual language without adding a rule to
+ * app/globals.css. The `af-wwb-` prefix belongs to this route alone.
+ *
+ * THE GRAMMAR IS A DRAWING, VIEWED FROM ABOVE. A bounded area with
+ * registration marks at its corners and a dimension label on its edge,
+ * divided into three zones by internal walls, with annotations standing
+ * outside it on leader lines. Precise, architectural, restrained. Not a
+ * flowchart, not a dashboard, not a stack of cards — there are no
+ * rounded panels here and no filled chips.
+ *
+ * DISTINCT FROM ITS NEIGHBOURS. The homepage draws a path (the
+ * Throughline). /attract walks you through rooms in the first person.
+ * /solutions follows one record as it accumulates over time. This page
+ * shows one scope, all at once, from above — an area with an edge.
+ *
+ * TWO REGISTERS. Every zone is drawn twice over: BUILD in a dashed,
+ * draft line, OPERATE in a solid blue one. The same convention an
+ * architectural drawing uses for proposed versus as-built.
+ *
+ * MOBILE FIRST. Below 1024px the plan is a single vertical scope: the
+ * zones stack inside one boundary and the outside annotations follow
+ * beneath a dashed edge. The desktop plan is not squeezed onto a phone.
+ */
+
+/* ------------------------------------------------------ the plan */
+
+.af-wwb-plan {
+  position: relative;
+  margin-top: 3rem;
+  /* The neutral boundary is always present, so the plan is correct
+     without JavaScript and under reduced motion. The blue line drawn
+     over it is the enhancement. */
+  border: 1px solid var(--border-strong);
+}
+
+/* Registration marks at two opposing corners — the crop marks of a
+   drawing. Two pseudo-elements, so they cost no DOM. */
+.af-wwb-plan::before,
+.af-wwb-plan::after {
+  content: "";
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  pointer-events: none;
+}
+
+.af-wwb-plan::before {
+  top: -8px;
+  left: -8px;
+  border-top: 1px solid var(--blue-soft);
+  border-left: 1px solid var(--blue-soft);
+}
+
+.af-wwb-plan::after {
+  bottom: -8px;
+  right: -8px;
+  border-bottom: 1px solid var(--blue-soft);
+  border-right: 1px solid var(--blue-soft);
+}
+
+/* The boundary line that draws itself, clockwise from the top-left
+   corner. Four edges scaled in sequence rather than an SVG stroke: an
+   SVG rect stretched to the box needs non-scaling-stroke to stay 1px,
+   and Chrome then computes dash offsets in screen space, which breaks
+   the draw. Four hairlines cannot misbehave. */
+.af-wwb-edge {
+  position: absolute;
+  background: var(--blue-soft);
+  pointer-events: none;
+  transition: transform 0.25s linear;
+}
+
+.af-wwb-edge--t {
+  top: -1px;
+  left: -1px;
+  right: -1px;
+  height: 1px;
+  transform-origin: left center;
+}
+
+.af-wwb-edge--r {
+  top: -1px;
+  right: -1px;
+  bottom: -1px;
+  width: 1px;
+  transform-origin: center top;
+}
+
+.af-wwb-edge--b {
+  bottom: -1px;
+  left: -1px;
+  right: -1px;
+  height: 1px;
+  transform-origin: right center;
+}
+
+.af-wwb-edge--l {
+  top: -1px;
+  left: -1px;
+  bottom: -1px;
+  width: 1px;
+  transform-origin: center bottom;
+}
+
+/* The dimension label on the top edge: what this boundary encloses. */
+.af-wwb-dim {
+  position: absolute;
+  top: -0.6rem;
+  left: 1.5rem;
+  padding: 0 0.6rem;
+  background: var(--ink);
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.625rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--blue-soft);
+}
+
+/* -------------------------------------------------------- zones */
+
+.af-wwb-zones {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+@media (min-width: 1024px) {
+  .af-wwb-zones {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.af-wwb-zone {
+  padding: 2rem 1.5rem;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.af-wwb-zone:first-child {
+  border-top: 0;
+}
+
+@media (min-width: 1024px) {
+  .af-wwb-zone {
+    padding: 2.5rem 2rem;
+    border-top: 0;
+    /* Internal walls between zones. */
+    border-left: 1px solid var(--border-subtle);
+  }
+
+  .af-wwb-zone:first-child {
+    border-left: 0;
+  }
+}
+
+.af-wwb-zone__index {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.625rem;
+  letter-spacing: 0.14em;
+  color: var(--text-tertiary);
+}
+
+.af-wwb-zone__name {
+  margin-left: 0.7rem;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.625rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--platinum);
+}
+
+.af-wwb-zone__title {
+  margin-top: 1rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  color: #fff;
+}
+
+@media (min-width: 1024px) {
+  .af-wwb-zone__title {
+    font-size: 1.375rem;
+    min-height: 3.5rem;
+  }
+}
+
+/* ----------------------------------------------- the two registers */
+
+.af-wwb-reg {
+  margin-top: 1.4rem;
+  padding-left: 0.9rem;
+  border-left: 1px dashed var(--border-strong);
+  transition: opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.6s ease;
+}
+
+/* OPERATE is the same plan, running: the draft line becomes solid and
+   takes the accent. */
+.af-wwb-reg--operate {
+  border-left-style: solid;
+}
+
+.af-wwb-reg--operate.is-live {
+  border-left-color: var(--blue-soft);
+}
+
+.af-wwb-reg__label {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.5625rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  transition: color 0.6s ease;
+}
+
+.af-wwb-reg--operate.is-live .af-wwb-reg__label {
+  color: var(--blue-soft);
+}
+
+.af-wwb-reg__body {
+  margin-top: 0.4rem;
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+
+.af-wwb-zone__link {
+  display: inline-block;
+  margin-top: 1.5rem;
+  font-size: 0.8125rem;
+  color: var(--blue-soft);
+  text-underline-offset: 4px;
+}
+
+.af-wwb-zone__link:hover {
+  text-decoration: underline;
+  color: #fff;
+}
+
+/* -------------------------------------------------------- legend */
+
+.af-wwb-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem 2.5rem;
+  margin-top: 1.75rem;
+}
+
+.af-wwb-legend__item {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+.af-wwb-legend__swatch {
+  flex: none;
+  width: 1.75rem;
+  border-top: 1px dashed var(--border-strong);
+  transform: translateY(-0.25rem);
+}
+
+.af-wwb-legend__swatch--operate {
+  border-top: 1px solid var(--blue-soft);
+}
+
+.af-wwb-legend__label {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.625rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--platinum);
+}
+
+/* ------------------------------------------------ outside the line */
+
+.af-wwb-outside {
+  margin-top: 2.5rem;
+}
+
+.af-wwb-outside__label {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.625rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+
+/* The edge of the scope, restated as the start of what lies beyond it. */
+.af-wwb-outside__label::after {
+  content: "";
+  flex: 1;
+  border-top: 1px dashed var(--border-strong);
+}
+
+.af-wwb-outside__list {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0;
+  margin: 1.25rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+@media (min-width: 768px) {
+  .af-wwb-outside__list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 2.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .af-wwb-outside__list {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    column-gap: 1.5rem;
+  }
+}
+
+/* An annotation standing outside the boundary on a leader line. */
+.af-wwb-note {
+  position: relative;
+  padding: 1rem 0 1rem 1rem;
+  border-left: 1px dashed var(--border-strong);
+  transition: opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@media (min-width: 1024px) {
+  .af-wwb-note {
+    padding: 1.5rem 0 0 0;
+    border-left: 0;
+    border-top: 1px dashed var(--border-strong);
+  }
+
+  /* The leader: a short dashed tick rising back toward the boundary. */
+  .af-wwb-note::before {
+    content: "";
+    position: absolute;
+    top: -1.25rem;
+    left: 0;
+    height: 1.25rem;
+    border-left: 1px dashed var(--border-strong);
+  }
+}
+
+.af-wwb-note__name {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--platinum);
+}
+
+.af-wwb-note__body {
+  margin-top: 0.4rem;
+  font-size: 0.8125rem;
+  line-height: 1.55;
+  color: var(--text-tertiary);
+}
+
+/* ------------------------------------------------- the operating idea */
+
+.af-wwb-operating {
+  display: grid;
+  gap: 1.5rem;
+  max-width: 64rem;
+}
+
+@media (min-width: 1024px) {
+  .af-wwb-operating {
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    gap: 4rem;
+    align-items: start;
+  }
+}
+
+.af-wwb-operating__title {
+  margin-top: 1.25rem;
+  font-size: 1.75rem;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+  color: #fff;
+}
+
+@media (min-width: 768px) {
+  .af-wwb-operating__title {
+    font-size: 2.25rem;
+  }
+}
+
+.af-wwb-operating__body {
+  font-size: 1.0625rem;
+  line-height: 1.7;
+  color: var(--text-secondary);
+}
+
+@media (min-width: 1024px) {
+  .af-wwb-operating__body {
+    padding-top: 2.6rem;
+  }
+}
+
+/* ---------------------------------------------------- title block */
+
+/*
+ * The corner of a drawing that records how it was made. Label and value
+ * in ruled rows — a record of process, deliberately not a timeline: no
+ * nodes, no connecting line, no numbered steps.
+ */
+.af-wwb-tb {
+  max-width: 44rem;
+  border: 1px solid var(--border-strong);
+}
+
+.af-wwb-tb__head {
+  padding: 0.75rem 1.25rem;
+  border-bottom: 1px solid var(--border-strong);
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.625rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--blue-soft);
+}
+
+.af-wwb-tb__rows {
+  margin: 0;
+}
+
+.af-wwb-tb__row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.25rem;
+  padding: 0.9rem 1.25rem;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.af-wwb-tb__row:first-child {
+  border-top: 0;
+}
+
+@media (min-width: 640px) {
+  .af-wwb-tb__row {
+    grid-template-columns: 10rem minmax(0, 1fr);
+    gap: 1.5rem;
+    align-items: baseline;
+  }
+}
+
+.af-wwb-tb__label {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.6875rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--platinum);
+}
+
+.af-wwb-tb__value {
+  margin: 0;
+  font-size: 0.9375rem;
+  line-height: 1.55;
+  color: var(--text-secondary);
+}
+
+.af-wwb-tb__note {
+  margin-top: 1.25rem;
+  max-width: 44rem;
+  font-size: 0.8125rem;
+  line-height: 1.55;
+  color: var(--text-tertiary);
+}
+
+/* ------------------------------------------------ reduced motion
+   The plan resolves drawn and operating, with every annotation
+   visible. The component resolves its own inline styles too, so this
+   is the second of two guarantees, not the only one. */
+@media (prefers-reduced-motion: reduce) {
+  .af-wwb-reg,
+  .af-wwb-note {
+    opacity: 1 !important;
+    transition: none !important;
+  }
+
+  .af-wwb-reg--operate {
+    border-left-color: var(--blue-soft) !important;
+  }
+
+  .af-wwb-reg--operate .af-wwb-reg__label {
+    color: var(--blue-soft) !important;
+  }
+
+  .af-wwb-edge {
+    transform: none !important;
+    transition: none !important;
+  }
+
+  .af-wwb-plan {
+    border-color: var(--blue-soft) !important;
+  }
+}

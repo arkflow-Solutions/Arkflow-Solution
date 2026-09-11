@@ -18,7 +18,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/solutions",
     "/aesthetic-clinics",
     "/attract",
-    "/packages",
+    "/what-we-build",
     "/insights",
     "/case-studies",
     "/about",
