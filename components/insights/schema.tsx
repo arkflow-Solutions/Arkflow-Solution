@@ -36,6 +36,11 @@ export function ArticleSchema({ article }: { article: Article }) {
         inLanguage: "en-SG",
         mainEntityOfPage: { "@type": "WebPage", "@id": url },
         url,
+        /* Google's Article guidance recommends an image and a publisher
+           logo. Both are existing assets: the image is the same branded
+           /opengraph-image the page already declares as og:image, and
+           the logo is the one the Organization schema already uses. */
+        image: [`${SITE_URL}/opengraph-image`],
         author: author
           ? { "@type": "Person", name: author.name, jobTitle: author.role }
           : undefined,
@@ -43,6 +48,10 @@ export function ArticleSchema({ article }: { article: Article }) {
           "@type": "Organization",
           name: COMPANY.legalName,
           url: SITE_URL,
+          logo: {
+            "@type": "ImageObject",
+            url: `${SITE_URL}/brand/arkflow-logo-lockup.png`,
+          },
         },
       }}
     />

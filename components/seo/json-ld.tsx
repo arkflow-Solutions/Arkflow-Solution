@@ -1,5 +1,5 @@
 import { SITE_URL } from "@/lib/site";
-import { COMPANY, CONTACT_EMAIL, CONTACT_PHONE } from "@/lib/site";
+import { COMPANY, COMPANY_ADDRESS, CONTACT_EMAIL, CONTACT_PHONE } from "@/lib/site";
 import { sameAs } from "@/lib/social";
 
 /**
@@ -40,7 +40,14 @@ export function OrgJsonLd() {
     // of identity, so sameAs is omitted entirely when the list is empty.
     ...(sameAs.length ? { sameAs } : {}),
     areaServed: { "@type": "Country", name: "Singapore" },
-    address: { "@type": "PostalAddress", addressCountry: "SG" },
+    /**
+     * The full registered address, not just the country. It is the
+     * ACRA-verified address already published on /privacy, /terms and
+     * /cookies, so this adds no new claim — it makes the existing,
+     * verified Singapore location machine-readable and consistent with
+     * what the legal pages already state.
+     */
+    address: { "@type": "PostalAddress", ...COMPANY_ADDRESS },
     contactPoint: {
       "@type": "ContactPoint",
       contactType: "sales",

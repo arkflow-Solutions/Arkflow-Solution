@@ -233,30 +233,80 @@
   }
 }
 
+/* SELECTABLE AT REST, NOT ONLY ON HOVER. The resting state was a
+   hairline border and secondary text — the vocabulary of a static
+   quote — so on a phone, where there is no hover to discover, nothing
+   said these could be chosen. The resting edge is now the strong
+   border, the text is near-white, and every card carries a directional
+   cue. Hover, press and selection each move one thing; none of them
+   glows, scales past a hair, or animates on its own. */
 .af-web-pick__btn {
   flex: 1;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
   text-align: left;
   padding: 1.1rem 1.25rem;
-  border: 1px solid var(--border-subtle);
+  border: 1px solid var(--border-strong);
   border-radius: 0.75rem;
-  background: rgba(255, 255, 255, 0.02);
-  color: var(--text-secondary);
+  background: rgba(255, 255, 255, 0.035);
+  color: var(--platinum);
   font-size: 0.9375rem;
   line-height: 1.45;
   cursor: pointer;
-  transition: border-color 0.35s ease, background-color 0.35s ease,
-    color 0.35s ease, transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+  transition: border-color 0.3s ease, background-color 0.3s ease,
+    color 0.3s ease, transform 0.2s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.af-web-pick__btn:hover {
-  border-color: var(--border-strong);
-  color: #fff;
+.af-web-pick__text {
+  min-width: 0;
+}
+
+/* The cue. Points onward at rest; turns to point down at the path it
+   opened once chosen, so the card says where its answer went. */
+.af-web-pick__cue {
+  flex: none;
+  margin-top: 0.05rem;
+  font-family: var(--font-mono, ui-monospace, monospace);
+  color: var(--blue-soft);
+  opacity: 0.75;
+  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.3s ease, color 0.3s ease;
+}
+
+/* Hover only where hover exists, so a tap on a phone does not leave a
+   sticky hover state behind. */
+@media (hover: hover) {
+  .af-web-pick__btn:hover {
+    border-color: rgba(59, 130, 246, 0.45);
+    background: rgba(255, 255, 255, 0.055);
+    color: #fff;
+  }
+
+  .af-web-pick__btn:hover .af-web-pick__cue {
+    opacity: 1;
+    transform: translateX(3px);
+  }
+}
+
+/* The press: a hair of travel, felt on touch as well as click. */
+.af-web-pick__btn:active {
+  transform: scale(0.99);
+  background: rgba(26, 60, 255, 0.07);
 }
 
 .af-web-pick__btn[aria-pressed="true"] {
-  border-color: rgba(59, 130, 246, 0.55);
+  border-color: rgba(59, 130, 246, 0.6);
   background: rgba(26, 60, 255, 0.09);
   color: #fff;
+}
+
+.af-web-pick__btn[aria-pressed="true"] .af-web-pick__cue {
+  opacity: 1;
+  transform: rotate(90deg);
 }
 
 .af-web-pick__btn:focus-visible {
@@ -442,49 +492,6 @@
   }
 }
 
-/* The information in the environment. One comes forward, the rest
-   recede — the same eight-tiles-become-one move as environment 02,
-   played at the scale of a single screen. */
-/*
- * STAGED INFORMATION, NOT CONTROLS.
- *
- * These were bordered pills with a filled active state, which made a
- * guided showroom read as a settings panel — five competing widgets
- * rather than the contents of a room with one thing lit. None of them
- * has ever been interactive: they are list items driven by scroll, and
- * the only control in this environment is the call button below.
- *
- * So the box is gone entirely. What remains is contrast plus a single
- * hairline marker beside whichever information the environment has
- * brought forward. Inactive items carry a transparent border of the
- * same width, so nothing reflows as the marker moves — and font size
- * and weight never change, for the same reason. The staging is done
- * with light, which is how a showroom does it.
- */
-.af-web-chips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.55rem 1.75rem;
-  margin-top: 1.5rem;
-  list-style: none;
-  padding: 0;
-}
-
-.af-web-chip {
-  padding-left: 0.65rem;
-  border-left: 1px solid transparent;
-  font-size: 0.8125rem;
-  line-height: 1.4;
-  color: var(--text-tertiary);
-  transition: opacity 0.55s cubic-bezier(0.22, 1, 0.36, 1),
-    border-color 0.55s ease, color 0.55s ease;
-}
-
-.af-web-chip.is-forward {
-  border-left-color: rgba(59, 130, 246, 0.65);
-  color: #fff;
-}
-
 /* The next step. Present throughout, but only unmistakable at the end
    — which is the claim the environment is making. */
 .af-web-act {
@@ -537,34 +544,15 @@
   opacity: 0.7;
 }
 
-.af-web-phases {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.35rem 1.4rem;
-  margin-top: 0.8rem;
-  list-style: none;
-  padding: 0;
-}
-
-.af-web-phase {
-  font-family: var(--font-mono), ui-monospace, monospace;
-  font-size: 0.625rem;
-  letter-spacing: 0.08em;
-  color: var(--text-tertiary);
-  transition: opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1), color 0.6s ease;
-}
-
-.af-web-phase.is-on {
-  color: rgba(209, 213, 219, 0.72);
-}
-
-.af-web-substrate__note {
-  margin-top: 0.95rem;
-  max-width: 26rem;
-  font-size: 0.75rem;
-  line-height: 1.5;
-  color: var(--text-tertiary);
-  opacity: 0.8;
+/* One sentence, not a list. The six method names read as a service
+   menu — the thing this page must not become — so what sits behind the
+   experience is said once, quietly, and the page moves on. */
+.af-web-substrate__line {
+  margin-top: 0.7rem;
+  max-width: 40rem;
+  font-size: 0.875rem;
+  line-height: 1.55;
+  color: var(--text-secondary);
 }
 
 /* The branch that declines the sale.
@@ -621,8 +609,6 @@
   .af-web-cat__tile,
   .af-web-room,
   .af-web-beat,
-  .af-web-chip,
-  .af-web-phase,
   .af-web-act,
   .af-web-line {
     opacity: 1 !important;
@@ -646,24 +632,19 @@
     gap: 1.5rem;
   }
 
-  /* Matches the lit state exactly, so a reader with reduced motion gets
-     the resolved composition rather than a louder version of it. */
-  .af-web-phase {
-    color: rgba(209, 213, 219, 0.72) !important;
-  }
-
-  /* The marker resolves onto every item, since no single one is
-     "current" when the whole environment is shown at once. */
-  .af-web-chip {
-    border-left-color: rgba(59, 130, 246, 0.65) !important;
-    color: #fff !important;
-  }
-
   .af-web-cat__eye {
     display: none !important;
   }
 
-  .af-web-pick__btn {
+  .af-web-pick__btn,
+  .af-web-pick__cue {
     transition: none !important;
+  }
+
+  /* No travel on hover or press; the selected cue still turns, as a
+     state change rather than a motion, so selection stays legible. */
+  .af-web-pick__btn:hover .af-web-pick__cue,
+  .af-web-pick__btn:active {
+    transform: none !important;
   }
 }

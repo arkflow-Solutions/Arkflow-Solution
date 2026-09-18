@@ -236,11 +236,17 @@ export function PainPaths() {
 
   return (
     <div>
-      <p className="text-lead text-[color:var(--text-secondary)]">
+      <p id="af-web-pick-prompt" className="text-lead text-[color:var(--text-secondary)]">
         {painPaths.prompt}
       </p>
 
-      <div className="af-web-pick">
+      {/* SELECTABLE, AND IT HAS TO LOOK IT. These were always buttons,
+          but at rest they read as three static quotes — nothing said
+          "choose one". The affordance is carried by a directional cue
+          that turns to point down at what it opened, a resting border
+          strong enough to read as an edge, and a press state, so it
+          works on a phone where there is no hover to discover it. */}
+      <div className="af-web-pick" role="group" aria-labelledby="af-web-pick-prompt">
         {painPaths.paths.map((path) => (
           <button
             key={path.id}
@@ -250,7 +256,10 @@ export function PainPaths() {
             aria-controls="af-web-path"
             onClick={() => choose(path.id)}
           >
-            {path.pain}
+            <span className="af-web-pick__text">{path.pain}</span>
+            <span aria-hidden className="af-web-pick__cue">
+              &rarr;
+            </span>
           </button>
         ))}
       </div>
@@ -340,14 +349,15 @@ export function PainPaths() {
  *
  * WHAT IT IS NOW. The page reads down as depth rather than sequence.
  * Above the ground line: one environment moving through one decision —
- * the question becomes dominant, the relevant information comes
- * forward, the rest recedes, the next step becomes obvious. Below it:
- * the same six phases, still fully legible, sitting where they
- * actually sit. The method did not get cut. It got put underneath.
+ * the question becomes dominant, then context, understanding and
+ * confidence, until the next step is obvious. Below it: one sentence
+ * saying what is built so that happens.
  *
- * NOT MAPPED ONE-TO-ONE. Five states above, six phases below, and no
- * lines drawn between them — all six are underneath all five, and a
- * tidier diagram would be a false one.
+ * SIMPLIFIED 18 September 2026. This section also carried a row of
+ * five "information" labels (the same five states again) and a row of
+ * six method names. Together they read as a menu of web services, which
+ * is the one thing this page must not become. Both went; the concept
+ * did not.
  *
  * The branch below is the confidence mechanism, unchanged. v1.4 §20
  * forbids clients, results, traffic, rankings, revenue, leads,
@@ -369,15 +379,10 @@ export function Capability() {
   const { progress, settled } = useViewportProgress(ref, 1, 0.01);
 
   const states = capability.surface.states;
-  const phases = capability.substrate.phases;
 
-  /* One traversal drives both layers. The surface steps through its
-     five states; the substrate fills underneath it, finishing a little
-     later so the build layer reads as supporting the experience rather
-     than racing it. */
+  /* One traversal steps the surface through its five states. */
   const walk = clamp01((progress - 0.12) / 0.42) * states.length;
   const active = Math.min(states.length - 1, Math.max(0, Math.floor(walk)));
-  const under = clamp01((progress - 0.16) / 0.46) * phases.length;
 
   /* The action resolves as the environment reaches ACTION — not after
      it. When the customer's state is "there is one obvious thing to do
@@ -413,27 +418,6 @@ export function Capability() {
           ))}
         </div>
 
-        {/* The information in the environment. One forward, rest back —
-            the eight-tiles-become-one move from environment 02, played
-            at the scale of a single screen. */}
-        <ul className="af-web-chips">
-          {states.map((s, i) => {
-            const forward = settled || i === active;
-            return (
-              <li
-                key={s.forward}
-                className={cn("af-web-chip", forward && "is-forward")}
-                /* Opacity only. A scale on the inactive items nudged the
-                   wrapped row's line breaks around as the marker moved,
-                   which is exactly the fidgeting a showroom does not do. */
-                style={{ opacity: forward ? 1 : 0.45 }}
-              >
-                {s.forward}
-              </li>
-            );
-          })}
-        </ul>
-
         <div className="af-web-act" style={{ opacity: actLit }}>
           <BookCallButton withArrow>{capability.surface.action}</BookCallButton>
         </div>
@@ -447,18 +431,7 @@ export function Capability() {
         <span className="af-web-substrate__label">
           {capability.substrate.label}
         </span>
-        <ul className="af-web-phases">
-          {phases.map((p, i) => (
-            <li
-              key={p}
-              className={cn("af-web-phase", (settled || under > i) && "is-on")}
-              style={{ opacity: settled ? 1 : lerp(0.4, 1, clamp01(under - i)) }}
-            >
-              {p}
-            </li>
-          ))}
-        </ul>
-        <p className="af-web-substrate__note">{capability.substrate.note}</p>
+        <p className="af-web-substrate__line">{capability.substrate.line}</p>
       </div>
       </div>
 

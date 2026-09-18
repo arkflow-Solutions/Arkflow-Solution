@@ -140,6 +140,9 @@ export default function AttractPage() {
           <h2 className="mt-5 max-w-2xl text-heading font-semibold">
             {capability.title}
           </h2>
+          <p className="mt-6 max-w-prose text-lead text-[color:var(--text-secondary)]">
+            {capability.lead}
+          </p>
 
           <Capability />
         </Container>

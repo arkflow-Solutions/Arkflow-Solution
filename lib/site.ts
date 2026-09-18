@@ -160,6 +160,18 @@ export const CONTACT_PHONE = "+65 8765 5809";
  * touched. The website now follows the ACRA profile; the contracts do
  * not yet. That divergence is real and is flagged, not resolved.
  */
+/**
+ * The registered address as structured parts, for schema.org
+ * PostalAddress. Same verified ACRA address as COMPANY.address below,
+ * which is composed from these parts so the two can never diverge.
+ */
+export const COMPANY_ADDRESS = {
+  streetAddress: "60 Paya Lebar Road, #6-28, Paya Lebar Square",
+  addressLocality: "Singapore",
+  postalCode: "409051",
+  addressCountry: "SG",
+} as const;
+
 export const COMPANY = {
   /**
    * ACRA registered name, verified against the Business Profile
@@ -175,7 +187,7 @@ export const COMPANY = {
    * 6 September 2026. The unit is "#6-28" — the issued contract stack
    * renders it "#06-28", which is the divergence noted above.
    */
-  address: "60 Paya Lebar Road, #6-28, Paya Lebar Square, Singapore 409051",
+  address: `${COMPANY_ADDRESS.streetAddress}, ${COMPANY_ADDRESS.addressLocality} ${COMPANY_ADDRESS.postalCode}`,
   base: "Singapore · SGT business hours",
 } as const;
 

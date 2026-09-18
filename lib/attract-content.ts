@@ -191,6 +191,14 @@ export const painPaths = {
 export const capability = {
   eyebrow: "Above and below",
   title: "What the customer feels. What we build underneath.",
+  /**
+   * The whole idea in one line, said before anything is drawn.
+   * SIMPLIFIED 18 September 2026: this section carried five animated
+   * states, five duplicate "information" pills, a button and a six-item
+   * method list — enough detail that it read as a menu of web services.
+   * The concept is unchanged; the explanation is shorter.
+   */
+  lead: "A website that guides people from attention, to understanding, to action.",
 
   /**
    * THE SURFACE — one environment, moving through one decision.
@@ -212,47 +220,27 @@ export const capability = {
   surface: {
     label: "What the customer experiences",
     states: [
-      {
-        key: "Question",
-        line: "Is this right for someone like me?",
-        forward: "Who it is for",
-      },
-      {
-        key: "Context",
-        line: "Here is what it actually involves.",
-        forward: "How it works",
-      },
-      {
-        key: "Understanding",
-        line: "I know what happens after I enquire.",
-        forward: "What to expect",
-      },
-      {
-        key: "Confidence",
-        line: "These are the people who would do it.",
-        forward: "Who does it",
-      },
-      {
-        key: "Action",
-        line: "There is one obvious thing to do next.",
-        forward: "The next step",
-      },
+      { key: "Question", line: "Is this right for someone like me?" },
+      { key: "Context", line: "Here is what it actually involves." },
+      { key: "Understanding", line: "I know what happens after I enquire." },
+      { key: "Confidence", line: "These are the people who would do it." },
+      { key: "Action", line: "There is one obvious thing to do next." },
     ],
     action: "Book a Discovery Call",
   },
 
   /**
-   * THE SUBSTRATE — the same six phases, demoted to what they are.
+   * THE SUBSTRATE — what sits behind that experience, said once.
    *
-   * Deliberately NOT mapped one-to-one onto the five states above.
-   * All six are underneath all five; pretending Strategy produces
-   * "Question" and Design produces "Confidence" would be a tidy
-   * diagram and a false one.
+   * It was six method names (Strategy, Journey, UX, Design,
+   * Development, Conversion) drawn as a row of labels, which is how a
+   * services menu looks. The method still exists; it is described in a
+   * sentence instead of listed, and the sentence ends where the page's
+   * argument does — at the system behind the front door.
    */
   substrate: {
     label: "Underneath",
-    phases: ["Strategy", "Journey", "UX", "Design", "Development", "Conversion"],
-    note: "The conversion path is what the other five are for.",
+    line: "The journey is planned, designed and built so the next step always feels obvious — and connected, so every enquiry it produces reaches the system behind it.",
   },
 
   /* v1.4 §3 mandatory finding — governance. Do not soften, do not
