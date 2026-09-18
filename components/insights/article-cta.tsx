@@ -55,7 +55,9 @@ export function ArticleCard({
 export function ArticleCta({ article }: { article: Article }) {
   const openBooking = useBooking(contact.call.href);
 
-  const copy = {
+  /* An article may state its own framing; otherwise the funnel level
+     chooses it. See Article["cta"] in lib/insights/types.ts. */
+  const copy = article.cta ?? {
     discovery: {
       title: "Wondering how much of this applies to your business?",
       body: "The Revenue Leak Audit measures how quickly enquiries to your business actually get answered — using your own numbers, not a benchmark.",
@@ -96,6 +98,47 @@ export function ArticleCta({ article }: { article: Article }) {
         </Button>
       </div>
     </section>
+  );
+}
+
+/**
+ * Contextual mid-article CTA, rendered from a `cta` block.
+ *
+ * REUSES, INTRODUCES NOTHING. Same booking modal as the navbar and the
+ * end-of-article CTA (useBooking + contact.call.href), same canonical
+ * event (`discovery_call_click`). Only `location` differs, and that is a
+ * free-text parameter on the existing EventParams type — no new event
+ * name and no analytics type change were required.
+ *
+ * DELIBERATELY THE SECONDARY BUTTON VARIANT. The house rule is one blue
+ * button per view; the end-of-article CTA is the strongest conversion
+ * moment and keeps the blue. A mid-article prompt that shouted as loudly
+ * would compete with it and interrupt the read.
+ */
+export function ArticleInlineCta({
+  text,
+  label = "Book a Discovery Call",
+  location,
+}: {
+  text: string;
+  label?: string;
+  location: string;
+}) {
+  const openBooking = useBooking(contact.call.href);
+  return (
+    <aside className="mt-12 rounded-card border border-[color:var(--border-subtle)] bg-surface/60 p-7 md:p-8">
+      <p className="text-body leading-relaxed text-white">{text}</p>
+      <Button
+        variant="secondary"
+        className="mt-6"
+        onClick={() => {
+          track("discovery_call_click", { location });
+          openBooking();
+        }}
+      >
+        {label}
+      </Button>
+    </aside>
   );
 }
 

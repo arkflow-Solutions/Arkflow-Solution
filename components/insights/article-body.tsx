@@ -8,9 +8,10 @@ import {
   MetricsDiagram,
   ArticleImage,
 } from "@/components/insights/diagrams";
+import { ArticleInlineCta } from "@/components/insights/article-cta";
 
 /** Renders one content block. Deliberately plain — reading comfort over effect. */
-function RenderBlock({ block }: { block: Block }) {
+function RenderBlock({ block, ctaIndex }: { block: Block; ctaIndex: number }) {
   switch (block.type) {
     case "p":
       return (
@@ -95,7 +96,25 @@ function RenderBlock({ block }: { block: Block }) {
           <p className="mt-3 text-body leading-relaxed text-white">
             {block.text}
           </p>
+          {block.href && (
+            <Link
+              href={block.href}
+              className="mt-4 inline-block text-body text-blue-soft underline underline-offset-4 transition-colors hover:text-white"
+            >
+              {block.hrefLabel ?? "Read more"} &rarr;
+            </Link>
+          )}
         </aside>
+      );
+    case "cta":
+      return (
+        <ArticleInlineCta
+          text={block.text}
+          label={block.label}
+          /* article_mid, article_mid_2, … — numbered by the renderer so
+             the author cannot mislabel or duplicate a location. */
+          location={ctaIndex === 0 ? "article_mid" : `article_mid_${ctaIndex + 1}`}
+        />
       );
     case "quote":
       return (
@@ -156,11 +175,15 @@ function RenderBlock({ block }: { block: Block }) {
 }
 
 export function ArticleBody({ article }: { article: Article }) {
+  /* CTA blocks are numbered in document order before rendering, so the
+     tracked location is derived from position rather than authored. */
+  let ctaSeen = -1;
   return (
     <div className="mx-auto max-w-[68ch]">
-      {article.blocks.map((block, i) => (
-        <RenderBlock key={i} block={block} />
-      ))}
+      {article.blocks.map((block, i) => {
+        if (block.type === "cta") ctaSeen += 1;
+        return <RenderBlock key={i} block={block} ctaIndex={ctaSeen} />;
+      })}
     </div>
   );
 }

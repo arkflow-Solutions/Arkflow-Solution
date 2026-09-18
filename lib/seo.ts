@@ -28,6 +28,26 @@ type BuildMetadataArgs = {
   path: string;
   /** Set true for pages that should not be indexed. */
   noIndex?: boolean;
+  /**
+   * og:type. Defaults to "website" so every existing page's output is
+   * unchanged; articles pass "article", which is what they are.
+   */
+  ogType?: "website" | "article";
+  /**
+   * Social preview image, as a site-relative path.
+   *
+   * WHY THIS IS OPT-IN AND NOT YET THE DEFAULT. Declaring `openGraph`
+   * here deliberately stops the root layout's metadata being inherited
+   * (see above) — and that also stops Next.js's file-based
+   * app/opengraph-image.tsx from being merged in. The result is that
+   * every page except the homepage currently ships with no og:image at
+   * all. Passing `images` below fixes that for one page at a time.
+   *
+   * Making it the default would fix all fifteen routes in one line, but
+   * that changes the social preview of pages that are already signed
+   * off, so it is being raised for approval rather than assumed.
+   */
+  ogImage?: string;
 };
 
 export function buildMetadata({
@@ -35,6 +55,8 @@ export function buildMetadata({
   description,
   path,
   noIndex = false,
+  ogType = "website",
+  ogImage,
 }: BuildMetadataArgs): Metadata {
   const url = new URL(path, SITE_URL).toString();
   const fullTitle = title
@@ -57,17 +79,23 @@ export function buildMetadata({
      */
     robots: noIndex ? { index: false, follow: true } : { index: true, follow: true },
     openGraph: {
-      type: "website",
+      type: ogType,
       locale: LOCALE,
       siteName: SITE_NAME,
       title: fullTitle,
       description,
       url,
+      ...(ogImage
+        ? { images: [{ url: new URL(ogImage, SITE_URL).toString() }] }
+        : {}),
     },
     twitter: {
       card: "summary_large_image",
       title: fullTitle,
       description,
+      ...(ogImage
+        ? { images: [new URL(ogImage, SITE_URL).toString()] }
+        : {}),
     },
   };
 }

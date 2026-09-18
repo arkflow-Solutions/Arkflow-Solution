@@ -2,6 +2,7 @@ import type { Article, Category } from "@/lib/insights/types";
 import { article as speedToLead } from "@/lib/insights/articles/why-speed-to-lead-matters";
 import { article as clinicFollowUp } from "@/lib/insights/articles/aesthetic-clinic-lead-follow-up";
 import { article as voiceAgent } from "@/lib/insights/articles/what-is-an-ai-voice-agent";
+import { article as implementAi } from "@/lib/insights/articles/how-to-implement-ai-in-your-business";
 
 /**
  * Article registry.
@@ -10,7 +11,12 @@ import { article as voiceAgent } from "@/lib/insights/articles/what-is-an-ai-voi
  * routing, sitemap, category pages, related content, schema — derives from
  * this array, so there is exactly one place to update.
  */
-export const articles: Article[] = [speedToLead, clinicFollowUp, voiceAgent];
+export const articles: Article[] = [
+  speedToLead,
+  clinicFollowUp,
+  voiceAgent,
+  implementAi,
+];
 
 export const articleBySlug = (slug: string) =>
   articles.find((a) => a.slug === slug);

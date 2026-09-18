@@ -38,9 +38,15 @@ export function generateMetadata({
   const article = articleBySlug(params.slug);
   if (!article) return {};
   return buildMetadata({
-    title: article.title,
+    title: article.seoTitle ?? article.title,
     description: article.description,
     path: `/insights/${article.category}/${article.slug}`,
+    /* An article is an article. Declaring openGraph in buildMetadata
+       stops the root layout's file-based image being merged in, so the
+       branded /opengraph-image asset is named explicitly — without it
+       these pages share with no preview image at all. */
+    ogType: "article",
+    ogImage: "/opengraph-image",
   });
 }
 
@@ -103,9 +109,11 @@ export default function ArticlePage({
             <h1 className="text-display font-semibold leading-tight">
               {article.title}
             </h1>
-            <p className="mt-6 text-lead text-[color:var(--text-secondary)]">
-              {article.standfirst}
-            </p>
+            {article.standfirst && (
+              <p className="mt-6 text-lead text-[color:var(--text-secondary)]">
+                {article.standfirst}
+              </p>
+            )}
             <div className="mt-8">
               <ArticleMeta article={article} />
               <p className="mt-2 font-mono text-eyebrow uppercase tracking-wider text-[color:var(--text-tertiary)]">

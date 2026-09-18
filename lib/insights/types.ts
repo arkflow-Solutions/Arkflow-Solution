@@ -31,8 +31,34 @@ export type Block =
   | { type: "h3"; text: string }
   | { type: "ul"; items: string[] }
   | { type: "ol"; items: string[] }
-  | { type: "callout"; title?: string; text: string }
+  /**
+   * An aside. `href` is optional and exists so an article can offer the
+   * reader one onward path at the moment the idea is in their head,
+   * rather than collecting every internal link into a list at the end.
+   * Optional because the three articles published before it had none.
+   */
+  | {
+      type: "callout";
+      title?: string;
+      text: string;
+      href?: string;
+      hrefLabel?: string;
+    }
   | { type: "quote"; text: string }
+  /**
+   * A contextual invitation to book a discovery call, placed mid-article.
+   *
+   * GOVERNANCE: this block carries no destination of its own. It opens the
+   * one canonical booking modal (lib/use-booking.ts) and reports the one
+   * canonical conversion event, `discovery_call_click`. There is
+   * deliberately no `href` and no event name here, so an article cannot
+   * introduce a second funnel by writing content.
+   *
+   * The tracked `location` is NOT authored either — the renderer numbers
+   * these blocks in document order (article_mid, article_mid_2, …) so two
+   * CTAs in one article cannot collide or be mislabelled by hand.
+   */
+  | { type: "cta"; text: string; label?: string }
   | { type: "steps"; items: { label: string; text: string }[] }
   | { type: "table"; head: string[]; rows: string[][] }
   /* ------------------------------------------------------ visual blocks */
@@ -85,7 +111,15 @@ export type Faq = { q: string; a: string };
 
 export type Article = {
   slug: string;
+  /** The article's own title — the visible H1, breadcrumb, card and schema headline. */
   title: string;
+  /**
+   * Optional shorter title for search results and social cards only
+   * (<title>, og:title, twitter:title). Falls back to `title`. Exists so
+   * an author's full headline can stay on the page while the title tag
+   * stays within the length search engines display.
+   */
+  seoTitle?: string;
   /** Meta description AND the card blurb. 140–160 chars. */
   description: string;
   category: Category;
@@ -94,10 +128,28 @@ export type Article = {
   published: string;
   updated?: string;
   authorId: string;
-  /** One-line hook shown under the H1. */
-  standfirst: string;
+  /**
+   * One-line hook shown under the H1. Optional: an article whose full
+   * title already does that job omits it rather than repeating itself.
+   */
+  standfirst?: string;
   blocks: Block[];
   faq?: Faq[];
+  /**
+   * Optional override for the end-of-article CTA copy.
+   *
+   * WHY AN OVERRIDE RATHER THAN AN EDIT TO THE SHARED COPY. ArticleCta
+   * picks its framing from `level`, and all three levels are in use by
+   * published articles (problem, intent, discovery). Rewriting any of
+   * those strings would silently rewrite a signed-off article, so an
+   * article that needs its own framing states it here and every other
+   * article keeps the default untouched.
+   *
+   * The primary action is NOT settable. It is always the canonical
+   * booking modal firing `discovery_call_click` — only the words above
+   * the button change.
+   */
+  cta?: { title: string; body: string };
   /**
    * The ArkFlow destination this article should route to. Required —
    * an article with no onward path is a dead end (brief §47).
