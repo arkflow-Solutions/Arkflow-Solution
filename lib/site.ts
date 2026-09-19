@@ -150,15 +150,18 @@ export const CONTACT_PHONE = "+65 8765 5809";
  *
  * VERIFIED AGAINST THE ACRA BUSINESS PROFILE, 6 September 2026. The
  * registered name carries points: "Pte. Ltd.", not "Pte Ltd". The
- * lowercase f was already correct. The registered address is
- * "#6-28", not "#06-28".
+ * lowercase f was already correct.
+ *
+ * ADDRESS UNIT — "#06-28" (founder decision, 19 September 2026). The
+ * site previously rendered "#6-28", following the ACRA profile as read
+ * on 6 September. The signed contract stack (ARK-WTOS, ARK-PRIV,
+ * ARK-DPCA, 31 Aug 2026) uses "#06-28", and the founder confirmed that
+ * form is correct, so the website now matches the contracts.
  *
  * NOTE FOR WHOEVER RECONCILES THE CONTRACT STACK: the issued documents
- * (ARK-WTOS, ARK-PRIV, ARK-DPCA, 31 Aug 2026) render the entity as
- * "ArkFlow Solutions Pte. Ltd." with a capital F, and the address as
- * "#06-28". Those documents are out of scope here and have not been
- * touched. The website now follows the ACRA profile; the contracts do
- * not yet. That divergence is real and is flagged, not resolved.
+ * render the entity as "ArkFlow Solutions Pte. Ltd." with a capital F.
+ * The website follows the ACRA name (lowercase f). That divergence is
+ * real and is flagged, not resolved.
  */
 /**
  * The registered address as structured parts, for schema.org
@@ -166,7 +169,7 @@ export const CONTACT_PHONE = "+65 8765 5809";
  * which is composed from these parts so the two can never diverge.
  */
 export const COMPANY_ADDRESS = {
-  streetAddress: "60 Paya Lebar Road, #6-28, Paya Lebar Square",
+  streetAddress: "60 Paya Lebar Road, #06-28, Paya Lebar Square",
   addressLocality: "Singapore",
   postalCode: "409051",
   addressCountry: "SG",
@@ -183,9 +186,8 @@ export const COMPANY = {
   /** Public brand. Capital F. */
   shortName: "ArkFlow",
   /**
-   * Registered address, per the ACRA Business Profile verified
-   * 6 September 2026. The unit is "#6-28" — the issued contract stack
-   * renders it "#06-28", which is the divergence noted above.
+   * Registered address. The unit is "#06-28", matching the signed
+   * contract stack (founder decision, 19 September 2026 — see above).
    */
   address: `${COMPANY_ADDRESS.streetAddress}, ${COMPANY_ADDRESS.addressLocality} ${COMPANY_ADDRESS.postalCode}`,
   base: "Singapore · SGT business hours",

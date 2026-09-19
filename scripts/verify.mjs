@@ -274,11 +274,12 @@ if (!/legalName:\s*"Arkflow Solutions Pte\. Ltd\."/.test(siteFile)) {
   idIssues++;
 }
 /**
- * The registered address per the same Business Profile. Kept here so a
- * future edit to the address has to be deliberate.
+ * The registered address unit, as used in the signed contract stack
+ * (founder decision, 19 September 2026; previously '#6-28'). Kept here
+ * so a future edit to the address has to be deliberate.
  */
-if (!/#6-28/.test(siteFile)) {
-  bad("lib/site.ts does not carry the registered address unit '#6-28'");
+if (!/#06-28/.test(siteFile)) {
+  bad("lib/site.ts does not carry the registered address unit '#06-28'");
   idIssues++;
 }
 if (!/uen:\s*"202638999Z"/.test(siteFile)) {

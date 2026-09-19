@@ -86,7 +86,7 @@ export default function PrivacyPage() {
                 </dt>
                 <dd>{COMPANY.address}</dd>
                 <dt className="font-mono text-eyebrow uppercase text-[color:var(--text-tertiary)]">
-                  Data protection contact
+                  Data Protection Officer (by role)
                 </dt>
                 <dd>
                   <a
@@ -102,11 +102,12 @@ export default function PrivacyPage() {
                 <dd>{CONTACT_PHONE}</dd>
               </dl>
               <p className="mt-6">
-                {COMPANY.legalName} has designated an individual responsible for
-                personal data protection. Please direct any data protection
-                question, request or complaint to the data protection contact
-                above rather than to an individual, so that it is received and
-                actioned reliably.
+                {COMPANY.shortName} has designated a Data Protection Officer
+                under section 11(3) of the PDPA. The role, rather than a named
+                individual, is the point of contact; the current holder can be
+                confirmed on request. Please direct any data protection
+                question, request or complaint to the address above so that it
+                is received and actioned reliably.
               </p>
             </div>
 
