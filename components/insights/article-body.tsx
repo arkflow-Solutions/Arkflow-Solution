@@ -59,10 +59,15 @@ function RenderBlock({ block, ctaIndex }: { block: Block; ctaIndex: number }) {
               key={item}
               className="flex gap-4 text-body text-[color:var(--text-secondary)]"
             >
-              <span className="font-mono text-small text-blue-soft">
+              <span className="shrink-0 font-mono text-small text-blue-soft">
                 {String(i + 1).padStart(2, "0")}
               </span>
-              <span>{item}</span>
+              {/* A flex child will not shrink below its longest unbreakable
+                  token, and a bare URL in a citation is exactly that: at
+                  375px it pushed the page 97px wider than the viewport.
+                  min-w-0 lets the item shrink; break-words lets the URL
+                  wrap. No effect on items that already fit. */}
+              <span className="min-w-0 break-words">{item}</span>
             </li>
           ))}
         </ol>

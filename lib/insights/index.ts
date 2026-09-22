@@ -3,6 +3,7 @@ import { article as speedToLead } from "@/lib/insights/articles/why-speed-to-lea
 import { article as clinicFollowUp } from "@/lib/insights/articles/aesthetic-clinic-lead-follow-up";
 import { article as voiceAgent } from "@/lib/insights/articles/what-is-an-ai-voice-agent";
 import { article as implementAi } from "@/lib/insights/articles/how-to-implement-ai-in-your-business";
+import { article as whatsappAutomation } from "@/lib/insights/articles/whatsapp-automation-for-business";
 
 /**
  * Article registry.
@@ -16,6 +17,7 @@ export const articles: Article[] = [
   clinicFollowUp,
   voiceAgent,
   implementAi,
+  whatsappAutomation,
 ];
 
 export const articleBySlug = (slug: string) =>
