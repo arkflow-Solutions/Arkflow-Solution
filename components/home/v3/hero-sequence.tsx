@@ -2,7 +2,14 @@
 
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import {
+  AnimatePresence,
+  animate,
+  motion,
+  useMotionValue,
+  useReducedMotion,
+  useTransform,
+} from "framer-motion";
 import { Container } from "@/components/ui/container";
 import { Button } from "@/components/ui/button";
 import { ChannelIcon } from "@/components/ui/channel-icon";
@@ -65,7 +72,9 @@ import "@/app/hero-sequence.css";
 export function HeroSequence() {
   const reduced = useReducedMotion();
   const [scene, setScene] = useState(0);
-  const [swinging, setSwinging] = useState(false);
+  /* True once the story's closing swing has settled and the pendulum has
+     taken over on its own. */
+  const [idle, setIdle] = useState(false);
   const [clock, setClock] = useState<{ h: number; m: number; s: number }>(heroMeta.clock);
   const done = useRef(false);
 
@@ -126,13 +135,6 @@ export function HeroSequence() {
     };
   }, [reduced]);
 
-  /* The sweep brightens only while the emblem is actually travelling. */
-  useEffect(() => {
-    if (reduced) return;
-    setSwinging(true);
-    const t = setTimeout(() => setSwinging(false), 1000);
-    return () => clearTimeout(t);
-  }, [scene, reduced]);
 
   /* Time passing — the pressure the whole scene is about. Deliberately
      a clock and not a money counter: a ticking currency figure would be
@@ -172,6 +174,79 @@ export function HeroSequence() {
     window.addEventListener("resize", sync);
     return () => window.removeEventListener("resize", sync);
   }, []);
+  /* ONE MOTION VALUE DRIVES THE WHOLE PENDULUM.
+     The arm reads it, the emblem counter-rotates from it, and the sweep
+     brightens from it. Driving three separate animations off the same
+     timings would leave them free to drift apart over an endless loop;
+     derived values cannot. It also means no component re-render per
+     frame and no requestAnimationFrame of our own — Framer's single
+     frameloop does the work. */
+  const rot = useMotionValue(-heroScenes[0].angle);
+
+  /* The emblem hangs level whatever the arm is doing. */
+  const counter = useTransform(rot, (v) => -v);
+
+  /* Brightest as it passes through the centre, which is also where it is
+     travelling fastest. The sweep therefore tracks speed without
+     anything having to measure speed. */
+  const sweepOpacity = useTransform(rot, (v) => {
+    const span = 28 * arc || 1;
+    const nearCentre = 1 - Math.min(1, Math.abs(v) / span);
+    return 0.16 + nearCentre * 0.52;
+  });
+
+  /* THE STORY SWING. One spring per scene, stopped if the scene changes
+     under it. Low stiffness, light damping: it arrives with weight and
+     overshoots once. */
+  useEffect(() => {
+    const target = -heroScenes[scene].angle * arc;
+    if (reduced) {
+      rot.set(target);
+      return;
+    }
+    if (idle) return; // the loop owns the value from here
+    let live = true;
+    const controls = animate(rot, target, {
+      type: "spring",
+      stiffness: 24,
+      damping: 11,
+      mass: 1.15,
+    });
+    /* THE HANDOVER, AND WHY IT IS INVISIBLE. The idle loop begins only
+       once this final spring has actually settled, and its first
+       keyframe is exactly where the spring stopped — so there is no
+       snap, no pause and no restart. The pendulum simply carries on. */
+    if (scene >= HERO_FINAL) {
+      controls.then(() => {
+        if (live) setIdle(true);
+      });
+    }
+    return () => {
+      live = false;
+      controls.stop();
+    };
+  }, [scene, arc, reduced, idle, rot]);
+
+  /* THE PENDULUM KEEPS LIVING.
+     Simple harmonic motion is what a pendulum actually does: fastest
+     through the centre, momentarily still at each extreme. That is a
+     sine ease — the cubic bezier below is its standard approximation —
+     and `mirror` reverses it each half-period, so the motion is
+     symmetrical and never resets. Amplitude equals the final story
+     angle, so the loop starts exactly where the story stopped, and it
+     scales with the same arc the small screens use. */
+  useEffect(() => {
+    if (reduced || !idle) return;
+    const amplitude = 28 * arc;
+    const controls = animate(rot, [-amplitude, amplitude], {
+      duration: 5.5,
+      repeat: Infinity,
+      repeatType: "mirror",
+      ease: [0.37, 0, 0.63, 1],
+    });
+    return () => controls.stop();
+  }, [idle, arc, reduced, rot]);
+
   const current = heroScenes[scene];
   const pad = (n: number) => String(n).padStart(2, "0");
   const showSystem = scene >= HERO_TURN;
@@ -179,12 +254,6 @@ export function HeroSequence() {
 
   /* How much of the leak timeline has happened yet. */
   const problemLit = scene === 0 ? 0 : scene === 1 ? 1 : heroTimeline.problem.length;
-
-  const swing = reduced
-    ? { duration: 0 }
-    : /* Low stiffness and light damping: it arrives with weight and
-         wobbles once rather than snapping into place. */
-      ({ type: "spring", stiffness: 24, damping: 11, mass: 1.15 } as const);
 
   const fade = reduced
     ? { duration: 0 }
@@ -199,34 +268,20 @@ export function HeroSequence() {
 
       {/* --------------------------------------------- pendulum */}
       <div className="af-hs-pend" aria-hidden>
-        <motion.div
-          className="af-hs-arm"
-          initial={false}
-          /* NEGATED ON PURPOSE. Screen Y runs downward, so a positive
-             CSS rotation swings the bottom of the arm to the LEFT. The
-             scene data reads the way a person would describe it —
-             negative is left — and the sign is flipped here, once. */
-          animate={{ rotate: -current.angle * arc }}
-          transition={swing}
-        >
+        {/* NEGATED ON PURPOSE, in the effects above. Screen Y runs
+            downward, so a positive CSS rotation swings the bottom of the
+            arm to the LEFT. The scene data reads the way a person would
+            describe it — negative is left — and the sign is flipped
+            once, where the value is set. */}
+        <motion.div className="af-hs-arm" style={{ rotate: rot }}>
           <span className="af-hs-wire" />
-          <motion.span
-            className="af-hs-sweep"
-            initial={false}
-            animate={{ opacity: swinging ? 0.85 : 0.22 }}
-            transition={{ duration: 0.5 }}
-          />
+          <motion.span className="af-hs-sweep" style={{ opacity: sweepOpacity }} />
           <span className="af-hs-bob">
             {/* Counter-rotated by exactly what the arm is doing, so the
                 emblem hangs level through the whole arc. The brand mark
                 has an orientation and a tilted logo reads as a mistake,
                 not as physics. */}
-            <motion.span
-              className="af-hs-bob__in"
-              initial={false}
-              animate={{ rotate: current.angle * arc }}
-              transition={swing}
-            >
+            <motion.span className="af-hs-bob__in" style={{ rotate: counter }}>
               <Image
                 src="/brand/arkflow-icon.png"
                 alt=""
