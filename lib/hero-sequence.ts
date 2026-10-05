@@ -47,18 +47,30 @@ export type HeroScene = {
  * tension has to land before it resolves.
  */
 export const heroScenes: HeroScene[] = [
+  /* SCENE 01 CARRIES THE COMMERCIAL MESSAGE, NOT THE TEASER.
+     The Blueprint's Part 0 audit found that a visitor could not tell in
+     five seconds whether this site was for them: the old opening line
+     was "Your leads don't wait", which names no audience and makes no
+     promise. Scene 01 is also the scene the server renders — so it is
+     what a crawler indexes and what someone with JavaScript disabled
+     reads — which makes it the only correct place for the H1 the
+     Blueprint specifies. The story then runs exactly as before. */
   {
-    title: "Your leads",
-    titleAccent: "don’t wait.",
-    lead: "Every second without a system is another opportunity at risk.",
+    title: "Every enquiry answered.",
+    titleAccent: "Every booking followed up.",
+    /* Trimmed by five words from the Blueprint's wording: "reminds the
+       customer" is already shown, with a timestamp, in the panel beside
+       it. Every word kept here costs a line of reserved height that
+       every other scene then has to leave empty. */
+    lead: "You paid for the enquiry. ArkFlow sets up and runs the system that replies in minutes — even at 9:41 PM — books the appointment and brings customers back.",
     angle: -28,
-    hold: 1700,
+    hold: 2600,
     side: "problem",
   },
   {
     title: "A lead",
     titleAccent: "just came in.",
-    lead: "Someone is interested in your business right now.",
+    lead: "Someone is interested in your business right now. The clock starts whether anyone is watching or not.",
     angle: -17,
     hold: 1500,
     side: "problem",
@@ -66,7 +78,7 @@ export const heroScenes: HeroScene[] = [
   {
     title: "Nobody",
     titleAccent: "answered.",
-    lead: "While you’re busy, the opportunity is going cold.",
+    lead: "You paid for that enquiry. Who answered it? Nobody was going to, at 9:41 PM.",
     angle: 0,
     hold: 1900,
     side: "problem",
@@ -90,7 +102,7 @@ export const heroScenes: HeroScene[] = [
   {
     title: "Nothing",
     titleAccent: "falls through.",
-    lead: "Smarter systems. Lower costs. Better results.",
+    lead: "Capture more. Convert more. Retain more. We don’t just build the system — we run it.",
     angle: 28,
     hold: 0,
     side: "system",
@@ -143,10 +155,17 @@ export const heroCapabilities = [
 ] as const;
 
 export const heroMeta = {
-  eyebrow: "Automate · Optimise · Scale",
+  /* THE AUDIENCE, FIRST. Growth Blueprint Part 0: a visitor could not
+     tell in five seconds whether this site was for them. The eyebrow now
+     says so before the headline does. It also replaces "Automate ·
+     Optimise · Scale" — one primary tagline, per Part 48, and that one
+     is "Capture more. Convert more. Retain more." */
+  eyebrow: "For Singapore clinics & appointment-based businesses",
   /** Shown on the resting scene, under the headline. */
   signature: "ArkFlow — a Revenue Operating Company",
-  primaryCta: "Book a Discovery Call",
+  /** The division of labour, held on screen through every scene. */
+  aiLine: "AI handles the repetition. Your team handles the relationship.",
+  primaryCta: "Get your free Revenue Leak Audit",
   secondaryCta: "See how it works",
   /** The clock starts here and ticks forward. Time, not money. */
   clock: { h: 9, m: 41, s: 3 },

@@ -13,7 +13,7 @@ import {
 import { Container } from "@/components/ui/container";
 import { Button } from "@/components/ui/button";
 import { ChannelIcon } from "@/components/ui/channel-icon";
-import { DiscoveryCallButton } from "@/components/home/v3/shared";
+import { AuditButton } from "@/components/home/v3/shared";
 import { INTRO_DONE } from "@/components/motion/intro-veil";
 import { track } from "@/lib/analytics";
 import { cn } from "@/lib/utils";
@@ -343,12 +343,17 @@ export function HeroSequence() {
               {heroMeta.signature}
             </motion.p>
 
+            {/* The division of labour. Held through every scene rather
+                than animated, because it is a standing claim about how
+                ArkFlow works, not a beat in the story. */}
+            <p className="af-hs-ai">{heroMeta.aiLine}</p>
+
             {/* Never re-mounted, never moved: the action is reachable
                 from the first frame. */}
             <div className="af-hs-actions">
-              <DiscoveryCallButton location="homepage_hero">
+              <AuditButton location="homepage_hero">
                 {heroMeta.primaryCta}
-              </DiscoveryCallButton>
+              </AuditButton>
               <Button
                 href="/how-it-works"
                 variant="secondary"

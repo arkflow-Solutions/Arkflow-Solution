@@ -1,0 +1,157 @@
+/*
+ * The Revenue Leak Audit, the After-Hours Test and their thank-you page.
+ *
+ * SCOPED: imported by those routes and nothing else, so app/globals.css —
+ * where the locked homepage scenes live — is untouched. Every class is
+ * prefixed `af-form`, `af-field`, `af-hp` or `af-steps`.
+ *
+ * The form deliberately looks like the rest of the site rather than like
+ * a form library: same borders, same radii, same focus ring.
+ */
+
+.af-form {
+  display: grid;
+  gap: 1.1rem;
+  margin-top: 2rem;
+  max-width: 38rem;
+}
+
+.af-form__row {
+  display: grid;
+  gap: 1.1rem;
+}
+
+@media (min-width: 640px) {
+  .af-form__row {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.af-field {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.af-field__label {
+  font-size: 0.8125rem;
+  color: var(--text-secondary);
+}
+
+.af-field__opt {
+  color: var(--text-tertiary);
+  font-size: 0.75rem;
+}
+
+.af-field input,
+.af-field textarea {
+  width: 100%;
+  padding: 0.7rem 0.85rem;
+  border: 1px solid var(--border-strong);
+  border-radius: 0.6rem;
+  background: rgba(255, 255, 255, 0.03);
+  color: #fff;
+  font: inherit;
+  font-size: 0.9375rem;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.af-field textarea {
+  resize: vertical;
+  min-height: 5.5rem;
+}
+
+.af-field input::placeholder,
+.af-field textarea::placeholder {
+  color: var(--text-tertiary);
+}
+
+.af-field input:hover,
+.af-field textarea:hover {
+  border-color: rgba(59, 130, 246, 0.4);
+}
+
+.af-field input:focus-visible,
+.af-field textarea:focus-visible {
+  outline: 2px solid var(--blue-soft);
+  outline-offset: 2px;
+  border-color: transparent;
+}
+
+/* Invalid only after the browser has something to judge, so the form
+   is not red before it has been filled in. */
+.af-field input:not(:placeholder-shown):invalid {
+  border-color: rgba(217, 119, 6, 0.6);
+}
+
+.af-form__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem 1.25rem;
+  margin-top: 0.4rem;
+}
+
+.af-form__note {
+  max-width: 22rem;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: var(--text-tertiary);
+}
+
+.af-form__error {
+  padding: 0.7rem 0.9rem;
+  border: 1px solid rgba(217, 119, 6, 0.45);
+  border-radius: 0.6rem;
+  background: rgba(217, 119, 6, 0.08);
+  font-size: 0.875rem;
+  /* Amber: something is going wrong for the visitor. */
+  color: #d97706;
+}
+
+/* The honeypot. Off-screen rather than display:none — some bots skip
+   anything that is explicitly hidden. */
+.af-hp {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+/* --------------------------------------------- numbered step lists */
+
+.af-steps {
+  display: grid;
+  gap: 1.4rem;
+  margin-top: 2.5rem;
+  max-width: 44rem;
+  list-style: none;
+  padding: 0;
+}
+
+.af-step {
+  display: grid;
+  grid-template-columns: 2rem minmax(0, 1fr);
+  gap: 0 1rem;
+  align-items: baseline;
+}
+
+.af-step__n {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.75rem;
+  color: var(--blue-soft);
+}
+
+.af-step__label {
+  font-size: 1.0625rem;
+  font-weight: 500;
+  color: #fff;
+}
+
+.af-step__text {
+  grid-column: 2;
+  margin-top: 0.3rem;
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
+}

@@ -6,7 +6,7 @@ import { Section } from "@/components/ui/section";
 import { Reveal } from "@/components/motion/reveal";
 import { Eyebrow } from "@/components/ui/eyebrow";
 import { Button } from "@/components/ui/button";
-import { DiscoveryCallButton, SectionHead } from "@/components/home/v3/shared";
+import { AuditButton, SectionHead } from "@/components/home/v3/shared";
 import { track } from "@/lib/analytics";
 import { whyArkflow, auditCta, finalCta } from "@/lib/revenue-content";
 import { sceneClose } from "@/lib/scene-content";
@@ -74,9 +74,9 @@ export function AuditSection() {
                 {auditCta.note}
               </p>
               <div className="mt-10">
-                <DiscoveryCallButton location="homepage_audit_section">
+                <AuditButton location="homepage_audit_section">
                   {auditCta.cta}
-                </DiscoveryCallButton>
+                </AuditButton>
               </div>
             </div>
 
@@ -109,9 +109,9 @@ export function FinalCta() {
             {finalCta.lead}
           </p>
           <div className="mt-12 flex flex-wrap items-center justify-center gap-4">
-            <DiscoveryCallButton location="homepage_final_cta">
+            <AuditButton location="homepage_final_cta">
               {finalCta.primary}
-            </DiscoveryCallButton>
+            </AuditButton>
             <Button
               href="#revenue-engine"
               variant="secondary"
@@ -148,11 +148,13 @@ export function FinalCta() {
  * the site — this is the founder-approved home for it.
  *
  * WHAT MUST NOT CHANGE:
- *  · This file must keep rendering DiscoveryCallButton. verify.mjs
- *    check 12d asserts it by filename.
- *  · The CTA opens the booking modal via useBooking. It must never
- *    become a link to the Revenue Leak Audit funnel — check 12a fails
- *    the build if that URL appears on a public surface.
+ *  · This file must keep rendering the primary conversion. As of the
+ *    Growth Blueprint (6 Oct 2026) that is AuditButton, which links to
+ *    the on-site /audit page; verify.mjs check 12d asserts it by
+ *    filename. It was DiscoveryCallButton until that date.
+ *  · The audit must stay on this domain. It must never become a link to
+ *    go.arkflowsolutions.com — check 12a still fails the build if that
+ *    URL appears on a public surface.
  *  · id="revenue-leak-audit" is kept: /solutions links to this anchor.
  *  · The interface below is the existing stylised ArkFlow board with
  *    placeholder records. No GoHighLevel screenshots, per founder
@@ -232,9 +234,9 @@ export function SystemAndClose() {
             <h2 className="af-close__title">{sceneClose.ctaTitle}</h2>
             <p className="af-close__note">{sceneClose.ctaNote}</p>
             <div className="mt-10">
-              <DiscoveryCallButton location="homepage_close">
+              <AuditButton location="homepage_close">
                 {sceneClose.cta}
-              </DiscoveryCallButton>
+              </AuditButton>
             </div>
           </div>
         </Reveal>

@@ -5,7 +5,7 @@ import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
 import { BookingModal } from "@/components/booking/booking-modal";
 import { SmoothScroll } from "@/components/motion/smooth-scroll";
-import { IntroVeil } from "@/components/motion/intro-veil";
+import { IntroVeilOnHome } from "@/components/motion/intro-veil-on-home";
 import { OrgJsonLd } from "@/components/seo/json-ld";
 import { SITE_URL } from "@/lib/site";
 import { GoogleAnalytics } from "@/components/analytics/google-analytics";
@@ -84,7 +84,14 @@ export default function RootLayout({
     <html lang="en" className={`${fontSans.variable} ${fontMono.variable}`}>
       <head />
       <body>
-        <IntroVeil />
+        {/* HOMEPAGE ONLY, as of 6 October 2026. The veil covers the page
+            for about 4.6 seconds, which is a fine way to open the front
+            door and a terrible thing to put in front of someone who just
+            clicked "Get your free Revenue Leak Audit" — a direct hit on
+            /audit, from an email or an ad, waited through the whole
+            animation before it could read the form. The cinematic
+            opening stays where it earns its place. */}
+        <IntroVeilOnHome />
         <SmoothScroll />
         <a
           href="#main"

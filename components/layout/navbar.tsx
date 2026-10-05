@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 import { Menu, X, ChevronDown, BookOpen, Star, Building2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Container } from "@/components/ui/container";
-import { DiscoveryCallButton } from "@/components/home/v3/shared";
+import { AuditButton } from "@/components/home/v3/shared";
 import { Wordmark } from "@/components/layout/wordmark";
 
 /**
@@ -29,38 +29,54 @@ import { Wordmark } from "@/components/layout/wordmark";
  * labelled "What we build" because ArkFlow does not sell fixed packages
  * and neither the label nor the URL should imply otherwise.
  *
- * DELIBERATELY NOT HERE: /aesthetic-clinics stays in the Company group —
- * one vertical must never lead an industry-agnostic site.
+ * SUPERSEDED 6 October 2026: /aesthetic-clinics was kept out of the
+ * primary nav because one vertical must never lead an industry-agnostic
+ * site. The Blueprint makes Singapore aesthetics the first target market
+ * (decision 1), so it now leads as "For clinics".
  * /how-it-works stays out of the primary nav; it is reached from the
  * homepage and from content, and adding it would push this back toward
  * a sitemap. Still no services dropdown — that is how agencies present
  * themselves and would undo the Revenue Operating Company positioning.
  */
+/**
+ * RESTRUCTURED AGAIN 6 October 2026, per the Growth Blueprint.
+ *
+ * "Website" is gone from the primary navigation. It was the first item
+ * on the site and it made ArkFlow read as a web-design agency — the
+ * single most expensive misreading available, because it invites
+ * comparison with studios charging a fraction of an operating fee.
+ * /attract still exists and is still linked from content; it is simply
+ * no longer presented as a headline service.
+ *
+ * The order now follows the buyer's questions rather than the product
+ * catalogue: how does this work, is it for me, has it worked, what do
+ * you know, who are you — and then the one action.
+ */
 const links = [
-  /* "Website", not "Attract".
-     The route stays /attract and the canonical Revenue Engine key stays
-     "Attract" — this is the public label only, from the same decision
-     that put plain-English stage names on the homepage. A business
-     owner knows what a website is; "Attract" is a stage name they have
-     no reason to have learned. See lib/stage-labels.ts, and note that
-     verify.mjs check 4 asserts the KEYS, not display text. */
-  { label: "Website", href: "/attract" },
-  { label: "Solutions", href: "/solutions" },
-  { label: "What we build", href: "/what-we-build" },
+  { label: "How it works", href: "/how-it-works" },
+  { label: "For clinics", href: "/aesthetic-clinics" },
+  { label: "Results", href: "/case-studies" },
   { label: "Insights", href: "/insights" },
+  { label: "About", href: "/about" },
 ];
 
-/** "Company" grouping — a dropdown on desktop, an indented sub-group in
- *  the mobile menu. /case-studies stays deliberately empty until there
- *  is something real to put in it.
+/**
+ * "More" — the supporting pages, a dropdown on desktop and an indented
+ * sub-group on mobile.
  *
- *  The aesthetics entry is described as ONE vertical, not as the
- *  company's focus: public positioning is industry-agnostic and the
- *  homepage must not read as an aesthetics site. */
+ * WHY THIS GROUP STILL EXISTS. The Blueprint's navigation has six items
+ * and none of them is the website, solutions or scope page. Those pages
+ * are good work and are still linked from content, so deleting them from
+ * the navigation entirely would orphan three indexed URLs. They are
+ * demoted here instead: reachable, and no longer presented as the
+ * headline offer. Aesthetic clinics and case studies moved up to the
+ * primary nav as "For clinics" and "Results".
+ */
 const companyLinks = [
-  { label: "Aesthetic clinics", href: "/aesthetic-clinics", icon: BookOpen, desc: "One of the verticals we serve" },
-  { label: "Case studies", href: "/case-studies", icon: Star, desc: "Published once they are earned" },
-  { label: "About & contact", href: "/contact", icon: Building2, desc: "Who we are and how to reach us" },
+  { label: "What we build", href: "/what-we-build", icon: Star, desc: "The scope of an engagement" },
+  { label: "The system", href: "/solutions", icon: BookOpen, desc: "One enquiry, end to end" },
+  { label: "Website", href: "/attract", icon: BookOpen, desc: "The front door of the system" },
+  { label: "Contact", href: "/contact", icon: Building2, desc: "How to reach us" },
 ];
 
 export function Navbar() {
@@ -203,7 +219,7 @@ export function Navbar() {
             >
               <div
                 role="menu"
-                aria-label="Company"
+                aria-label="More"
                 className="w-[268px] rounded-card border border-[color:var(--border-strong)] bg-surface/95 p-2 shadow-2xl backdrop-blur-xl"
               >
                 {companyLinks.map((item) => {
@@ -245,9 +261,9 @@ export function Navbar() {
             and keeps the visitor here — the audit funnel is no longer a
             CTA (founder decision, 6 Sep 2026). */}
         <div className="hidden lg:block">
-          <DiscoveryCallButton location="navbar" size="default">
-            Book a Discovery Call
-          </DiscoveryCallButton>
+          <AuditButton location="navbar" size="default">
+            Get free audit
+          </AuditButton>
         </div>
 
         <button
@@ -301,9 +317,9 @@ export function Navbar() {
             })}
 
             <div className="px-3 pb-2 pt-4">
-              <DiscoveryCallButton location="navbar_mobile" size="default" className="w-full">
-                Book a Discovery Call
-              </DiscoveryCallButton>
+              <AuditButton location="navbar_mobile" size="default" className="w-full">
+                Get free audit
+              </AuditButton>
             </div>
           </Container>
         </nav>

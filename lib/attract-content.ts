@@ -254,7 +254,12 @@ export const capability = {
 
   /* v1.4 §19 boundary — governance. Must remain rendered text. */
   boundary:
-    "ArkFlow does not currently offer SEO as an ongoing service, and does not make ranking or traffic claims.",
+    /* SUPERSEDED 6 October 2026 by the Growth Blueprint. The old line
+       said ArkFlow does not offer SEO at all. The strategy now allows
+       demand work, but only once the system it feeds is live — the
+       sequence matters more than the service list. No ranking or traffic
+       claim is made here, and none may be. */
+    "Demand services are available to clients whose ArkFlow Revenue System is already live. We don’t pour more traffic into a leaking system, and we make no ranking or traffic claims.",
 } as const;
 
 /* ------------------------------------------------ 07 · CONTINUITY */

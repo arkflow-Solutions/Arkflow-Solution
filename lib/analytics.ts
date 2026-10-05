@@ -46,10 +46,18 @@ export type ArkFlowEvent =
   // Hero
   | 'cta_hero_primary_click' // Book a Discovery Call
   | 'cta_hero_secondary_click' // See how ArkFlow works
-  // Audit — the primary conversion
+  /* Audit — the primary conversion again, as of the Growth Blueprint
+     (6 Oct 2026). `audit_cta_click` is the button anywhere on the site;
+     start and submit are the on-site /audit form. The after-hours test
+     is the same funnel one step shallower, tracked separately so the two
+     entry points can be compared. */
+  | 'audit_cta_click'
   | 'audit_form_view'
   | 'audit_form_start'
   | 'audit_form_submit'
+  | 'test_cta_click'
+  | 'test_form_start'
+  | 'test_form_submit'
   // Other enquiry paths
   | 'contact_form_submit'
   | 'quotation_request_submit'

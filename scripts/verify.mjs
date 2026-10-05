@@ -59,6 +59,15 @@ function walk(dir, out = []) {
 const files = walk(".");
 const source = files.filter((f) => /\.(ts|tsx)$/.test(f));
 const read = (f) => readFileSync(f, "utf8");
+/** Does a path exist? Used to assert a route's page file is present. */
+const exists = (f) => {
+  try {
+    statSync(f);
+    return true;
+  } catch {
+    return false;
+  }
+};
 
 /* 1 — the real font loader is in place, not a build stub */
 console.log("\n[1] fonts");
@@ -351,7 +360,7 @@ let ctaIssues = 0;
 //       legitimately names the URL it is forbidding.
 for (const f of publicSrc) {
   if (/go\.arkflowsolutions\.com\/audit/.test(body(f))) {
-    bad(`${f} links the Revenue Leak Audit funnel — the canonical CTA is the booking modal`);
+    bad(`${f} links the Revenue Leak Audit funnel — the audit must stay on this domain at /audit`);
     ctaIssues++;
   }
 }
@@ -377,9 +386,44 @@ for (const [file, re, message] of bookingChain) {
   }
 }
 
-// 12d — the homepage renders the primary CTA.
-if (!/DiscoveryCallButton/.test(read("components/home/v3/close.tsx"))) {
-  bad("the homepage closing section no longer renders the discovery-call CTA");
+/**
+ * 12d — the homepage renders the primary conversion.
+ *
+ * REWRITTEN 6 October 2026, Growth Blueprint decision 3. This check used
+ * to assert DiscoveryCallButton, which encoded the 6 September decision
+ * that retired the Revenue Leak Audit as a public CTA. The Blueprint
+ * supersedes that: the audit is the public entry point again, and the
+ * booking modal is the scheduling step after intent. The safeguard is
+ * unchanged in purpose — the homepage must render the primary
+ * conversion — only the name of that conversion has moved.
+ */
+/* Matches the JSX usage, not the import: `/AuditButton/` alone passed
+   even with every button removed, because the import line still
+   mentioned it. */
+if (!/<AuditButton[\s>]/.test(read("components/home/v3/close.tsx"))) {
+  bad("the homepage closing section no longer renders the Revenue Leak Audit CTA");
+  ctaIssues++;
+}
+
+/**
+ * 12f — the audit is an ArkFlow page, not an outbound link.
+ *
+ * The original objection to the audit CTA was never the audit; it was
+ * that the button left the website at the moment of highest intent.
+ * /audit answers it, so these two assertions are what make the reversal
+ * safe: the route must exist, and the button must point at it.
+ */
+if (!exists("app/audit/page.tsx")) {
+  bad("app/audit/page.tsx is missing — the primary CTA points at a route that does not exist");
+  ctaIssues++;
+}
+const auditBtn = read("components/home/v3/shared.tsx");
+if (!/href="\/audit"/.test(auditBtn)) {
+  bad("AuditButton does not link to the on-site /audit page");
+  ctaIssues++;
+}
+if (/href=\{?["'`]https?:\/\//.test(auditBtn)) {
+  bad("a CTA in shared.tsx links to an external host — the audit must stay on this domain");
   ctaIssues++;
 }
 
@@ -391,7 +435,7 @@ if (!/useBooking/.test(ctaSrc) || /href=\{AUDIT_URL\}/.test(ctaSrc)) {
 }
 
 if (!ctaIssues)
-  ok("Book a Discovery Call is the canonical CTA, modal wired, audit funnel unlinked");
+  ok("Revenue Leak Audit is the canonical CTA, on-site at /audit, modal wired, external funnel unlinked");
 
 /* 13 — capabilities above their classification must not be claimed */
 console.log("\n[13] capability classification");

@@ -34,6 +34,49 @@ import { cn } from "@/lib/utils";
  * Every instance is instrumented with the section it fired from.
  * scripts/verify.mjs check 12 enforces all of this.
  */
+/**
+ * AuditButton — the primary public conversion, as of the Growth
+ * Blueprint (6 Oct 2026).
+ *
+ * IT IS A LINK, NOT A MODAL, AND THAT IS THE POINT. The audit was
+ * retired as a public CTA in September because it was an outbound link
+ * to go.arkflowsolutions.com that sent the visitor off the site at the
+ * moment of highest intent. It returns as an ArkFlow page on the ArkFlow
+ * domain: /audit. The external funnel is still never linked, and
+ * verify.mjs still fails the build if it is.
+ *
+ * The booking modal has not gone anywhere — see DiscoveryCallButton
+ * below. It is now the scheduling step AFTER intent, on the thank-you
+ * page, rather than the first thing asked of a stranger.
+ */
+export function AuditButton({
+  children = "Get your free Revenue Leak Audit",
+  location,
+  size = "large",
+  variant = "primary",
+  className,
+}: {
+  children?: React.ReactNode;
+  /** Section identifier, e.g. 'homepage_hero'. Never PII. */
+  location: string;
+  size?: "default" | "large";
+  variant?: "primary" | "secondary";
+  className?: string;
+}) {
+  return (
+    <Button
+      href="/audit"
+      size={size}
+      variant={variant}
+      className={className}
+      withArrow
+      onClick={() => track("audit_cta_click", { location })}
+    >
+      {children}
+    </Button>
+  );
+}
+
 export function DiscoveryCallButton({
   children = "Book a Discovery Call",
   location,

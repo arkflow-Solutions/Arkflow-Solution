@@ -22,19 +22,29 @@ const columns = [
        homepage's own structure. */
     heading: "The system",
     links: [
-      { label: "Where revenue leaks", href: "/#the-leak" },
-      { label: "The Revenue Engine", href: "/#revenue-engine" },
-      { label: "Capabilities", href: "/#capabilities" },
-      { label: "Industries", href: "/#industries" },
+      /* FIXED 6 October 2026. Four of these pointed at homepage anchors
+         whose sections were removed in the Phase 3E rebuild — #the-leak,
+         #revenue-engine and #industries no longer exist anywhere on the
+         page, so the links silently dumped the visitor at the top of the
+         homepage. Broken links on a systems company's site. Each now
+         points at a section that is actually rendered, or at the page
+         that replaced it. */
+      { label: "Where revenue leaks", href: "/#unanswered" },
+      { label: "The Revenue Engine", href: "/#the-journey" },
+      { label: "AI and people", href: "/#human-and-ai" },
+      { label: "For clinics", href: "/aesthetic-clinics" },
     ],
   },
   {
     heading: "Solutions",
     links: [
+      /* #inbox and #booking were never defined on /solutions, so both
+         landed at the top of the page. They point at the page itself
+         now, alongside the two public entry points. */
       { label: "How it works", href: "/how-it-works" },
-      { label: "Unified inbox", href: "/solutions#inbox" },
-      { label: "Booking", href: "/solutions#booking" },
-      { label: "Aesthetic clinics", href: "/aesthetic-clinics" },
+      { label: "Revenue Leak Audit", href: "/audit" },
+      { label: "After-hours test", href: "/test" },
+      { label: "The system, end to end", href: "/solutions" },
       { label: "ArkFlow Intelligence", href: "/insights" },
     ],
   },

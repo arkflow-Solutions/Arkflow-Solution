@@ -3,6 +3,7 @@ import { Section } from "@/components/ui/section";
 import { Eyebrow } from "@/components/ui/eyebrow";
 import { Reveal } from "@/components/motion/reveal";
 import { PageHero } from "@/components/pages/page-hero";
+import { Founders } from "@/components/about/founders";
 import { CtaBand } from "@/components/pages/cta-band";
 import { about } from "@/lib/content";
 
@@ -43,6 +44,25 @@ export default function AboutPage() {
               {about.positioning}
             </p>
           </Reveal>
+        </Container>
+      </Section>
+
+      {/* TRUST, EARLY. Growth Blueprint Part 0: the site explained the
+          problem well but never said who was behind it. The founders and
+          the registered entity now sit above the vision rather than
+          below the fold. */}
+      <Section className="hairline">
+        <Container>
+          <Reveal>
+            <Eyebrow>Who you would be working with</Eyebrow>
+            <h2 className="mt-4 max-w-2xl text-heading font-semibold">
+              Businesses spend money creating demand. We make sure it does not
+              disappear between the enquiry and the revenue.
+            </h2>
+          </Reveal>
+          <div className="mt-12">
+            <Founders />
+          </div>
         </Container>
       </Section>
 

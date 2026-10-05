@@ -16,6 +16,7 @@ export function BookCallButton({
   size,
   variant,
   withArrow,
+  location = "book_call_button",
   children = "Book Discovery Call",
 }: {
   className?: string;
@@ -23,13 +24,15 @@ export function BookCallButton({
   /** Secondary where another CTA already owns the primary emphasis. */
   variant?: "primary" | "secondary";
   withArrow?: boolean;
+  /** Section identifier for analytics, e.g. 'audit_thank_you'. Never PII. */
+  location?: string;
   children?: React.ReactNode;
 }) {
   const openBooking = useBooking(contact.call.href);
   return (
     <Button
       onClick={() => {
-        track("discovery_call_click", { location: "book_call_button" });
+        track("discovery_call_click", { location });
         openBooking();
       }}
       className={className}

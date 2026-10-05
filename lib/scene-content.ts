@@ -355,7 +355,7 @@ export const sceneClose = {
      while ctaTitle asks the question and ctaNote answers the only
      objection. Nothing about the offer is lost. */
   ctaNote: "It is a diagnosis, not a contact form.",
-  cta: "Book a Discovery Call",
+  cta: "Get your free Revenue Leak Audit",
   /* `areasLabel` and the ten audit areas REMOVED. Five of those ten were
      word-for-word the public stage labels from scene 09 — Qualification,
      Booking, Follow-up, Retention, Reactivation — and two more were

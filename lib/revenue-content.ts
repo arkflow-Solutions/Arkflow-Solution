@@ -802,13 +802,13 @@ export const auditCta = {
     "Operational workload",
     "Customer experience",
   ],
-  cta: "Book a Discovery Call",
+  cta: "Get your free Revenue Leak Audit",
 } as const;
 
 export const finalCta = {
   title:
     "Your business already has the customers. The question is how many are falling through the gaps.",
   lead: "Build the system that keeps opportunities moving.",
-  primary: "Book a Discovery Call",
+  primary: "Get your free Revenue Leak Audit",
   secondary: "Explore how ArkFlow works",
 } as const;

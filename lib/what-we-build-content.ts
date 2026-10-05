@@ -141,7 +141,9 @@ export const plan = {
     {
       name: "SEO as a service",
       /* v1.4 §19 boundary — matches /attract verbatim. */
-      body: "ArkFlow does not currently offer SEO as an ongoing service, and does not make ranking or traffic claims.",
+      /* See the matching note in lib/attract-content.ts — Growth
+         Blueprint, 6 October 2026. */
+      body: "Demand services are available to clients whose ArkFlow Revenue System is already live. We don’t pour more traffic into a leaking system, and we make no ranking or traffic claims.",
     },
     {
       name: "Custom software",

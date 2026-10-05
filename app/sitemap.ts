@@ -14,6 +14,11 @@ import { categories } from "@/lib/insights/categories";
 export default function sitemap(): MetadataRoute.Sitemap {
   const staticRoutes = [
     "",
+    /* The two public entry points. /audit/thank-you is deliberately
+       absent: it is noindex, and a confirmation page has no business in
+       search results. */
+    "/audit",
+    "/test",
     "/how-it-works",
     "/solutions",
     "/aesthetic-clinics",
@@ -37,9 +42,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority:
       path === ""
         ? 1
-        : ["/aesthetic-clinics", "/insights", "/attract"].includes(path)
-          ? 0.9
-          : 0.7,
+        : /* The audit is the primary conversion, so it ranks with the
+             homepage rather than with the supporting pages. */
+          path === "/audit"
+          ? 0.95
+          : ["/aesthetic-clinics", "/insights", "/test"].includes(path)
+            ? 0.9
+            : 0.7,
   }));
 
   /**
