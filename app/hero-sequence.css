@@ -1,0 +1,508 @@
+/*
+ * Homepage hero — the pendulum sequence.
+ *
+ * SCOPED ON PURPOSE. This file is imported by
+ * components/home/v3/hero-sequence.tsx and by nothing else, so the hero
+ * can have its own composition without adding a single rule to
+ * app/globals.css, where the locked Scene 02, 06 and 07 styles live.
+ * Every class here is prefixed `af-hs-`.
+ *
+ * MOTION BUDGET. Everything that animates is transform or opacity. No
+ * canvas, no WebGL, no keyframed layout properties, and no animation
+ * library beyond Framer Motion, which the project already ships. The
+ * background drifts slowly; the foreground moves quickly. That contrast
+ * is what gives the scene depth.
+ */
+
+.af-hs {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  min-height: 100svh;
+  padding: 7.5rem 0 4rem;
+}
+
+@media (min-width: 1024px) {
+  .af-hs {
+    padding: 6rem 0 5rem;
+  }
+}
+
+/* ---------------------------------------------- the environment */
+
+/* A city read as light rather than photographed: a low horizon glow,
+   one bright line, and slow streaks travelling toward the centre. No
+   stock imagery — governance forbids it, and a photograph would date
+   the page faster than anything else on it. */
+.af-hs-sky {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(120% 80% at 50% 118%, rgba(26, 60, 255, 0.28), transparent 62%),
+    radial-gradient(70% 50% at 12% 102%, rgba(59, 130, 246, 0.16), transparent 70%),
+    radial-gradient(70% 50% at 88% 102%, rgba(59, 130, 246, 0.14), transparent 70%);
+  pointer-events: none;
+}
+
+.af-hs-horizon {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 14%;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(59, 130, 246, 0.5) 30%,
+    rgba(147, 197, 253, 0.65) 50%,
+    rgba(59, 130, 246, 0.5) 70%,
+    transparent
+  );
+  opacity: 0.55;
+  pointer-events: none;
+}
+
+.af-hs-trails {
+  position: absolute;
+  left: -20%;
+  right: -20%;
+  bottom: 0;
+  height: 32%;
+  pointer-events: none;
+  opacity: 0.5;
+  background-image: repeating-linear-gradient(
+    102deg,
+    transparent 0 58px,
+    rgba(59, 130, 246, 0.22) 58px 59px,
+    transparent 59px 118px
+  );
+  mask-image: linear-gradient(to top, #000, transparent 85%);
+  -webkit-mask-image: linear-gradient(to top, #000, transparent 85%);
+  animation: af-hs-drift 26s linear infinite;
+  will-change: transform;
+}
+
+@keyframes af-hs-drift {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(118px, 0, 0);
+  }
+}
+
+/* The ink veil. The headline must never fight the environment. */
+/* UNDER THE PENDULUM, OVER THE ENVIRONMENT. The veil used to paint
+   over the emblem, which left the one object the whole scene is about
+   as a grey ghost. Order is now: environment 0, veil 0, pendulum 1,
+   words 2. */
+.af-hs-veil {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, var(--ink) 4%, rgba(10, 14, 26, 0.72) 38%, rgba(10, 14, 26, 0.35) 70%),
+    radial-gradient(90% 70% at 50% 50%, transparent 40%, rgba(10, 14, 26, 0.65));
+}
+
+/* ------------------------------------------------- the pendulum */
+
+.af-hs-pend {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  /* The anchor sits above the viewport, so the wire genuinely comes
+     from somewhere rather than starting at the top edge of a box. */
+  /* Arm length sets both how far the emblem travels (L·sinθ) and how
+     far down it hangs (L·cosθ). At 96vh it hung 826px down a 860px
+     viewport and was clipped by the bottom edge, so it is 62vh: the
+     emblem rests low and arcs upward at the extremes, which is what a
+     real pendulum does. 91vh is the longest arm that still keeps the
+     bob inside the viewport at the bottom of its arc, and it carries
+     the emblem clear beneath the timeline panel rather than behind
+     it. */
+  --hs-anchor: 30vh;
+  --hs-arm: 91vh;
+  --hs-bob: 80px;
+}
+
+@media (min-width: 1024px) {
+  .af-hs-pend {
+    --hs-bob: 96px;
+  }
+}
+
+/* Dropped a little, so the left extreme of the arc passes UNDER the
+   call-to-action row rather than through it. */
+.af-hs-arm {
+  position: absolute;
+  top: calc(4vh - var(--hs-anchor));
+  left: 50%;
+  width: 0;
+  height: calc(var(--hs-anchor) + var(--hs-arm));
+  transform-origin: 50% 0;
+  will-change: transform;
+}
+
+.af-hs-wire {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1px;
+  height: 100%;
+  transform: translateX(-50%);
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    rgba(147, 197, 253, 0.28) 22%,
+    rgba(147, 197, 253, 0.7)
+  );
+}
+
+/* Position only. The visible tile is the inner element, which carries
+   the counter-rotation, so the whole emblem — housing and mark — hangs
+   level while the arm swings beneath its pivot. */
+.af-hs-bob {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: var(--hs-bob);
+  height: var(--hs-bob);
+  transform: translate(-50%, 50%);
+}
+
+.af-hs-bob__in {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  border-radius: 22%;
+  border: 1px solid rgba(96, 165, 250, 0.45);
+  background: linear-gradient(160deg, rgba(17, 32, 74, 0.95), rgba(8, 12, 26, 0.95));
+  box-shadow:
+    0 0 0 1px rgba(10, 14, 26, 0.6),
+    0 18px 50px rgba(0, 0, 0, 0.55),
+    0 0 42px rgba(37, 99, 235, 0.35);
+}
+
+.af-hs-bob img {
+  width: 58%;
+  height: auto;
+}
+
+/* The sweep that follows the emblem through the swing. One soft blue
+   smear, not a particle system. */
+.af-hs-sweep {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: calc(var(--hs-bob) * 3.2);
+  height: calc(var(--hs-bob) * 1.1);
+  transform: translate(-50%, 50%);
+  border-radius: 999px;
+  background: radial-gradient(60% 50% at 50% 50%, rgba(59, 130, 246, 0.5), transparent 72%);
+  filter: blur(14px);
+  pointer-events: none;
+}
+
+/* ---------------------------------------------------- the stage */
+
+.af-hs-grid {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  gap: 3rem;
+  align-items: center;
+}
+
+@media (min-width: 1024px) {
+  .af-hs-grid {
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.75fr);
+    gap: 4rem;
+  }
+}
+
+.af-hs-eyebrow {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.6875rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--blue-soft);
+}
+
+/* The headline box is reserved at its tallest, so the lines beneath it
+   do not jump as the scenes change. A hero that reflows every two
+   seconds reads as a broken page, not a cinematic one. */
+/* The reserved box is sized in the HEADLINE's own em, not the root's.
+   It was 2.5em of a 16px root — 40px — so the absolutely positioned
+   headline overflowed its container and the lead paragraph rendered
+   straight through the middle of it. Carrying the clamp here and
+   measuring in em makes the reservation track the type at every
+   width. */
+.af-hs-headline {
+  position: relative;
+  margin-top: 1.5rem;
+  font-size: clamp(2.4rem, 8vw, 4.5rem);
+  /* Three lines only where the type actually wraps to three — at 320px
+     "Every channel." does; from 380px up nothing does, and reserving a
+     third line there just opened a gap under every headline. */
+  min-height: 3.35em;
+}
+
+@media (min-width: 380px) {
+  .af-hs-headline {
+    min-height: 2.3em;
+  }
+}
+
+.af-hs-line {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  font-size: inherit;
+  font-weight: 600;
+  line-height: 1.04;
+  letter-spacing: -0.02em;
+  color: #fff;
+  text-wrap: balance;
+}
+
+/* Its own line, always — the storyboard's two-line headline. Letting it
+   wrap naturally broke "Nothing / falls through." across the accent. */
+.af-hs-accent {
+  display: block;
+  color: var(--blue-soft);
+}
+
+.af-hs-lead {
+  position: relative;
+  margin-top: 1.5rem;
+  max-width: 34rem;
+  min-height: 3.4em;
+  color: var(--text-secondary);
+  font-size: 1.0625rem;
+  line-height: 1.6;
+}
+
+@media (min-width: 1024px) {
+  .af-hs-lead {
+    min-height: 2.6em;
+    font-size: 1.125rem;
+  }
+}
+
+.af-hs-lead p {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+}
+
+.af-hs-sig {
+  margin-top: 1.25rem;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.6875rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+
+.af-hs-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 2.25rem;
+}
+
+/* ------------------------------------------------- the timeline */
+
+.af-hs-panel {
+  position: relative;
+  border: 1px solid var(--border-subtle);
+  border-radius: 0.875rem;
+  background: rgba(15, 23, 42, 0.55);
+  backdrop-filter: blur(6px);
+  padding: 1.1rem 1.25rem 1.25rem;
+}
+
+.af-hs-clock {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-bottom: 0.85rem;
+  border-bottom: 1px solid var(--border-subtle);
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.625rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+
+.af-hs-clock__time {
+  font-size: 0.9375rem;
+  letter-spacing: 0.08em;
+  color: #fff;
+  font-variant-numeric: tabular-nums;
+}
+
+.af-hs-rows {
+  position: relative;
+  margin-top: 0.35rem;
+  /* Four rows, reserved. Both states occupy the same box so the swap
+     is a turn-over, not a resize. */
+  min-height: 11.5rem;
+}
+
+.af-hs-stack {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.15rem;
+}
+
+.af-hs-row {
+  display: grid;
+  grid-template-columns: 0.6rem minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.55rem 0;
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+.af-hs-dot {
+  width: 0.4rem;
+  height: 0.4rem;
+  border-radius: 999px;
+  background: var(--border-strong);
+  transition: background-color 0.4s ease, box-shadow 0.4s ease;
+}
+
+.af-hs-row.is-on .af-hs-dot {
+  background: var(--blue-soft);
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.14);
+}
+
+.af-hs-row.is-on {
+  color: #fff;
+}
+
+/* Amber, and only here: this row is revenue leaving. */
+.af-hs-row.is-loss {
+  color: #d97706;
+}
+
+.af-hs-row.is-loss .af-hs-dot {
+  background: #d97706;
+  box-shadow: 0 0 0 4px rgba(217, 119, 6, 0.14);
+}
+
+.af-hs-time {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.6875rem;
+  letter-spacing: 0.06em;
+  color: var(--text-tertiary);
+  font-variant-numeric: tabular-nums;
+}
+
+.af-hs-row.is-loss .af-hs-time {
+  color: rgba(217, 119, 6, 0.8);
+}
+
+/* --------------------------------------- channels and capability */
+
+.af-hs-channels {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 1.1rem;
+  margin-top: 1rem;
+  padding-top: 0.9rem;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.af-hs-channel {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.75rem;
+  color: var(--text-tertiary);
+}
+
+.af-hs-caps {
+  display: grid;
+  gap: 0.1rem;
+}
+
+.af-hs-cap {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  padding: 0.5rem 0;
+  font-size: 0.875rem;
+}
+
+.af-hs-cap__label {
+  color: #fff;
+  font-weight: 500;
+}
+
+.af-hs-cap__note {
+  color: var(--text-tertiary);
+  font-size: 0.8125rem;
+}
+
+/* ------------------------------------------------ small screens */
+
+@media (max-width: 1023px) {
+  .af-hs-pend {
+    --hs-anchor: 22vh;
+    --hs-arm: 72vh;
+    --hs-bob: 62px;
+    opacity: 0.6;
+  }
+
+  /* The emblem must never sit behind the words. On a phone the stage is
+     one column, so the pendulum lives in the lower third. */
+  .af-hs-arm {
+    height: calc(var(--hs-anchor) + var(--hs-arm));
+  }
+
+  .af-hs-veil {
+    background:
+      linear-gradient(180deg, var(--ink) 10%, rgba(10, 14, 26, 0.62) 55%, rgba(10, 14, 26, 0.86));
+  }
+}
+
+@media (max-width: 420px) {
+  .af-hs-rows {
+    min-height: 12.5rem;
+  }
+}
+
+/* The smallest screens still in use. A 62px emblem on a 320px screen is
+   a fifth of the width, so it comes down with the arc. */
+@media (max-width: 379px) {
+  .af-hs-pend {
+    --hs-bob: 52px;
+  }
+}
+
+/* ------------------------------------------------ reduced motion
+   The component resolves its own state to the final scene, so this is
+   the second of two guarantees rather than the only one: the drift
+   stops and nothing transitions. */
+@media (prefers-reduced-motion: reduce) {
+  .af-hs-trails {
+    animation: none !important;
+  }
+
+  .af-hs-dot {
+    transition: none !important;
+  }
+}

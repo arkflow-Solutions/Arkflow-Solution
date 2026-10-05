@@ -1,4 +1,4 @@
-import { Hero } from "@/components/home/v3/hero";
+import { HeroSequence } from "@/components/home/v3/hero-sequence";
 import { SceneInbox } from "@/components/home/scenes/inbox";
 import { SceneUnanswered } from "@/components/home/scenes/unanswered";
 import { SceneDays } from "@/components/home/scenes/days";
@@ -109,7 +109,12 @@ export default function HomePage() {
           the thing the scenes have in common. Renders nothing at all on
           devices where the hero already owns the one Canvas 2D loop. */}
       <ThroughlineRail />
-      <Hero />
+      {/* The hero is now the six-scene pendulum sequence: it plays once
+          on load, in one screen, and settles. The previous pinned 340vh
+          WebGL scroll story (components/home/v3/hero.tsx) is preserved
+          and still compiles, but no longer mounted — so the page no
+          longer carries a 3D scene at all. */}
+      <HeroSequence />
       <SceneInbox />
       <SceneUnanswered />
       <SceneDays />

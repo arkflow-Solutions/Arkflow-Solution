@@ -130,10 +130,22 @@ function makeAudio() {
   };
 }
 
+/** Fired on window once the veil has finished and uncovered the page. */
+export const INTRO_DONE = "arkflow:intro-done";
+
 export function IntroVeil() {
   const reduce = useReducedMotion();
   const audio = useMemo(makeAudio, []);
   const [done, setDone] = useState(false);
+
+  /* The veil owns the first few seconds of the page, so anything that
+     plays once on arrival has to wait for it — otherwise it performs to
+     a covered screen. The hero sequence listens for this. Additive
+     only: nothing about the veil's own behaviour changes. */
+  useEffect(() => {
+    if (!done) return;
+    window.dispatchEvent(new Event(INTRO_DONE));
+  }, [done]);
   const [logCount, setLogCount] = useState(0);
   const [ready, setReady] = useState(false);
   const [dissolve, setDissolve] = useState(false);
