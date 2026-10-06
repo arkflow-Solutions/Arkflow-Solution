@@ -54,7 +54,10 @@ export default function AboutPage() {
       <Section className="hairline">
         <Container>
           <Reveal>
-            <Eyebrow>Who you would be working with</Eyebrow>
+            {/* The eyebrow names the company rather than the people,
+                because the founder cards are hidden until there is real
+                photography. It reads correctly either way. */}
+            <Eyebrow>The company behind it</Eyebrow>
             <h2 className="mt-4 max-w-2xl text-heading font-semibold">
               Businesses spend money creating demand. We make sure it does not
               disappear between the enquiry and the revenue.

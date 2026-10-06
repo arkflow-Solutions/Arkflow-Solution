@@ -38,8 +38,18 @@ const founders: Founder[] = [
 ];
 
 export function Founders() {
+  /* HIDDEN UNTIL THERE ARE PHOTOGRAPHS (founder decision, 6 Oct 2026).
+     Two empty frames carrying initials read as an unfinished page rather
+     than as a trust signal, so the cards stay out until there is
+     something real to put in them. Set `photo` on either founder above
+     and this grid returns on its own — no markup change, no redesign.
+     The company block below is unaffected: the registered entity, UEN
+     and address are verified and are the part doing the actual work. */
+  const hasPhotos = founders.some((f) => f.photo);
+
   return (
     <div>
+      {hasPhotos && (
       <div className="grid gap-10 sm:grid-cols-2 sm:gap-12">
         {founders.map((f) => (
           <div key={f.name}>
@@ -71,8 +81,9 @@ export function Founders() {
           </div>
         ))}
       </div>
+      )}
 
-      <dl className="mt-14 grid max-w-2xl gap-3 border-t border-[color:var(--border-subtle)] pt-8 text-body text-[color:var(--text-secondary)]">
+      <dl className="grid max-w-2xl gap-3 text-body text-[color:var(--text-secondary)]">
         <div className="flex flex-wrap gap-x-3">
           <dt className="text-[color:var(--text-tertiary)]">Registered entity</dt>
           <dd>{COMPANY_IDENTIFIER}</dd>
