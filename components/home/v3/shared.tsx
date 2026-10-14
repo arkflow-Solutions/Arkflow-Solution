@@ -6,6 +6,7 @@ import { Reveal } from "@/components/motion/reveal";
 import { track } from "@/lib/analytics";
 import { useBooking } from "@/lib/use-booking";
 import { contact } from "@/lib/content";
+import { AUDIT_URL } from "@/lib/site";
 import { cn } from "@/lib/utils";
 
 /**
@@ -38,16 +39,15 @@ import { cn } from "@/lib/utils";
  * AuditButton — the primary public conversion, as of the Growth
  * Blueprint (6 Oct 2026).
  *
- * IT IS A LINK, NOT A MODAL, AND THAT IS THE POINT. The audit was
- * retired as a public CTA in September because it was an outbound link
- * to go.arkflowsolutions.com that sent the visitor off the site at the
- * moment of highest intent. It returns as an ArkFlow page on the ArkFlow
- * domain: /audit. The external funnel is still never linked, and
- * verify.mjs still fails the build if it is.
+ * WHERE IT POINTS, AND WHY THAT IS NOW OFF-SITE. The destination is
+ * AUDIT_URL — the GoHighLevel funnel — by founder decision on
+ * 14 October 2026. /audit redirects to the same place, so the on-site
+ * form no longer competes with the funnel: one entry point, one set of
+ * numbers. The URL lives in lib/site.ts and nowhere else.
  *
  * The booking modal has not gone anywhere — see DiscoveryCallButton
- * below. It is now the scheduling step AFTER intent, on the thank-you
- * page, rather than the first thing asked of a stranger.
+ * below. It is the scheduling step AFTER intent, on the thank-you page,
+ * rather than the first thing asked of a stranger.
  */
 export function AuditButton({
   children = "Get your free Revenue Leak Audit",
@@ -65,7 +65,7 @@ export function AuditButton({
 }) {
   return (
     <Button
-      href="/audit"
+      href={AUDIT_URL}
       size={size}
       variant={variant}
       className={className}

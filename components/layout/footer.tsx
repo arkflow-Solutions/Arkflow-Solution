@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Container } from "@/components/ui/container";
 import { Wordmark } from "@/components/layout/wordmark";
 import { activeSocials } from "@/lib/social";
-import { COMPANY } from "@/lib/site";
+import { AUDIT_URL, COMPANY } from "@/lib/site";
 
 /* Approved sitemap only. There is no "Industries" column: listing
    verticals ArkFlow does not serve would breach Stage 1 discipline
@@ -42,7 +42,10 @@ const columns = [
          landed at the top of the page. They point at the page itself
          now, alongside the two public entry points. */
       { label: "How it works", href: "/how-it-works" },
-      { label: "Revenue Leak Audit", href: "/audit" },
+      /* Straight to the funnel. /audit still 307s there, but a link
+         that costs every visitor a redirect hop is a link pointing at
+         the wrong place. */
+      { label: "Revenue Leak Audit", href: AUDIT_URL },
       { label: "After-hours test", href: "/test" },
       { label: "The system, end to end", href: "/solutions" },
       { label: "ArkFlow Intelligence", href: "/insights" },

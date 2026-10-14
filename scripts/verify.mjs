@@ -355,14 +355,50 @@ if (!superseded) ok("no superseded commercial or product terms on any public sur
 console.log("\n[12] canonical conversion path");
 let ctaIssues = 0;
 
-// 12a — the audit funnel must not be linked from any public surface.
-//       Comments are stripped: lib/site.ts documents the removal and
-//       legitimately names the URL it is forbidding.
+/**
+ * 12a — the funnel URL lives in exactly one place.
+ *
+ * REWRITTEN 14 October 2026. This check used to forbid linking
+ * go.arkflowsolutions.com at all, because the audit funnel took the
+ * visitor off the domain at the moment of highest intent. The founder
+ * has moved the audit to a GoHighLevel landing page, so the host is now
+ * an approved destination — but only through AUDIT_URL in lib/site.ts.
+ * A hardcoded funnel URL anywhere else is still a failure: that is how
+ * a site ends up with three CTAs pointing at two different funnels.
+ *
+ * next.config.mjs is the one allowed duplicate, because it cannot
+ * import TypeScript, and the two strings are asserted equal below.
+ */
+const auditUrlMatch = read("lib/site.ts").match(
+  /export const AUDIT_URL\s*=\s*\n?\s*"([^"]+)"/
+);
+if (!auditUrlMatch) {
+  bad("lib/site.ts no longer exports AUDIT_URL — every audit CTA reads it");
+  ctaIssues++;
+}
+const AUDIT_URL_VALUE = auditUrlMatch?.[1];
+
 for (const f of publicSrc) {
-  if (/go\.arkflowsolutions\.com\/audit/.test(body(f))) {
-    bad(`${f} links the Revenue Leak Audit funnel — the audit must stay on this domain at /audit`);
+  if (f === "lib/site.ts" || f === "next.config.mjs") continue;
+  if (/go\.arkflowsolutions\.com/.test(body(f))) {
+    bad(`${f} hardcodes the audit funnel URL — import AUDIT_URL from lib/site.ts instead`);
     ctaIssues++;
   }
+}
+
+/* The redirect in next.config.mjs must send /audit to the same place the
+   buttons do. If these drift, half the traffic goes to a dead funnel. */
+const redirectMatch = read("next.config.mjs").match(
+  /source:\s*"\/audit",\s*\n\s*destination:\s*"([^"]+)"/
+);
+if (!redirectMatch) {
+  bad("next.config.mjs no longer redirects /audit to the funnel");
+  ctaIssues++;
+} else if (AUDIT_URL_VALUE && redirectMatch[1] !== AUDIT_URL_VALUE) {
+  bad(
+    `the /audit redirect (${redirectMatch[1]}) does not match AUDIT_URL (${AUDIT_URL_VALUE})`
+  );
+  ctaIssues++;
 }
 
 // 12b — the booking calendar is defined, and is the verified one.
@@ -406,36 +442,39 @@ if (!/<AuditButton[\s>]/.test(read("components/home/v3/close.tsx"))) {
 }
 
 /**
- * 12f — the audit is an ArkFlow page, not an outbound link.
+ * 12f — every audit CTA points at the one funnel.
  *
- * The original objection to the audit CTA was never the audit; it was
- * that the button left the website at the moment of highest intent.
- * /audit answers it, so these two assertions are what make the reversal
- * safe: the route must exist, and the button must point at it.
+ * REWRITTEN 14 October 2026. This used to assert that /audit existed as
+ * a page and that the button linked to it. The funnel is now the
+ * GoHighLevel landing page, so what has to be true instead is that the
+ * button reads AUDIT_URL rather than carrying a path or a URL of its
+ * own — otherwise a stale CTA quietly keeps sending traffic to the old
+ * on-site form.
  */
-if (!exists("app/audit/page.tsx")) {
-  bad("app/audit/page.tsx is missing — the primary CTA points at a route that does not exist");
-  ctaIssues++;
-}
 const auditBtn = read("components/home/v3/shared.tsx");
-if (!/href="\/audit"/.test(auditBtn)) {
-  bad("AuditButton does not link to the on-site /audit page");
-  ctaIssues++;
-}
-if (/href=\{?["'`]https?:\/\//.test(auditBtn)) {
-  bad("a CTA in shared.tsx links to an external host — the audit must stay on this domain");
+if (!/href=\{AUDIT_URL\}/.test(auditBtn)) {
+  bad("AuditButton does not point at AUDIT_URL — the single audit destination");
   ctaIssues++;
 }
 
-// 12e — the CTA component opens the modal rather than navigating away.
+/**
+ * 12e — the booking modal still exists as the scheduling step.
+ *
+ * AMENDED 14 October 2026. The second half of this check used to fail if
+ * shared.tsx contained `href={AUDIT_URL}`, which was how the September
+ * rule kept the audit funnel off the site. AuditButton now legitimately
+ * carries exactly that, so what remains is the half that still matters:
+ * DiscoveryCallButton must keep opening the modal rather than becoming
+ * another link, because that is what books the call after intent.
+ */
 const ctaSrc = read("components/home/v3/shared.tsx");
-if (!/useBooking/.test(ctaSrc) || /href=\{AUDIT_URL\}/.test(ctaSrc)) {
+if (!/useBooking/.test(ctaSrc)) {
   bad("DiscoveryCallButton does not open the booking modal");
   ctaIssues++;
 }
 
 if (!ctaIssues)
-  ok("Revenue Leak Audit is the canonical CTA, on-site at /audit, modal wired, external funnel unlinked");
+  ok("Revenue Leak Audit is the canonical CTA, one funnel URL, modal wired for the booking step");
 
 /* 13 — capabilities above their classification must not be claimed */
 console.log("\n[13] capability classification");

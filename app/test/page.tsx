@@ -5,6 +5,7 @@ import { PageHero } from "@/components/pages/page-hero";
 import { RequestForm } from "@/components/audit/request-form";
 import { buildMetadata } from "@/lib/seo";
 import { testBoundary, testForm, testHero, testSteps } from "@/lib/audit-content";
+import { AUDIT_URL } from "@/lib/site";
 
 import "../audit/audit.css";
 
@@ -92,7 +93,7 @@ export default function TestPage() {
           <p className="mt-10 max-w-prose text-body text-[color:var(--text-secondary)]">
             Would rather walk the whole journey with us?{" "}
             <Link
-              href="/audit"
+              href={AUDIT_URL}
               className="text-blue-soft underline underline-offset-4 transition-colors hover:text-white"
             >
               Request the full Revenue Leak Audit

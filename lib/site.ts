@@ -24,11 +24,33 @@ export const GHL_CALENDAR_URL =
 export const BOOKING_URL = GHL_CALENDAR_URL;
 
 /**
- * AUDIT_URL — REMOVED 6 September 2026 (founder decision).
+ * AUDIT_URL — REINSTATED 14 October 2026 (founder decision).
  *
- * This constant held https://go.arkflowsolutions.com/audit and was the
- * canonical public CTA. It is deleted rather than left unused, because
- * an exported URL constant is an invitation to link to it again.
+ * THE HISTORY, BECAUSE IT HAS TURNED TWICE.
+ *   6 Sep 2026  Removed. The audit funnel was the public CTA and it sent
+ *               every visitor off arkflowsolutions.com at the moment of
+ *               highest intent. The canonical conversion became the
+ *               booking modal.
+ *   6 Oct 2026  The Growth Blueprint made the Revenue Leak Audit the
+ *               primary conversion again, and it was built on-site at
+ *               /audit so the funnel stayed on this domain.
+ *   14 Oct 2026 The founder moved the funnel to a GoHighLevel landing
+ *               page. The audit CTA now points here, and /audit
+ *               redirects here, so there is exactly one funnel rather
+ *               than an on-site form competing with a GHL one.
+ *
+ * ONE PLACE, ON PURPOSE. Every audit CTA and the /audit redirect read
+ * this constant, so the destination changes in one edit. scripts/verify
+ * .mjs check 12a allows this host only through this constant: a
+ * hardcoded go.arkflowsolutions.com URL anywhere in public source still
+ * fails the build.
+ */
+export const AUDIT_URL =
+  "https://go.arkflowsolutions.com/revenue-leak-audit-page";
+
+/**
+ * The note below describes the September removal and is kept as the
+ * record of why the on-site rule existed.
  *
  * WHY IT WENT: the audit funnel is a separate property. Making it the
  * primary CTA sent every visitor off arkflowsolutions.com at the moment
