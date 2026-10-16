@@ -1,0 +1,352 @@
+/*
+ * Results — the case study surface.
+ *
+ * ROUTE-SCOPED. Imported by app/case-studies/page.tsx and nothing
+ * else, so this page gets its own visual language without adding a
+ * rule to app/globals.css (where the locked homepage scenes live).
+ * The `af-cs-` prefix belongs to this route alone.
+ *
+ * THE GRAMMAR IS A GALLERY HANG. One object, lit, on a dark wall,
+ * with its label beside it. Everything else on the page is typography
+ * and rules. There are no cards here, no chips, no panels and no
+ * icons — the work is the only thing allowed to be bright, and the
+ * page is built so that nothing competes with it.
+ *
+ * DISTINCT FROM ITS NEIGHBOURS. /what-we-build is a plan seen from
+ * above. /solutions follows a record through time. /attract walks
+ * through rooms. This page hangs one finished thing on a wall and
+ * invites you to walk up to it.
+ *
+ * THE BLOOM IS THE ONLY COLOUR. A soft blue radial behind the frame,
+ * well under the blue-scarcity threshold, reading as the light a pale
+ * screenshot throws onto a dark wall rather than as an accent.
+ */
+
+/* ------------------------------------------------------- showcase */
+
+.af-cs-showcase {
+  /* Tighter above than a Section so the frame sits close under the
+     hero's lead and is the first thing below the fold, not the
+     second. */
+  padding-block: 1rem 5rem;
+  /* The bloom is deliberately wider than the container it sits in,
+     which put a 19px horizontal scrollbar on the page at 820px and
+     3px at 390px. Clipped here rather than by shrinking the bloom,
+     because a glow that stops at the text column does not read as
+     light. `clip` and not `hidden`: hidden would make this a scroll
+     container and break position:sticky for anything added later. */
+  overflow-x: hidden;
+  overflow-x: clip;
+}
+
+.af-cs-stage {
+  position: relative;
+  /* Room on the right for the phone to overhang on desktop. The
+     browser frame is inset instead of the phone being pushed outside
+     the container, so nothing can cause a horizontal scrollbar. */
+  padding-right: 0;
+}
+
+.af-cs-bloom {
+  position: absolute;
+  /* Larger than the frame and centred on it. */
+  inset: -14% -8% -22%;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      58% 52% at 50% 48%,
+      rgba(59, 130, 246, 0.3),
+      rgba(59, 130, 246, 0.1) 46%,
+      transparent 74%
+    );
+  filter: blur(18px);
+}
+
+/* ------------------------------------------------------- browser */
+
+.af-cs-browser {
+  position: relative;
+  z-index: 1;
+  margin: 0;
+  overflow: hidden;
+  border: 1px solid var(--border-strong);
+  border-radius: 0.875rem;
+  background: var(--surface);
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.3),
+    0 30px 80px rgba(0, 0, 0, 0.55);
+}
+
+.af-cs-chrome {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+  padding: 0.6rem 0.9rem;
+  border-bottom: 1px solid var(--border-subtle);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.af-cs-dots {
+  display: flex;
+  gap: 0.375rem;
+  flex: none;
+}
+
+.af-cs-dots i {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.16);
+}
+
+/* Real text, not an image of an address bar. */
+.af-cs-url {
+  flex: 1;
+  min-width: 0;
+  padding: 0.3rem 0.75rem;
+  border-radius: 0.375rem;
+  background: rgba(0, 0, 0, 0.3);
+  font-family: var(--font-mono), monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  color: var(--text-tertiary);
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.af-cs-screen {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* --------------------------------------------------------- phone */
+
+.af-cs-phone {
+  position: absolute;
+  z-index: 2;
+  margin: 0;
+  overflow: hidden;
+  /* Overhangs the browser's bottom-right corner. Percentages so the
+     relationship holds at every width without a second breakpoint. */
+  right: 1.5%;
+  bottom: -7%;
+  width: 15%;
+  min-width: 96px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 1.25rem;
+  background: var(--ink);
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.4),
+    0 24px 60px rgba(0, 0, 0, 0.6);
+}
+
+/* ---------------------------------------------------------- visit */
+
+.af-cs-visit {
+  position: relative;
+  z-index: 3;
+  /* CLEARANCE = phone overhang + parallax amplitude + breathing room.
+     The phone hangs 7% of the frame's height below it and then travels
+     up to 28px further down as the section scrolls, so this margin has
+     to beat both at once. Measured at 390/820/1440px after changing
+     it; if the overhang percentage or the amplitude in showcase.tsx
+     moves, re-measure, because the link ends up behind the phone
+     without any visible error. */
+  margin-top: 7.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  align-items: flex-start;
+}
+
+.af-cs-visit__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding-bottom: 0.25rem;
+  border-bottom: 1px solid var(--border-strong);
+  font-size: 1.1875rem;
+  color: #fff;
+  transition:
+    border-color 200ms cubic-bezier(0.22, 1, 0.36, 1),
+    color 200ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.af-cs-visit__link:hover {
+  color: var(--blue-soft);
+  border-color: var(--blue-soft);
+}
+
+.af-cs-visit__link svg {
+  transition: transform 200ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.af-cs-visit__link:hover svg {
+  transform: translate(2px, -2px);
+}
+
+.af-cs-visit__note {
+  font-size: 0.875rem;
+  line-height: 1.6;
+  color: var(--text-tertiary);
+}
+
+/* ----------------------------------------------------- build facts */
+
+.af-cs-facts {
+  display: grid;
+  gap: 2.5rem 2rem;
+  margin-top: 3rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.af-cs-fact {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.af-cs-fact__value {
+  font-size: clamp(2.25rem, 5vw, 3.25rem);
+  line-height: 1;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  color: #fff;
+  /* Tabular figures so the numeral does not jiggle as it counts. */
+  font-variant-numeric: tabular-nums;
+}
+
+.af-cs-fact__label {
+  font-size: 1rem;
+  line-height: 1.5;
+  color: var(--text-secondary);
+}
+
+.af-cs-fact__source {
+  /* Pushed to the bottom of the cell so the four method lines share a
+     baseline even when one of them wraps to two lines and the others
+     do not. */
+  margin-top: auto;
+  padding-top: 0.5rem;
+  font-family: var(--font-mono), monospace;
+  font-size: 0.6875rem;
+  line-height: 1.55;
+  letter-spacing: 0.03em;
+  color: var(--text-tertiary);
+}
+
+/* ---------------------------------------------------------- scope */
+
+.af-cs-scope {
+  display: grid;
+  gap: 3.5rem;
+  margin-top: 3.5rem;
+}
+
+.af-cs-group__title {
+  font-family: var(--font-mono), monospace;
+  font-size: 0.75rem;
+  line-height: 1;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--blue-soft);
+}
+
+.af-cs-group__summary {
+  margin-top: 1rem;
+  font-size: 1.1875rem;
+  line-height: 1.55;
+  letter-spacing: -0.01em;
+  color: #fff;
+}
+
+.af-cs-group__items {
+  margin-top: 1.5rem;
+  display: grid;
+  gap: 0.875rem;
+}
+
+.af-cs-group__items li {
+  display: flex;
+  gap: 0.75rem;
+  font-size: 1rem;
+  line-height: 1.7;
+  color: var(--text-secondary);
+}
+
+/* The rule in front of each item, in place of a bullet or an icon. */
+.af-cs-group__items li::before {
+  content: "";
+  flex: none;
+  width: 0.75rem;
+  height: 1px;
+  margin-top: 0.85rem;
+  background: var(--blue-soft);
+  opacity: 0.8;
+}
+
+/* --------------------------------------------------------- pending */
+
+.af-cs-pending {
+  margin-top: 2rem;
+  padding-left: 1.5rem;
+  border-left: 1px solid var(--border-strong);
+}
+
+/* ---------------------------------------------------------- 768px+ */
+
+@media (min-width: 768px) {
+  .af-cs-facts {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .af-cs-visit {
+    flex-direction: row;
+    align-items: baseline;
+    gap: 1.5rem;
+  }
+}
+
+/* --------------------------------------------------------- 1024px+ */
+
+@media (min-width: 1024px) {
+  .af-cs-showcase {
+    padding-block: 2rem 7rem;
+  }
+
+  /* The phone has more room to overhang, so the browser gives it up
+     rather than the page growing wider. */
+  .af-cs-stage {
+    padding-right: 4.5rem;
+  }
+
+  .af-cs-phone {
+    right: 0;
+    bottom: -8%;
+    width: 13.5rem;
+  }
+
+  .af-cs-visit {
+    margin-top: 9rem;
+  }
+
+  .af-cs-scope {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 3rem;
+  }
+}
+
+/* ------------------------------------------------- reduced motion */
+
+@media (prefers-reduced-motion: reduce) {
+  .af-cs-visit__link,
+  .af-cs-visit__link svg {
+    transition: none;
+  }
+}

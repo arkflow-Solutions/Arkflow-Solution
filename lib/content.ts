@@ -121,9 +121,20 @@ export const contact = {
   base: "Singapore · SGT business hours",
 };
 
+/**
+ * `statement` REMOVED 17 October 2026. It read "Our first case studies
+ * are being earned right now... we would rather show you an empty
+ * page than an invented one" and was the lead of /case-studies while
+ * that page was empty. The page is no longer empty — Khai Visuals is
+ * published on it — so the line had become false, and a false line
+ * left in the content file is the drift this repo exists to prevent.
+ *
+ * `promise` STAYS, and is now rendered beneath the first case study
+ * published under it. The standard did not change; only the page did.
+ * The case study itself lives in lib/case-studies.ts, which has its
+ * own rule about what a published figure must carry.
+ */
 export const caseStudies = {
-  statement:
-    "Our first case studies are being earned right now, with founding clients. We would rather show you an empty page than an invented one.",
   promise: [
     "Real response-time numbers, before and after",
     "Booking and retention improvements, measured from the client's own data",

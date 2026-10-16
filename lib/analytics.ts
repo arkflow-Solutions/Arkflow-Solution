@@ -77,6 +77,10 @@ export type ArkFlowEvent =
   | 'solution_view'
   | 'industry_cta_click'
   | 'case_study_view'
+  /* Outbound to the client's own live site. The one interaction on
+     /case-studies worth measuring: a visitor who clicks through to
+     check the work for themselves is a visitor who believed it. */
+  | 'case_study_visit_click'
   // Conversion — canonical names
   | 'discovery_call_click'
   | 'discovery_call_booked'
