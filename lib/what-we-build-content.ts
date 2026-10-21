@@ -57,6 +57,8 @@
  * does not use it as an id, so nothing here can collide with it.
  */
 
+import { CTA_PRIMARY } from "@/lib/cta";
+
 /* ------------------------------------------------------------ HERO */
 
 export const wwbHero = {
@@ -64,7 +66,7 @@ export const wwbHero = {
   title: "What we build depends on how your business actually works.",
   lead: "ArkFlow doesn't sell fixed software packages. We look at how enquiries, bookings and customers move through your business today, scope the system it actually needs, build it, and keep it running with you.",
   note: "Pricing is quoted after a discovery call. A system scoped around your business cannot honestly be priced before anyone has looked at it.",
-  primaryCta: "Book a Discovery Call",
+  primaryCta: CTA_PRIMARY,
 } as const;
 
 /* -------------------------------------------------------- THE PLAN */
@@ -193,7 +195,7 @@ export const titleBlock = {
 export const wwbCta = {
   title: "Start with how your business actually works.",
   body: "A discovery call is where the scope begins — which parts of the plan your business needs, and which it does not.",
-  primary: "Book a Discovery Call",
+  primary: CTA_PRIMARY,
   secondaryLabel: "See what happens to an enquiry",
   secondaryHref: "/solutions",
 } as const;

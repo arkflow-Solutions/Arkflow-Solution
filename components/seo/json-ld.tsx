@@ -10,10 +10,111 @@ import { sameAs } from "@/lib/social";
  * `price` / `priceCurrency` in JSON-LD would publish the price list in
  * the page source. Do not reintroduce an Offer block.
  */
+/**
+ * WebSite. Separate from Organization because they describe different
+ * things — the company and the site — and Google reads them for
+ * different purposes. No SearchAction: there is no site search to
+ * point it at, and declaring one that does not exist is the kind of
+ * markup that earns a manual action.
+ */
+export function WebSiteJsonLd() {
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{
+        __html: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "WebSite",
+          name: COMPANY.shortName,
+          url: SITE_URL,
+          inLanguage: "en-SG",
+          publisher: { "@id": `${SITE_URL}/#organization` },
+        }),
+      }}
+    />
+  );
+}
+
+/**
+ * FAQPage.
+ *
+ * Fed from the same `faq` array the page renders, never from a second
+ * copy of the text. Structured data that disagrees with the visible
+ * answer is a policy violation, and the only reliable way to prevent
+ * that is to make it impossible to edit one without the other.
+ */
+export function FaqJsonLd({
+  items,
+}: {
+  items: readonly { q: string; a: string }[];
+}) {
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{
+        __html: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          mainEntity: items.map((item) => ({
+            "@type": "Question",
+            name: item.q,
+            acceptedAnswer: { "@type": "Answer", text: item.a },
+          })),
+        }),
+      }}
+    />
+  );
+}
+
+/**
+ * Service, for /aesthetic-clinics.
+ *
+ * NO `offers` BLOCK, for the same reason Organization has none:
+ * ArkFlow quotes rather than publishes a price list, and emitting
+ * price/priceCurrency here would publish it in the page source
+ * (Amendment 2). No aggregateRating either — there are no reviews to
+ * aggregate, and inventing the property is a manual-action risk.
+ */
+export function ServiceJsonLd({
+  name,
+  description,
+  path,
+}: {
+  name: string;
+  description: string;
+  path: string;
+}) {
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{
+        __html: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Service",
+          name,
+          description,
+          serviceType: "Customer enquiry response and booking automation",
+          provider: { "@id": `${SITE_URL}/#organization` },
+          areaServed: { "@type": "Country", name: "Singapore" },
+          audience: {
+            "@type": "BusinessAudience",
+            name: "Aesthetic clinics in Singapore",
+          },
+          url: new URL(path, SITE_URL).toString(),
+        }),
+      }}
+    />
+  );
+}
+
 export function OrgJsonLd() {
   const data = {
     "@context": "https://schema.org",
     "@type": "Organization",
+    /* A stable node id so WebSite.publisher and Service.provider can
+       point at this entity instead of each repeating the company
+       block. One organisation on the site, described once. */
+    "@id": `${SITE_URL}/#organization`,
     // Registered ACRA name, not the brand. `alternateName` carries the brand.
     name: COMPANY.legalName,
     alternateName: COMPANY.shortName,

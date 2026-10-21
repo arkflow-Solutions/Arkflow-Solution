@@ -24,6 +24,8 @@
  *  - House style: no em dashes in visitor-facing copy.
  */
 
+import { CTA_PRIMARY, CTA_SECONDARY } from "@/lib/cta";
+
 /* ============================================================ 01 HERO */
 
 export const hero = {
@@ -36,8 +38,8 @@ export const hero = {
        lib/scene-content.ts. Kept in step with the live positioning so a
        future reader does not reinstate the retired "AI-powered" line. */
     "ArkFlow designs, builds and operates the system that closes those gaps.",
-  primaryCta: "Book a Discovery Call",
-  secondaryCta: "See how ArkFlow works",
+  primaryCta: CTA_PRIMARY,
+  secondaryCta: CTA_SECONDARY,
   /**
    * Scroll beats for the pinned 3D story. These are the argument of the
    * site, compressed to three lines. They are commitments about how the
@@ -324,7 +326,7 @@ export const revenueEngine = {
     },
     {
       key: "Respond",
-      head: "An answer in seconds, not when someone next checks.",
+      head: "An answer within minutes, not when someone next checks.",
       body: "The first response is where most of the loss happens. ArkFlow makes it immediate and accurate, in the voice the business has approved, on the channel the person used.",
       leak: "The reply arrives after the person has already contacted someone else.",
       flow: [
@@ -421,7 +423,7 @@ export type ChatBeat =
 
 export const aiDemo = {
   eyebrow: "AI conversation, demonstrated",
-  title: "This is not magic. It is structured work, done consistently.",
+  title: "Watch an enquiry get answered at 9.41pm.",
   lead: "An enquiry arrives outside business hours. Watch what the system does, and watch exactly where it stops and hands over to a person.",
   note: "AI handles the repetition. Humans handle the relationship. The system answers what it has been configured to answer, collects what the business needs to know, and escalates the moment a conversation needs judgement.",
 } as const;
@@ -468,7 +470,7 @@ export const customerJourney = {
   steps: [
     { time: "9:41 PM", title: "Discovered", body: "Jamie finds the business through a social post, long after closing time.", by: "system" },
     { time: "9:41 PM", title: "Enquired", body: "One message, on the channel she was already using.", by: "system" },
-    { time: "9:41 PM", title: "Answered", body: "A reply in seconds, in the approved voice, attached to a new record.", by: "system" },
+    { time: "9:41 PM", title: "Answered", body: "A reply within minutes, in the approved voice, attached to a new record.", by: "system" },
     { time: "9:44 PM", title: "Qualified", body: "The right questions asked once. First visit, weekday preference, service identified.", by: "system" },
     { time: "9:45 PM", title: "Escalated", body: "A health question falls outside what the AI answers. It stops and hands to a specialist.", by: "human" },
     { time: "9:46 PM", title: "Booked", body: "Live availability offered in the same conversation. Thursday 10:30 held and confirmed.", by: "system" },
@@ -509,7 +511,7 @@ export const beforeAfter = {
     items: [
       "Every channel in one workspace",
       "One record with the full history",
-      "Answered in seconds, any hour",
+      "Answered within minutes, any hour",
       "One calendar, whatever the source",
       "Confirmations and reminders automatic",
       "No-shows enter a recovery flow",
@@ -788,7 +790,7 @@ export const auditCta = {
   eyebrow: "The next step",
   title: "Where is your business leaking revenue?",
   lead: "The Revenue Leak Audit is a structured look at your customer journey. What happens to an enquiry from the moment it arrives to the moment a customer comes back, and where that journey currently depends on someone remembering.",
-  note: "It is a diagnosis, not a contact form. You get a view of where the gaps are, whether or not you work with us.",
+  note: "We send real enquiries to your business, time the replies, and write up what we find. You keep the findings whether or not you work with us.",
   areasLabel: "Areas the audit looks at",
   areas: [
     "Lead response",
@@ -802,13 +804,13 @@ export const auditCta = {
     "Operational workload",
     "Customer experience",
   ],
-  cta: "Get your free Revenue Leak Audit",
+  cta: CTA_PRIMARY,
 } as const;
 
 export const finalCta = {
   title:
     "Your business already has the customers. The question is how many are falling through the gaps.",
   lead: "Build the system that keeps opportunities moving.",
-  primary: "Get your free Revenue Leak Audit",
+  primary: CTA_PRIMARY,
   secondary: "Explore how ArkFlow works",
 } as const;

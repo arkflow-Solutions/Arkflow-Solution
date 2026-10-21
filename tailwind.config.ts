@@ -34,7 +34,12 @@ const config: Config = {
         },
       },
       fontFamily: {
+        /* Body — Hanken Grotesk. The face the site is read in. */
         sans: ["var(--font-sans)", "Helvetica Neue", "system-ui", "sans-serif"],
+        /* Headings — Schibsted Grotesk. Applied by the heading rules in
+           globals.css rather than per-element, so every h1–h3 across
+           eighteen routes picks it up without touching their markup. */
+        display: ["var(--font-display)", "var(--font-sans)", "system-ui", "sans-serif"],
         mono: ["var(--font-mono)", "SFMono-Regular", "Menlo", "monospace"],
       },
       fontSize: {

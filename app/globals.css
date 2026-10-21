@@ -45,6 +45,62 @@
 
   body {
     @apply bg-ink text-white font-sans;
+    /* 17px desktop. The type scale in tailwind.config.ts is in rem, so
+       raising the root here lifts body copy from 16 to 17 without
+       touching a single font-size declaration. Mobile keeps 16px: the
+       scale's clamps already run tighter there and 17 pushes the long
+       hero lead onto an extra line at 375px. */
+    font-size: 16px;
+    line-height: 1.6;
+    /* Proportional figures in running text, tabular where it matters
+       (set per-component on counters, timestamps and the audit table)
+       so columns of numbers do not shimmy. */
+    font-variant-numeric: proportional-nums;
+  }
+
+  @media (min-width: 768px) {
+    body {
+      font-size: 17px;
+    }
+  }
+
+  /**
+   * HEADINGS — Schibsted Grotesk, 21 October 2026.
+   *
+   * Applied here rather than per-element because eighteen routes and
+   * ~60 components set their own heading classes; adding `font-display`
+   * to each would mean editing all of them and missing some. Anything
+   * that genuinely needs the body face can still say `font-sans`.
+   *
+   * Negative tracking on LARGE headings only. The type scale already
+   * carries letter-spacing per size (display-xl through subheading);
+   * body text gets none, which is the rule that was being broken by
+   * applying tracking globally.
+   */
+  h1, h2, h3 {
+    @apply font-display;
+    font-weight: 600;
+    line-height: 1.12;
+  }
+
+  h4, h5, h6 {
+    @apply font-display;
+    font-weight: 500;
+    line-height: 1.25;
+    /* No negative tracking at these sizes — it only helps above
+       roughly 28px and hurts legibility below it. */
+    letter-spacing: 0;
+  }
+
+  /* Comfortable measure. 65–75 characters is the target; `max-w-prose`
+     (42rem) lands inside that at both body sizes. This catches the
+     paragraphs that are not wrapped in it. */
+  p {
+    text-wrap: pretty;
+  }
+
+  h1, h2, h3, h4 {
+    text-wrap: balance;
   }
 
   ::selection {

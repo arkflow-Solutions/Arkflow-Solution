@@ -323,6 +323,24 @@
   color: var(--platinum);
 }
 
+/* The fixed plain-English line under the changing headline.
+   Deliberately quieter than the lead and louder than the signature:
+   it is the sentence that tells a stranger what this company does,
+   and it must not compete with the scene copy above it. */
+.af-hs-supporting {
+  margin-top: 1.1rem;
+  max-width: 34rem;
+  font-size: 0.9375rem;
+  line-height: 1.55;
+  color: var(--platinum);
+}
+
+@media (min-width: 1024px) {
+  .af-hs-supporting {
+    font-size: 1rem;
+  }
+}
+
 .af-hs-sig {
   margin-top: 1.25rem;
   font-family: var(--font-mono), ui-monospace, monospace;

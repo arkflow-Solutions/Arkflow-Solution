@@ -3,6 +3,8 @@ import { Container } from "@/components/ui/container";
 import { Section } from "@/components/ui/section";
 import { PageHero } from "@/components/pages/page-hero";
 import { BookCallButton } from "@/components/pages/book-call-button";
+import { AuditButton } from "@/components/home/v3/shared";
+import { RelatedReading } from "@/components/pages/related-reading";
 import { Magnetic } from "@/components/motion/magnetic";
 import { RecordJourney } from "@/components/solutions/record-journey";
 import { buildMetadata } from "@/lib/seo";
@@ -35,9 +37,9 @@ import "./solutions.css";
  * — where the locked homepage scenes live — is not touched.
  */
 export const metadata = buildMetadata({
-  title: "Solutions",
+  title: "Customer Reactivation for Clinics Singapore",
   description:
-    "Someone raises their hand — what happens next? ArkFlow connects the stages between an enquiry and revenue: response, qualification, booking, follow-up, retention and reactivation, all on one record.",
+    "Bring dormant patients back and keep active ones booking. One record follows each customer from first enquiry through repeat visits, on WhatsApp and email.",
   path: "/solutions",
 });
 
@@ -99,6 +101,12 @@ export default function SolutionsPage() {
       {/* ------------------------------------------------- ACTION
           Canonical CTA first. The audit stays as the secondary
           diagnostic path, not the closing recommendation. */}
+      <RelatedReading
+        slugs={["whatsapp-automation-for-business","why-speed-to-lead-matters","aesthetic-clinic-lead-follow-up"]}
+        title="The thinking behind the system"
+        lead="What follow-up and reactivation look like when they are run properly, and the evidence we built the sequence on."
+      />
+
       <Section className="hairline">
         <Container>
           <div className="rounded-card border border-blue/30 bg-blue/[0.04] p-8 md:p-12">
@@ -110,9 +118,9 @@ export default function SolutionsPage() {
             </p>
             <div className="mt-9 flex flex-wrap items-center gap-x-8 gap-y-4">
               <Magnetic>
-                <BookCallButton size="large" withArrow>
-                  {solutionsCta.primary}
-                </BookCallButton>
+                <AuditButton location="solutions_close" size="large">
+                    {solutionsCta.primary}
+                  </AuditButton>
               </Magnetic>
               <Link
                 href={solutionsCta.secondaryHref}

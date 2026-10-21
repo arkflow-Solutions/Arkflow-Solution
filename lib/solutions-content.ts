@@ -62,6 +62,8 @@
  *  - stations[5].note — ArkFlow does not run or manage paid advertising.
  */
 
+import { CTA_PRIMARY } from "@/lib/cta";
+
 /** Factual capability grouping. NOT a package, tier or plan. */
 const CURRENT = "Current capability";
 const SCOPED = "Implementation-dependent";
@@ -73,7 +75,7 @@ export const solutionsHero = {
   title: "Someone just raised their hand.",
   titleAccent: "What happens next?",
   lead: "A lead should not have to survive your business process to become a customer.",
-  primaryCta: "Book a Discovery Call",
+  primaryCta: CTA_PRIMARY,
   /* Kept from the previous page. It is the sentence that stops a
      reader filing ArkFlow under software, so it earns its place in
      the opening rather than halfway down. */
@@ -239,7 +241,7 @@ export const payoff = {
 export const solutionsCta = {
   title: "Where is your revenue actually leaking?",
   body: "A discovery call maps your enquiry-to-payment flow against these stages and shows you which one is losing people.",
-  primary: "Book a Discovery Call",
+  primary: CTA_PRIMARY,
   /* Secondary diagnostic path only. The canonical CTA is the call —
      founder decision, 6 September 2026. */
   secondaryLabel: "See the Revenue Leak Audit",

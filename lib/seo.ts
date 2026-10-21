@@ -36,16 +36,22 @@ type BuildMetadataArgs = {
   /**
    * Social preview image, as a site-relative path.
    *
-   * WHY THIS IS OPT-IN AND NOT YET THE DEFAULT. Declaring `openGraph`
-   * here deliberately stops the root layout's metadata being inherited
-   * (see above) — and that also stops Next.js's file-based
-   * app/opengraph-image.tsx from being merged in. The result is that
-   * every page except the homepage currently ships with no og:image at
-   * all. Passing `images` below fixes that for one page at a time.
+   * USE THIS ONLY FOR A REAL IMAGE FILE, never to name an
+   * `opengraph-image` route.
    *
-   * Making it the default would fix all fifteen routes in one line, but
-   * that changes the social preview of pages that are already signed
-   * off, so it is being raised for approval rather than assumed.
+   * CORRECTED 21 October 2026. This used to warn that declaring
+   * `openGraph` here blocks Next.js's file-based opengraph-image from
+   * being merged in, and several pages passed `ogImage:
+   * "/opengraph-image"` to work around it. That was not true: tested
+   * by building and reading the rendered HTML, a route with its own
+   * opengraph-image.tsx and no `ogImage` gets its own card merged in
+   * correctly. The workaround was the thing suppressing the card —
+   * every article shared under the generic site image because of it.
+   *
+   * Every route now has its own opengraph-image.tsx (see
+   * lib/og-card.tsx), so leave `ogImage` unset unless the page has a
+   * genuine photograph to share — /case-studies passes a screenshot
+   * of the client's live site, which beats any generated card.
    */
   ogImage?: string;
 };
@@ -59,12 +65,30 @@ export function buildMetadata({
   ogImage,
 }: BuildMetadataArgs): Metadata {
   const url = new URL(path, SITE_URL).toString();
-  const fullTitle = title
-    ? `${title} — ${SITE_NAME}`
-    : "ArkFlow — Revenue Operations for Singapore service businesses";
+  /**
+   * TITLE FORMAT, settled 21 October 2026: `Page topic | ArkFlow`.
+   *
+   * Three things were wrong before. The <title> used " · " while
+   * og:title used " — ", so the tab and the social card disagreed.
+   * The separator itself was a middot, which several crawlers and
+   * most humans read as decoration rather than as a boundary. And
+   * because page titles were written as "About ArkFlow", the brand
+   * appeared twice: "About ArkFlow · ArkFlow".
+   *
+   * One pipe, one brand, at the end. `title` must not contain the
+   * word ArkFlow — buildMetadata strips a trailing brand rather than
+   * trusting every caller to remember, because the duplication is
+   * invisible until you look at a rendered tab.
+   */
+  const topic = (title ?? "").replace(/\s*[|·—-]\s*ArkFlow\s*$/i, "").trim();
+  const fullTitle = topic
+    ? `${topic} | ${SITE_NAME}`
+    : "WhatsApp & AI Enquiry Automation for Singapore Clinics | ArkFlow";
 
   return {
-    title,
+    /* The bare topic. The root layout's template appends " | ArkFlow",
+       so returning the brand here would print it twice. */
+    title: topic || undefined,
     description,
     alternates: { canonical: path },
     /**

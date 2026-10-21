@@ -39,6 +39,8 @@
  *  · capability.boundary — the v1.4 §19 boundary.
  */
 
+import { CTA_PRIMARY, CTA_SECONDARY } from "@/lib/cta";
+
 /* ------------------------------------------------ 01 · THE PREMISE */
 
 export const attractHero = {
@@ -48,7 +50,7 @@ export const attractHero = {
   title: "A website isn't where you put information.",
   titleAccent: "It's where you guide a decision.",
   lead: "What follows is that principle, working.",
-  primaryCta: "Book a Discovery Call",
+  primaryCta: CTA_PRIMARY,
   secondaryCta: "Get a Website Review",
 } as const;
 
@@ -159,7 +161,7 @@ export const painPaths = {
         "The site lists what you offer. It never answers the question they arrived with.",
       solution:
         "The journey is arranged around their decision, not your service list.",
-      action: { label: "Book a Discovery Call", href: null },
+      action: { label: CTA_PRIMARY, href: null },
     },
     {
       id: "once",
@@ -226,7 +228,7 @@ export const capability = {
       { key: "Confidence", line: "These are the people who would do it." },
       { key: "Action", line: "There is one obvious thing to do next." },
     ],
-    action: "Book a Discovery Call",
+    action: CTA_PRIMARY,
   },
 
   /**
@@ -248,7 +250,7 @@ export const capability = {
   honesty: {
     title: "Sometimes the website is not the problem.",
     body: "If the review finds that traffic arrives and converts, but enquiries are answered slowly or not at all, we will tell you that — and point you at a Revenue Leak Audit instead of selling you a website you do not need.",
-    ctaLabel: "See how ArkFlow works",
+    ctaLabel: CTA_SECONDARY,
     href: "/how-it-works",
   },
 
@@ -276,7 +278,7 @@ export const continuity = {
 export const attractCta = {
   title: "Send us your website.",
   body: "We will tell you whether it needs optimising, redesigning or rebuilding — or whether the problem is somewhere else.",
-  primary: "Book a Discovery Call",
+  primary: CTA_PRIMARY,
   secondary: "Get a Website Review",
   whatsappPrefill:
     "Hi ArkFlow, I would like a Website Review. Here is my website:",

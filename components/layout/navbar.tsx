@@ -3,11 +3,12 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, X, ChevronDown, BookOpen, Star, Building2 } from "lucide-react";
+import { Menu, X, ChevronDown, BookOpen, Star, Building2, ShieldCheck } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Container } from "@/components/ui/container";
 import { AuditButton } from "@/components/home/v3/shared";
 import { Wordmark } from "@/components/layout/wordmark";
+import { CTA_PRIMARY_COMPACT } from "@/lib/cta";
 
 /**
  * Top-level primary navigation.
@@ -76,6 +77,7 @@ const companyLinks = [
   { label: "What we build", href: "/what-we-build", icon: Star, desc: "The scope of an engagement" },
   { label: "The system", href: "/solutions", icon: BookOpen, desc: "One enquiry, end to end" },
   { label: "Website", href: "/attract", icon: BookOpen, desc: "The front door of the system" },
+  { label: "Compliance", href: "/compliance", icon: ShieldCheck, desc: "PDPA, DNC and WhatsApp rules" },
   { label: "Contact", href: "/contact", icon: Building2, desc: "How to reach us" },
 ];
 
@@ -262,7 +264,7 @@ export function Navbar() {
             CTA (founder decision, 6 Sep 2026). */}
         <div className="hidden lg:block">
           <AuditButton location="navbar" size="default">
-            Get free audit
+            {CTA_PRIMARY_COMPACT}
           </AuditButton>
         </div>
 
@@ -318,7 +320,7 @@ export function Navbar() {
 
             <div className="px-3 pb-2 pt-4">
               <AuditButton location="navbar_mobile" size="default" className="w-full">
-                Get free audit
+                {CTA_PRIMARY_COMPACT}
               </AuditButton>
             </div>
           </Container>

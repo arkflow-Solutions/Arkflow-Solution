@@ -1,10 +1,16 @@
 import { ContactExperience } from "@/components/contact/contact-experience";
+import { FaqJsonLd } from "@/components/seo/json-ld";
 import { buildMetadata } from "@/lib/seo";
+import { faq } from "@/lib/content";
 
+/**
+ * PRIMARY KEYWORD: "lead follow-up automation" (Singapore intent).
+ * No other page targets it — see docs/keyword-map.md.
+ */
 export const metadata = buildMetadata({
-  title: "Contact & Revenue Leak Audit",
+  title: "Lead Follow-Up Automation Singapore",
   description:
-    "Talk to us about where revenue is leaking — slow replies, missed enquiries, follow-up that stops — or request a Revenue Leak Audit on your own numbers.",
+    "Tell us where enquiries are going cold and we will map your enquiry-to-booking flow. Based in Singapore, replies in minutes during SGT business hours.",
   path: "/contact",
 });
 
@@ -23,7 +29,18 @@ export const metadata = buildMetadata({
  * still described it as live — a stale unreferenced file is exactly the
  * failure HOTFIX.md records. SURVEY_URL remains in lib/site.ts as the
  * record of the GHL asset, pending a founder decision.
+ *
+ * THE FAQ SCHEMA IS EMITTED HERE, not inside ContactExperience, because
+ * this is the server component — structured data belongs in HTML the
+ * crawler is handed, not in a client bundle. It reads the same `faq`
+ * array the accordion renders and takes the same first six entries, so
+ * the markup cannot claim an answer the page does not show.
  */
 export default function ContactPage() {
-  return <ContactExperience />;
+  return (
+    <>
+      <FaqJsonLd items={faq.slice(0, 6)} />
+      <ContactExperience />
+    </>
+  );
 }

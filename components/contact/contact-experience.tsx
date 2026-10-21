@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import {
@@ -25,13 +25,29 @@ import { Button } from "@/components/ui/button";
 import { Reveal } from "@/components/motion/reveal";
 import { TiltCard } from "@/components/motion/tilt-card";
 import { ConvergenceField } from "@/components/motion/convergence-field";
+/* The booking modal survives here for one job only: the step AFTER
+   someone has submitted the form, where scheduling is the natural
+   next move. It is no longer offered alongside the form as a rival
+   way in — see lib/cta.ts. */
 import { useBooking } from "@/lib/use-booking";
 import { contact, faq } from "@/lib/content";
+import { companyLinkedIn } from "@/lib/social";
+import { track } from "@/lib/analytics";
+import { RESPONSE_TIME } from "@/lib/cta";
+import { COMPANY } from "@/lib/site";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
-// TODO(founder): replace with the real ArkFlow LinkedIn URL.
-const LINKEDIN_URL = "#";
+/**
+ * FIXED 21 October 2026. This was "#" behind a TODO, so the LinkedIn
+ * row on the contact page was a link that went nowhere — the only dead
+ * link on the whole site. The real company page was already recorded
+ * in lib/social.ts and already published in the Organization schema's
+ * sameAs; it had simply never been wired to this row. It reads from
+ * there now, so there is still exactly one place a social URL is
+ * written down.
+ */
+const LINKEDIN_URL = companyLinkedIn.url;
 
 const BUSINESS_TYPES = [
   "Aesthetic Clinic",
@@ -247,11 +263,18 @@ textarea.cx-input{height:auto;min-height:96px;padding:14px 16px;resize:vertical;
 .cx-tl-row:not(:last-child)::before{content:"";position:absolute;left:26px;top:60px;bottom:-8px;width:1px;background:var(--border-subtle)}
 .cx-faq{margin-top:44px;border-top:1px solid var(--border-subtle)}
 .cx-faq-item{border-bottom:1px solid var(--border-subtle)}
-.cx-faq-q{width:100%;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:22px 0;background:none;border:none;color:#fff;font-family:inherit;font-size:17px;font-weight:500;text-align:left;cursor:pointer}
+/* The default disclosure triangle, removed in both dialects. */
+.cx-faq-q{list-style:none;width:100%;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:22px 0;color:#fff;font-family:inherit;font-size:17px;font-weight:500;text-align:left;cursor:pointer}
+.cx-faq-q::-webkit-details-marker{display:none}
 .cx-faq-q svg{flex-shrink:0;transition:transform .3s ease;color:var(--text-tertiary)}
-.cx-faq-q.open svg{transform:rotate(180deg)}
-.cx-faq-a{overflow:hidden}
-.cx-faq-a p{padding:0 0 22px;max-width:64ch;font-size:15.5px;line-height:1.7;color:var(--text-secondary)}
+.cx-faq-item[open] .cx-faq-q svg{transform:rotate(180deg)}
+/* A grid row animates from 0fr to 1fr, which is the one way to
+   transition to content height without measuring it in JavaScript.
+   The answer is in the DOM at every moment, which is the point. */
+.cx-faq-a{display:grid;grid-template-rows:0fr;transition:grid-template-rows .32s cubic-bezier(.22,1,.36,1)}
+.cx-faq-item[open] .cx-faq-a{grid-template-rows:1fr}
+.cx-faq-a>p{overflow:hidden;min-height:0;padding:0 0 22px;max-width:64ch;font-size:15.5px;line-height:1.7;color:var(--text-secondary)}
+@media (prefers-reduced-motion: reduce){.cx-faq-a{transition:none}.cx-faq-q svg{transition:none}}
 .cx-final{text-align:center;max-width:44rem;margin:0 auto}
 `;
 
@@ -264,17 +287,45 @@ export function ContactExperience() {
   const [error, setError] = useState("");
   /** Honeypot. Stays empty for every human; a bot filling all inputs sets it. */
   const [honeypot, setHoneypot] = useState("");
-  const [openFaq, setOpenFaq] = useState<number | null>(0);
+  /* `openFaq` state removed 21 October 2026 — <details> owns its own
+     open state now, so React no longer tracks which answer is showing. */
 
-  const set = (patch: Partial<FormState>) => setForm((f) => ({ ...f, ...patch }));
+  /**
+   * Fires `contact_form_start` once, on the first field a visitor
+   * touches. Until 21 October 2026 this form reported nothing at all —
+   * not a start, not a submit — so the one intake path on the site was
+   * the one thing we could not measure, and the step people abandon
+   * was unknowable.
+   *
+   * A REF, NOT STATE, and that is the whole trick. The same guard
+   * written with useState fired five times on a single browser
+   * autofill: autofill patches every field in one tick, and a state
+   * update queued in that tick is not readable by the next handler in
+   * it. A ref mutates synchronously, so the second handler sees it.
+   * The identical bug was fixed in components/audit/request-form.tsx
+   * on 6 October; do not convert this back to state.
+   */
+  const started = useRef(false);
+  const markStarted = () => {
+    if (started.current) return;
+    started.current = true;
+    track("contact_form_start", { location: "contact" });
+  };
 
-  const toggleHelp = (item: string) =>
+  const set = (patch: Partial<FormState>) => {
+    markStarted();
+    setForm((f) => ({ ...f, ...patch }));
+  };
+
+  const toggleHelp = (item: string) => {
+    markStarted();
     setForm((f) => ({
       ...f,
       help: f.help.includes(item)
         ? f.help.filter((h) => h !== item)
         : [...f.help, item],
     }));
+  };
 
   const canProceed = useMemo(() => {
     switch (step) {
@@ -308,6 +359,9 @@ export function ContactExperience() {
       // enquiry was actually delivered. On failure the step, and every
       // answer already given, stay exactly as they are.
       await submitEnquiry(form, honeypot);
+      /* Only after the server confirmed delivery. A submit event fired
+         optimistically counts enquiries that never arrived. */
+      track("contact_form_submit", { location: "contact" });
       setStep(STEPS);
     } catch (err) {
       setError(err instanceof Error && err.message ? err.message : GENERIC_SEND_ERROR);
@@ -340,7 +394,7 @@ export function ContactExperience() {
           >
             <p className="cx-eb">Let&apos;s talk</p>
             <h1 className="cx-h1" style={{ marginTop: 20, maxWidth: "16ch" }}>
-              Every great automation starts with one conversation.
+              Tell us what happens to an enquiry at 9pm.
             </h1>
             <p className="cx-sub" style={{ marginTop: 24, maxWidth: "48ch" }}>
               Tell us where enquiries slip through today. In two minutes you&apos;ll
@@ -348,12 +402,20 @@ export function ContactExperience() {
               useful whether or not you work with us.
             </p>
             <div style={{ marginTop: 34, display: "flex", gap: 14, flexWrap: "wrap" }}>
-              <Button onClick={openBooking} size="large" withArrow>
-                Book Discovery Call
-              </Button>
-              <Button href="#enquiry" variant="secondary" size="large">
+              <Button href="#enquiry" size="large" withArrow>
                 Start an enquiry
               </Button>
+              {contact.whatsapp.href && (
+                <Button
+                  href={contact.whatsapp.href}
+                  target="_blank"
+                  variant="secondary"
+                  size="large"
+                  onClick={() => track("whatsapp_click", { location: "contact_hero" })}
+                >
+                  WhatsApp us instead
+                </Button>
+              )}
             </div>
           </motion.div>
         </Container>
@@ -680,8 +742,8 @@ export function ContactExperience() {
                             className="cx-body"
                             style={{ marginTop: 10, maxWidth: "34ch", marginInline: "auto" }}
                           >
-                            Your enquiry has entered the ArkFlow Revenue Engine.
-                            We&apos;ll be in touch shortly.
+                            We have it. You will hear from us within one
+                            working day, usually the same afternoon.
                           </p>
                           <div style={{ marginTop: 22, display: "flex", justifyContent: "center" }}>
                             <Button onClick={openBooking} withArrow>
@@ -824,35 +886,42 @@ export function ContactExperience() {
               Straight answers.
             </h2>
           </Reveal>
+          {/*
+            REBUILT 21 October 2026 as native <details>/<summary>.
+
+            THE BUG: the answers were rendered inside {open && (...)},
+            so nothing but the six questions existed in the HTML the
+            server sent. Google indexed a page that asked "What happens
+            to our patients' data?" and never answered it, on a page
+            whose entire job is to answer it. Every one of the six
+            answers was absent — verified by fetching the built page
+            and grepping for them.
+
+            WHY <details> RATHER THAN FIXING THE CONDITIONAL. It is in
+            the DOM and in the server HTML whether open or shut, so
+            crawlers read the answers; it is keyboard-operable and
+            screen-reader-announced with no aria wiring to get wrong;
+            and Chrome's find-in-page opens the right one. The
+            accordion animation is now CSS on a grid row, which is why
+            there is no AnimatePresence here any more.
+
+            The matching FAQPage structured data is emitted by the
+            server component in app/contact/page.tsx, from this same
+            `faq` array, so the markup and the visible text cannot
+            drift apart.
+          */}
           <div className="cx-faq">
-            {faqs.map((item, i) => {
-              const open = openFaq === i;
-              return (
-                <div className="cx-faq-item" key={item.q}>
-                  <button
-                    className={`cx-faq-q${open ? " open" : ""}`}
-                    onClick={() => setOpenFaq(open ? null : i)}
-                    aria-expanded={open}
-                  >
-                    {item.q}
-                    <ChevronDown size={20} aria-hidden />
-                  </button>
-                  <AnimatePresence initial={false}>
-                    {open && (
-                      <motion.div
-                        className="cx-faq-a"
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: "auto", opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }}
-                        transition={{ duration: 0.32, ease: EASE }}
-                      >
-                        <p>{item.a}</p>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
+            {faqs.map((item) => (
+              <details className="cx-faq-item" key={item.q}>
+                <summary className="cx-faq-q">
+                  {item.q}
+                  <ChevronDown size={20} aria-hidden />
+                </summary>
+                <div className="cx-faq-a">
+                  <p>{item.a}</p>
                 </div>
-              );
-            })}
+              </details>
+            ))}
           </div>
         </Container>
       </section>
@@ -867,13 +936,36 @@ export function ContactExperience() {
                 A 30-minute call. We map your enquiry-to-payment flow and show
                 you exactly where revenue is slipping through.
               </p>
-              <div style={{ marginTop: 30, display: "flex", justifyContent: "center" }}>
-                <Button onClick={openBooking} size="large" withArrow>
-                  Book Your Free Discovery Call
+              <div style={{ marginTop: 30, display: "flex", justifyContent: "center", gap: 14, flexWrap: "wrap" }}>
+                <Button href="#enquiry" size="large" withArrow>
+                  Start an enquiry
                 </Button>
+                {contact.whatsapp.href && (
+                  <Button
+                    href={contact.whatsapp.href}
+                    target="_blank"
+                    variant="secondary"
+                    size="large"
+                    onClick={() => track("whatsapp_click", { location: "contact_final" })}
+                  >
+                    WhatsApp us
+                  </Button>
+                )}
               </div>
+              {/* THE RESPONSE-TIME PROMISE, stated where the ask is.
+                  A company that sells fast replies and does not say how
+                  fast it replies is asking to be doubted. "Minutes" is
+                  the claim the whole site makes (lib/cta.ts), so it is
+                  the claim made here. */}
               <p className="cx-eb" style={{ marginTop: 22, color: "var(--text-tertiary)" }}>
-                No obligation · 30 minutes · Singapore business hours
+                We reply {RESPONSE_TIME} during Singapore business hours,
+                and by the next working morning outside them.
+              </p>
+              {/* UEN on the contact page. A registered Singapore company
+                  that shows its UEN is checkable on ACRA in thirty
+                  seconds, which is worth more than any badge. */}
+              <p className="cx-eb" style={{ marginTop: 10, color: "var(--text-tertiary)" }}>
+                {COMPANY.legalName} · UEN {COMPANY.uen}
               </p>
             </div>
           </Reveal>

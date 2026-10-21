@@ -5,9 +5,13 @@ import type { Article } from "@/lib/insights/types";
 import { readingMinutes } from "@/lib/insights/types";
 import { categoryBySlug } from "@/lib/insights/categories";
 import { Button } from "@/components/ui/button";
-import { useBooking } from "@/lib/use-booking";
-import { contact } from "@/lib/content";
 import { track } from "@/lib/analytics";
+import {
+  CTA_PRIMARY,
+  CTA_PRIMARY_HREF,
+  CTA_SECONDARY,
+  CTA_SECONDARY_HREF,
+} from "@/lib/cta";
 
 export function ArticleCard({
   article,
@@ -53,7 +57,6 @@ export function ArticleCard({
  * framing and the secondary action change.
  */
 export function ArticleCta({ article }: { article: Article }) {
-  const openBooking = useBooking(contact.call.href);
 
   /* An article may state its own framing; otherwise the funnel level
      chooses it. See Article["cta"] in lib/insights/types.ts. */
@@ -82,19 +85,18 @@ export function ArticleCta({ article }: { article: Article }) {
       </p>
       <div className="mt-8 flex flex-wrap gap-4">
         <Button
-          onClick={() => {
-            track("discovery_call_click", { location: "article_cta" });
-            openBooking();
-          }}
+          href={CTA_PRIMARY_HREF}
+          withArrow
+          onClick={() => track("audit_cta_click", { location: "article_cta" })}
         >
-          Book a Discovery Call
+          {CTA_PRIMARY}
         </Button>
         <Button
           variant="secondary"
-          href="/how-it-works"
+          href={CTA_SECONDARY_HREF}
           onClick={() => track("cta_secondary_click", { location: "article_cta" })}
         >
-          See How ArkFlow Works
+          {CTA_SECONDARY}
         </Button>
       </div>
     </section>
@@ -104,11 +106,11 @@ export function ArticleCta({ article }: { article: Article }) {
 /**
  * Contextual mid-article CTA, rendered from a `cta` block.
  *
- * REUSES, INTRODUCES NOTHING. Same booking modal as the navbar and the
- * end-of-article CTA (useBooking + contact.call.href), same canonical
- * event (`discovery_call_click`). Only `location` differs, and that is a
- * free-text parameter on the existing EventParams type — no new event
- * name and no analytics type change were required.
+ * POINTS AT THE SAME PLACE AS EVERY OTHER PRIMARY CTA, as of 21
+ * October 2026 — AUDIT_URL, via CTA_PRIMARY_HREF, firing
+ * `audit_cta_click`. It used to open the booking modal, so an article
+ * offered a call while the page footer offered an audit. Only
+ * `location` distinguishes this instance in analytics.
  *
  * DELIBERATELY THE SECONDARY BUTTON VARIANT. The house rule is one blue
  * button per view; the end-of-article CTA is the strongest conversion
@@ -117,24 +119,21 @@ export function ArticleCta({ article }: { article: Article }) {
  */
 export function ArticleInlineCta({
   text,
-  label = "Book a Discovery Call",
+  label = CTA_PRIMARY,
   location,
 }: {
   text: string;
   label?: string;
   location: string;
 }) {
-  const openBooking = useBooking(contact.call.href);
   return (
     <aside className="mt-12 rounded-card border border-[color:var(--border-subtle)] bg-surface/60 p-7 md:p-8">
       <p className="text-body leading-relaxed text-white">{text}</p>
       <Button
         variant="secondary"
         className="mt-6"
-        onClick={() => {
-          track("discovery_call_click", { location });
-          openBooking();
-        }}
+        href={CTA_PRIMARY_HREF}
+        onClick={() => track("audit_cta_click", { location })}
       >
         {label}
       </Button>

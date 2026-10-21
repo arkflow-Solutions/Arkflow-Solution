@@ -7,6 +7,7 @@ import { track } from "@/lib/analytics";
 import { useBooking } from "@/lib/use-booking";
 import { contact } from "@/lib/content";
 import { AUDIT_URL } from "@/lib/site";
+import { CTA_PRIMARY } from "@/lib/cta";
 import { cn } from "@/lib/utils";
 
 /**
@@ -50,7 +51,7 @@ import { cn } from "@/lib/utils";
  * rather than the first thing asked of a stranger.
  */
 export function AuditButton({
-  children = "Get your free Revenue Leak Audit",
+  children = CTA_PRIMARY,
   location,
   size = "large",
   variant = "primary",
@@ -78,7 +79,7 @@ export function AuditButton({
 }
 
 export function DiscoveryCallButton({
-  children = "Book a Discovery Call",
+  children = CTA_PRIMARY,
   location,
   size = "large",
   variant = "primary",

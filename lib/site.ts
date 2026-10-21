@@ -136,17 +136,31 @@ export function whatsappLink(message?: string): string {
 }
 
 /**
- * GOVERNANCE FLAG — changed from hello@arkflow.sg.
+ * The public contact address.
  *
- * arkflow.sg is not the domain serving this site (www.arkflowsolutions.com
- * is), so hello@arkflow.sg had no deliverable mailbox behind it. A contact
- * address that bounces on a live site is a silent revenue leak, so this has
- * been aligned to the contact address recorded in governance.
+ * CHANGED 21 October 2026, founder instruction. The site had been
+ * showing arkflowsg@gmail.com since the hello@arkflow.sg address was
+ * found to have no mailbox behind it — a working personal address was
+ * judged better than a professional-looking one that bounces. It is
+ * now hello@arkflowsolutions.com, on the domain that actually serves
+ * this site.
  *
- * If a mailbox now exists on the production domain, replace this with
- * hello@arkflowsolutions.com — one line, and the whole site follows.
+ * READS FROM THE ENVIRONMENT so it can be changed without a code
+ * deploy: set NEXT_PUBLIC_CONTACT_EMAIL in Vercel and it wins. The
+ * literal below is the default, not a fallback for a broken mailbox.
+ *
+ * THE MAILBOX MUST EXIST BEFORE THIS SHIPS. The founder is creating
+ * it. If it is not receiving mail on the day this goes to production,
+ * set NEXT_PUBLIC_CONTACT_EMAIL back to the Gmail address rather than
+ * leaving a bouncing address on a live site — that is the exact
+ * failure the previous value was chosen to avoid.
+ *
+ * Trimmed, and empty is treated as unset, for the same reason
+ * SITE_URL does it: a bare `NEXT_PUBLIC_CONTACT_EMAIL=` line in an env
+ * file otherwise renders an empty mailto on every page.
  */
-export const CONTACT_EMAIL = "arkflowsg@gmail.com";
+export const CONTACT_EMAIL =
+  process.env.NEXT_PUBLIC_CONTACT_EMAIL?.trim() || "hello@arkflowsolutions.com";
 
 /** VERIFIED — company contact number, as used across ArkFlow deliverables. */
 export const CONTACT_PHONE = "+65 8765 5809";

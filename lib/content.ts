@@ -45,11 +45,11 @@ import { WHATSAPP_URL, CONTACT_EMAIL, BOOKING_URL } from "@/lib/site";
 export const faq = [
   {
     q: "What is ArkFlow, exactly?",
-    a: "A Revenue Operating Company. We build and operate the connected system that runs between your enquiries and your revenue — capture, response, qualification, booking, conversion, follow-up, retention and reactivation. AI is part of how it works, but the product is the operating system, not the AI.",
+    a: "We build the system that answers your enquiries, books the appointment and follows up afterwards, and then we run it for you. It works across WhatsApp, Instagram, your website form and email. We call ourselves a Revenue Operating Company, which just means we operate the thing we built rather than handing it over and leaving.",
   },
   {
     q: "Is this an AI automation agency, or a chatbot?",
-    a: "Neither. A chatbot is one component someone hands you and leaves you to maintain. We design the system around how your business actually operates, implement it, and keep operating it — the software is the mechanism, the revenue operations are the work.",
+    a: "Closer to an operations team than either. A chatbot is software you configure and then maintain yourself. We build the whole path from first message to confirmed appointment, against your actual services and your actual availability, and we keep running it. If something starts going wrong on a Tuesday, finding that out is our job, not yours.",
   },
   {
     q: "How does implementation work?",
@@ -57,7 +57,7 @@ export const faq = [
   },
   {
     q: "We already have a marketing agency. Do we still need this?",
-    a: "Keep them — they're bringing people to your door. We make sure nobody who reaches your door walks away because no one answered. It's a different job entirely, and the two work better together.",
+    a: "Keep them. They are bringing people to your door, and we make sure nobody who reaches it walks away because no one answered. The two jobs are different and they work better together.",
   },
   {
     q: "We tried a chatbot before and it was a disaster.",
@@ -65,15 +65,15 @@ export const faq = [
   },
   {
     q: "What happens to our patients' data?",
-    a: "Your data stays inside the platform your system runs on, and we sign a data processing agreement with every client, consistent with Singapore PDPA. We never store or access patient clinical records — only the enquiry and booking information needed to run the system, deleted within an agreed period if the relationship ends.",
+    a: "Your data stays inside the platform your system runs on, in your own account, and we sign a data processing agreement with every client under the Singapore PDPA. We never store or access clinical records. The system holds the enquiry and booking information it needs to run, and that is deleted within an agreed period if the relationship ends.",
   },
   {
     q: "Is this appropriate for a medical setting?",
-    a: "Yes, and we take it seriously. The system never gives medical advice, never makes outcome claims, and never quotes outside your approved price list. Anything clinical is handed to your team immediately. This is configured to stay inside HSA advertising guidelines from day one — it's built in, not bolted on.",
+    a: "Yes. The system never gives medical advice, never makes outcome claims, and never quotes outside your approved price list. Anything clinical goes to your team immediately. The constraints come from wording you have approved, so they hold on a busy Saturday as well as on the day it launches.",
   },
   {
     q: "Will it feel impersonal to our patients?",
-    a: "A helpful reply in 60 seconds at 9pm is the personal touch — the alternative is silence until the next morning. The system buys your team time to be personal where it matters most: in the room with the patient, not on their phones.",
+    a: "A helpful reply within minutes at 9pm is the personal touch. The alternative is silence until the next morning. It also gives your team their evenings back, and lets them be present in the room with a patient instead of on a phone.",
   },
 ];
 
@@ -81,20 +81,20 @@ export const about = {
   mission:
     "ArkFlow exists to protect and grow the revenue that Singapore service businesses are quietly losing every day to slow replies, missed messages, no-shows and dormant follow-up.",
   positioning:
-    "Read the verbs in that mission: protect, grow, convert, reactivate. They are revenue verbs, not technology verbs. ArkFlow is a Revenue Operating Company, not an AI automation company — AI is the mechanism, the connected revenue operating system is the solution. We never lead with the technology. We lead with the revenue a business keeps.",
+    "Most automation companies sell you software and leave. We build the path an enquiry takes from the first WhatsApp message to a confirmed appointment, and then we run it: watching what the system answered, what it escalated, and what it got wrong. We describe that as being a Revenue Operating Company, which is a phrase we made up for a simple idea. We operate the thing we built.",
   vision:
-    "Depth first. ArkFlow doesn't begin as a platform — it begins by operating one business's revenue system properly, and earns the right to expand from there. Breadth is earned.",
+    "We are starting with Singapore aesthetic clinics and intend to be genuinely good at that before adding a second industry. A clinic has a specific shape: enquiries arrive on Instagram at 11pm, the consultation is the moment that matters, and the revenue is in the visit after this one. Learning one of those properly takes longer than learning five badly.",
   honesty: [
-    { title: "We mark our claims", body: "Internally, every claim ArkFlow makes carries an evidence tag: proven principle, reasoned recommendation, or validated standard. We know exactly which of our promises are proven and which are still being earned — and we say which is which rather than blurring the two." },
-    { title: "We don't publish numbers we haven't earned", body: "We're a young company, and we won't pretend otherwise. You will not find invented client counts, conversion rates or revenue figures on this site. Anything shown to illustrate how the system behaves is labelled as illustrative, in the interface itself." },
-    { title: "Scope is agreed before it is built", body: "What your system does is decided with you, in writing, before implementation starts — so what gets built is what was actually discussed, and anything outside it is raised rather than assumed." },
+    { title: "We mark our claims", body: "Every claim we make internally is tagged as either something we have proven, something we recommend on reasoning, or an industry standard we are following. When we tell you which of those a promise is, that is where the answer comes from." },
+    { title: "We don't publish numbers we haven't earned", body: "We are a young company and we are not going to pretend otherwise. There are no invented client counts, conversion rates or revenue figures on this site. Where a screen or a number is there to show you how something behaves, it is labelled illustrative in the interface itself." },
+    { title: "Scope is agreed before it is built", body: "What your system does is written down and agreed with you before anyone builds anything. If something turns out to sit outside that, we raise it rather than quietly adding it or quietly dropping it." },
   ],
 };
 
 export const contact = {
   call: {
     title: "Book a discovery call",
-    body: "Thirty minutes, no obligation. We map your enquiry-to-payment flow, run a Revenue Leak Audit on your current numbers, and show you exactly where revenue is slipping through — useful whether or not you work with us.",
+    body: "Thirty minutes, no obligation. We map how an enquiry travels from first message to paid appointment, measure your current reply times, and show you where it stops. You keep the findings whether or not you work with us.",
     // Live booking widget — every "Book Discovery Call" CTA opens this
     // in <BookingModal />. Sourced from lib/site.ts so the calendar ID
     // exists in exactly one place; the last rebuild left a dead widget
@@ -107,7 +107,7 @@ export const contact = {
      rather than shipping a dead link. Do not invent a number. */
   whatsapp: {
     title: "WhatsApp us",
-    body: "The fastest way to reach us — the same channel we build on.",
+    body: "The fastest way to reach us, and the same channel we build on.",
     href: WHATSAPP_URL,
   },
   /* `survey` removed 6 September 2026. It described a GoHighLevel survey

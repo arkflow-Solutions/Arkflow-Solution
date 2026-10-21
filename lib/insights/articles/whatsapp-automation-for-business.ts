@@ -33,7 +33,7 @@ export const article: Article = {
   slug: "whatsapp-automation-for-business",
   title:
     "WhatsApp Automation for Business: How to Book Appointments, Follow Up Leads, Reactivate Customers and Drive Revenue",
-  seoTitle: "WhatsApp Automation for Business: Book, Follow Up & Reactivate",
+  seoTitle: "WhatsApp Automation for Business",
   description:
     "How WhatsApp automation can help businesses book appointments, follow up leads, reduce missed opportunities, reactivate customers and build a connected revenue journey.",
   category: "whatsapp-automation",

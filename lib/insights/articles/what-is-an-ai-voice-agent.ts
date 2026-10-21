@@ -3,6 +3,7 @@ import type { Article } from "@/lib/insights/types";
 export const article: Article = {
   slug: "what-is-an-ai-voice-agent",
   title: "What Is an AI Voice Agent — and When Is It Actually Worth Buying?",
+  seoTitle: "What Is an AI Voice Agent?",
   description:
     "How AI voice agents handle calls, qualification and booking, where they work well, where they do not, and how to tell whether your business needs one.",
   category: "ai-voice-agents",

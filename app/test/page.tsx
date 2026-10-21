@@ -26,9 +26,9 @@ import "../audit/audit.css";
  * happens to it.
  */
 export const metadata = buildMetadata({
-  title: "After-Hours Response Test",
+  title: "Free After-Hours Enquiry Response Test",
   description:
-    "We send your business one genuine enquiry outside working hours, measure what happens to it, and send you the finding. No call required.",
+    "We send your business one genuine enquiry outside working hours, measure what happens to it, and send you the finding. No call, no obligation.",
   path: "/test",
 });
 

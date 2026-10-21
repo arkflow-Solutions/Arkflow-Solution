@@ -3,6 +3,7 @@ import type { Article } from "@/lib/insights/types";
 export const article: Article = {
   slug: "aesthetic-clinic-lead-follow-up",
   title: "How Aesthetic Clinics Lose Enquiries Before the First Consultation",
+  seoTitle: "Aesthetic Clinic Lead Follow-Up in Singapore",
   description:
     "Where Singapore aesthetic clinics lose revenue between the first enquiry and the treatment chair — and the follow-up structure that closes each gap.",
   category: "aesthetic-clinics",

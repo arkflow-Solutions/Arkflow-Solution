@@ -49,7 +49,7 @@ export const article: Article = {
   slug: "how-to-implement-ai-in-your-business",
   title:
     "How to Implement AI in Your Business: A Practical Step-by-Step Guide for Business Owners",
-  seoTitle: "How to Implement AI in Your Business: A Step-by-Step Guide",
+  seoTitle: "How to Implement AI in Your Business",
   description:
     "A practical guide to implementing AI in your business: where to start, how to find the first opportunity, what to keep human, and how to measure the result.",
   category: "ai-automation",

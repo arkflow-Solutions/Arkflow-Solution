@@ -3,6 +3,9 @@ import { Container } from "@/components/ui/container";
 import { Section } from "@/components/ui/section";
 import { PageHero } from "@/components/pages/page-hero";
 import { BookCallButton } from "@/components/pages/book-call-button";
+import { AuditButton } from "@/components/home/v3/shared";
+import { RelatedReading } from "@/components/pages/related-reading";
+import { Engagement } from "@/components/pages/engagement";
 import { Magnetic } from "@/components/motion/magnetic";
 import { ScopePlan } from "@/components/what-we-build/scope-plan";
 import { buildMetadata } from "@/lib/seo";
@@ -39,9 +42,9 @@ import "./what-we-build.css";
  * app/globals.css is not touched.
  */
 export const metadata = buildMetadata({
-  title: "What we build",
+  title: "WhatsApp Business API Setup Singapore",
   description:
-    "ArkFlow doesn't sell fixed software packages. We scope a revenue system around how your business actually works, build it, and keep operating it with you — and we are explicit about where the line is.",
+    "We scope the system around how your business runs, build it on the WhatsApp Business API and your CRM, then operate it with you. The limits are stated.",
   path: "/what-we-build",
 });
 
@@ -121,6 +124,14 @@ export default function WhatWeBuildPage() {
       </Section>
 
       {/* ------------------------------------------------- ACTION */}
+      <Engagement />
+
+      <RelatedReading
+        slugs={["how-to-implement-ai-in-your-business","what-is-an-ai-voice-agent","whatsapp-automation-for-business"]}
+        title="Before you scope anything"
+        lead="How to decide what to automate first, when a voice agent is worth buying, and what a WhatsApp build involves."
+      />
+
       <Section className="hairline">
         <Container>
           <div className="rounded-card border border-blue/30 bg-blue/[0.04] p-8 md:p-12">
@@ -132,9 +143,9 @@ export default function WhatWeBuildPage() {
             </p>
             <div className="mt-9 flex flex-wrap items-center gap-x-8 gap-y-4">
               <Magnetic>
-                <BookCallButton size="large" withArrow>
-                  {wwbCta.primary}
-                </BookCallButton>
+                <AuditButton location="what_we_build_close" size="large">
+                    {wwbCta.primary}
+                  </AuditButton>
               </Magnetic>
               <Link
                 href={wwbCta.secondaryHref}

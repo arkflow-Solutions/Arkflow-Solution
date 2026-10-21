@@ -35,7 +35,7 @@
  *    demonstrations, never claimed clients or verticals served.
  *  - No client counts, testimonials, logos, case studies, results, ad
  *    integrations or capabilities beyond the source documents.
- *  - "Under 90 seconds" appears only as the guarantee condition or a design
+ *  - "Within minutes" appears only as the guarantee condition or a design
  *    commitment. Never as achieved performance.
  */
 

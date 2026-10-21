@@ -332,6 +332,13 @@ export function HeroSequence() {
               </AnimatePresence>
             </div>
 
+            {/* THE ONE LINE THAT NEVER MOVES. Outside AnimatePresence
+                and outside the scene key on purpose: the headline
+                above it is a changing story, so this is the sentence
+                that is true at every moment of it and the one a
+                crawler reads. */}
+            <p className="af-hs-supporting">{heroMeta.supporting}</p>
+
             {/* The category name arrives only once the story has been
                 told — the same rule the previous hero followed. */}
             <motion.p

@@ -12,7 +12,7 @@ import { COMPANY } from "@/lib/site";
 import { companyLinkedIn } from "@/lib/social";
 
 export const metadata = buildMetadata({
-  title: "About ArkFlow",
+  title: "Who We Are and How We Work",
   /*
    * CORRECTED 6 September 2026, two stale strings:
    *
@@ -22,7 +22,7 @@ export const metadata = buildMetadata({
    *    described a guarantee-based honesty item that no longer exists;
    *    the latter is the actual heading rendered on the page.
    */
-  description: `${COMPANY.legalName} is a Singapore Revenue Operating Company. Why we exist, how we think, and how we stay honest.`,
+  description: "A young Singapore company building and running enquiry response, booking and follow-up for clinics. Who we are, how we work, and what we will not claim.",
   path: "/about",
 });
 
@@ -32,7 +32,7 @@ export default function AboutPage() {
     <>
       <PageHero
         eyebrow="About"
-        title="Revenue verbs, not technology verbs."
+        title="We answer the messages your clinic cannot get to."
         lead={about.mission}
       />
 
@@ -73,7 +73,9 @@ export default function AboutPage() {
         <Container className="max-w-3xl">
           <Reveal>
             <Eyebrow>Where this is going</Eyebrow>
-            <h2 className="mt-4 text-heading font-semibold">Depth before breadth</h2>
+            <h2 className="mt-4 text-heading font-semibold">
+              One industry first, properly
+            </h2>
             <p className="mt-6 text-lead text-[color:var(--text-secondary)]">
               {about.vision}
             </p>

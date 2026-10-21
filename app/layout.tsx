@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { fontSans, fontMono } from "@/lib/fonts";
+import { fontSans, fontBody, fontMono } from "@/lib/fonts";
 import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
 import { BookingModal } from "@/components/booking/booking-modal";
 import { SmoothScroll } from "@/components/motion/smooth-scroll";
 import { IntroVeilOnHome } from "@/components/motion/intro-veil-on-home";
-import { OrgJsonLd } from "@/components/seo/json-ld";
+import { OrgJsonLd, WebSiteJsonLd } from "@/components/seo/json-ld";
 import { SITE_URL } from "@/lib/site";
 import { GoogleAnalytics } from "@/components/analytics/google-analytics";
 
@@ -22,41 +22,48 @@ import { GoogleAnalytics } from "@/components/analytics/google-analytics";
  * No figure, percentage, result or client count appears here. There is
  * no verified client data, so none is claimed.
  */
+/**
+ * HOMEPAGE TITLE AND DESCRIPTION, rewritten 21 October 2026.
+ *
+ * "Revenue Operating Company" is a category we invented. It is a good
+ * brand idea and nobody types it into Google. The title now leads with
+ * the words a clinic owner actually searches — WhatsApp, AI, enquiry,
+ * Singapore — and the brand sits at the end where it belongs. The
+ * invented category still exists in the copy on the page, explained in
+ * a sentence on first use rather than asserted in a tab.
+ */
+const TITLE = "WhatsApp Automation for Singapore Clinics";
 const DESCRIPTION =
-  "ArkFlow is a Revenue Operating Company. We design the customer journey, build the system that runs it, and keep operating it — so enquiries get answered, follow-up happens, and customers come back.";
+  "ArkFlow answers clinic enquiries on WhatsApp, Instagram and email in minutes, books the appointment and follows up. Built and run for you in Singapore.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "ArkFlow · A Revenue Operating Company for growing businesses",
-    template: "%s · ArkFlow",
+    default: `${TITLE} | ArkFlow`,
+    template: "%s | ArkFlow",
   },
   description: DESCRIPTION,
-  /* Concepts, not stuffing. These are the categories ArkFlow actually
-     occupies; the copy on the page is written for people, not for this
-     list. */
-  keywords: [
-    "revenue operations",
-    "revenue operating system",
-    "AI revenue automation",
-    "lead follow-up automation",
-    "AI appointment booking",
-    "customer retention automation",
-    "customer reactivation",
-    "business automation Singapore",
-  ],
+  /**
+   * NO `keywords`. Removed 21 October 2026.
+   *
+   * Google has ignored the meta keywords tag since 2009 and said so in
+   * public. Ours was identical on all eighteen routes, which is the
+   * one thing it can still do: look like keyword stuffing to anything
+   * that does read it. The concepts it listed are now where they
+   * count, in the titles and the body copy.
+   */
   alternates: { canonical: "/" },
   openGraph: {
     type: "website",
     locale: "en_SG",
     url: SITE_URL,
     siteName: "ArkFlow",
-    title: "ArkFlow · A Revenue Operating Company for growing businesses",
+    title: `${TITLE} | ArkFlow`,
     description: DESCRIPTION,
   },
   twitter: {
     card: "summary_large_image",
-    title: "ArkFlow · A Revenue Operating Company for growing businesses",
+    title: `${TITLE} | ArkFlow`,
     description: DESCRIPTION,
   },
   robots: { index: true, follow: true },
@@ -81,7 +88,11 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${fontSans.variable} ${fontMono.variable}`}>
+    /* en-SG, not en. Every page is written in Singapore English for a
+       Singapore market — SGT, PDPA, S$, MOH — and the locale is
+       already declared as en_SG in Open Graph. The <html> tag said
+       plain "en", which is the one place a crawler looks first. */
+    <html lang="en-SG" className={`${fontSans.variable} ${fontBody.variable} ${fontMono.variable}`}>
       <head />
       <body>
         {/* HOMEPAGE ONLY, as of 6 October 2026. The veil covers the page
@@ -103,6 +114,7 @@ export default function RootLayout({
         <main id="main">{children}</main>
         <Footer />
         <OrgJsonLd />
+        <WebSiteJsonLd />
         <BookingModal />
         <GoogleAnalytics />
         {/*

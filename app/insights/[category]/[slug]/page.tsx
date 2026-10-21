@@ -41,12 +41,18 @@ export function generateMetadata({
     title: article.seoTitle ?? article.title,
     description: article.description,
     path: `/insights/${article.category}/${article.slug}`,
-    /* An article is an article. Declaring openGraph in buildMetadata
-       stops the root layout's file-based image being merged in, so the
-       branded /opengraph-image asset is named explicitly — without it
-       these pages share with no preview image at all. */
+    /* An article is an article.
+       `ogImage` REMOVED 21 October 2026. It pointed every article at
+       the generic site card, and the comment here claimed that was
+       necessary because declaring openGraph in buildMetadata blocks
+       Next's file-based image. That turned out to be wrong — tested
+       by building and reading the rendered HTML: a route with its own
+       opengraph-image.tsx and no explicit `ogImage` gets its own card
+       merged in correctly. The explicit value was the only thing
+       overriding it. Each article now shares under a card titled with
+       its own headline, from
+       app/insights/[category]/[slug]/opengraph-image.tsx. */
     ogType: "article",
-    ogImage: "/opengraph-image",
   });
 }
 

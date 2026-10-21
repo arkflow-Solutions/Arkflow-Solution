@@ -26,6 +26,8 @@
  * moving) or neutral. Green is reserved for human takeover and is not
  * used here.
  */
+import { CTA_PRIMARY, CTA_SECONDARY } from "@/lib/cta";
+
 
 export type HeroScene = {
   /** Headline, split so the second half can carry the accent colour. */
@@ -161,12 +163,25 @@ export const heroMeta = {
      Optimise · Scale" — one primary tagline, per Part 48, and that one
      is "Capture more. Convert more. Retain more." */
   eyebrow: "For Singapore clinics & appointment-based businesses",
+  /**
+   * THE PLAIN-ENGLISH LINE, added 21 October 2026.
+   *
+   * The headline is a six-scene story and every line of it changes as
+   * the pendulum swings, which is good theatre and leaves a visitor
+   * who arrives mid-sequence — or a crawler, which sees only the
+   * first scene — without a sentence that says what this company
+   * does. This one never moves, never animates, and is in the
+   * server-rendered HTML. It is also where the words people actually
+   * search live: WhatsApp, Instagram, enquiries, booking, Singapore.
+   */
+  supporting:
+    "AI-powered enquiry response, booking and follow-up over WhatsApp, Instagram and email — built and operated for Singapore clinics and appointment-based businesses.",
   /** Shown on the resting scene, under the headline. */
   signature: "ArkFlow — a Revenue Operating Company",
   /** The division of labour, held on screen through every scene. */
   aiLine: "AI handles the repetition. Your team handles the relationship.",
-  primaryCta: "Get your free Revenue Leak Audit",
-  secondaryCta: "See how it works",
+  primaryCta: CTA_PRIMARY,
+  secondaryCta: CTA_SECONDARY,
   /** The clock starts here and ticks forward. Time, not money. */
   clock: { h: 9, m: 41, s: 3 },
 } as const;

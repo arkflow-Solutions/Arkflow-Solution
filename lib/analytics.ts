@@ -59,6 +59,11 @@ export type ArkFlowEvent =
   | 'test_form_start'
   | 'test_form_submit'
   // Other enquiry paths
+  /* The contact form reported nothing at all until 21 October 2026 —
+     no start, no submit — so the only intake path on the site was the
+     one thing that could not be measured. See the note on the ref
+     guard in components/contact/contact-experience.tsx. */
+  | 'contact_form_start'
   | 'contact_form_submit'
   | 'quotation_request_submit'
   | 'whatsapp_click'

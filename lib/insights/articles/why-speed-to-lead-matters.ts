@@ -3,6 +3,7 @@ import type { Article } from "@/lib/insights/types";
 export const article: Article = {
   slug: "why-speed-to-lead-matters",
   title: "Why Speed-to-Lead Decides More Revenue Than Your Marketing Budget",
+  seoTitle: "How Fast Should You Reply to a Lead?",
   description:
     "The gap between an enquiry arriving and someone answering it is the most measurable revenue leak in a service business. How to find yours and close it.",
   category: "lead-response",

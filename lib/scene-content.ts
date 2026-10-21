@@ -27,6 +27,8 @@
  * customer dialogue is inventing a product demonstration.
  */
 
+import { CTA_PRIMARY } from "@/lib/cta";
+
 /* ==================================================== 01 · THE OPENING */
 
 export const sceneOpening = {
@@ -43,7 +45,7 @@ export const sceneOpening = {
   titleAccent: "leaking revenue.",
   /** One line. The visual is doing the rest. */
   lead: "Opportunities arrive. Some of them quietly never go anywhere.",
-  primaryCta: "Book a Discovery Call",
+  primaryCta: CTA_PRIMARY,
   secondaryCta: "See where",
   /** Labels on the entry points. Recognisable objects, not channels. */
   doors: ["Website", "Messaging", "Phone", "Social"],
@@ -76,7 +78,7 @@ export const sceneOpening = {
  * can count, so the copy carries none and the row shows all eight.
  *
  * WHAT MUST NEVER APPEAR HERE. The previous live site's inbox panel
- * carried a "4 UNREAD" counter and "answered in under 90 seconds".
+ * carried a "4 UNREAD" counter and "answered within minutes".
  * Neither renders anywhere in v3 and neither may be added. No counter,
  * no unread dot, no timestamp, no response time, no metric, no KPI, no
  * chart, and no real person's data.
@@ -185,7 +187,7 @@ export const sceneUnanswered = {
 
 export const sceneDays = {
   title: "“I’ll follow up later.”",
-  lead: "Later is not a system. It is a note that stays where it was written.",
+  lead: "The note gets written on a Monday. By Thursday the enquiry is three screens down and nobody has opened it.",
   note: "follow up Tuesday",
   problemLabel: "The week nothing happens",
   resolvedLabel: "The week the system runs",
@@ -354,8 +356,8 @@ export const sceneClose = {
   /* `ctaLead` REMOVED — it described the audit as a process in 24 words
      while ctaTitle asks the question and ctaNote answers the only
      objection. Nothing about the offer is lost. */
-  ctaNote: "It is a diagnosis, not a contact form.",
-  cta: "Get your free Revenue Leak Audit",
+  ctaNote: "You keep the findings either way.",
+  cta: CTA_PRIMARY,
   /* `areasLabel` and the ten audit areas REMOVED. Five of those ten were
      word-for-word the public stage labels from scene 09 — Qualification,
      Booking, Follow-up, Retention, Reactivation — and two more were

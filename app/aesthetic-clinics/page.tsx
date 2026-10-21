@@ -4,13 +4,15 @@ import { Eyebrow } from "@/components/ui/eyebrow";
 import { Reveal } from "@/components/motion/reveal";
 import { PageHero } from "@/components/pages/page-hero";
 import { CtaBand } from "@/components/pages/cta-band";
+import { RelatedReading } from "@/components/pages/related-reading";
 
+import { ServiceJsonLd } from "@/components/seo/json-ld";
 import { buildMetadata } from "@/lib/seo";
 
 export const metadata = buildMetadata({
-  title: "ArkFlow for Singapore aesthetic clinics",
+  title: "AI Chatbot for Aesthetic Clinics Singapore",
   description:
-    "Enquiry response, consultation booking, deposits, follow-up and repeat visits — run as one connected system, built around how a Singapore clinic operates.",
+    "Answer clinic enquiries on WhatsApp and Instagram in minutes, book the consultation and follow up. Built and operated for Singapore clinics.",
   path: "/aesthetic-clinics",
 });
 
@@ -59,6 +61,13 @@ const boundaries = [
 export default function AestheticClinicsPage() {
   return (
     <>
+      {/* Service schema. No offers block and no aggregateRating —
+          see the note in components/seo/json-ld.tsx. */}
+      <ServiceJsonLd
+        name="AI enquiry response and booking for aesthetic clinics"
+        description="ArkFlow answers clinic enquiries on WhatsApp, Instagram and email in minutes, books the consultation, and runs the follow-up and recall afterwards."
+        path="/aesthetic-clinics"
+      />
       <PageHero
         eyebrow="Current commercial focus"
         title="Built first for Singapore aesthetic clinics."
@@ -151,6 +160,12 @@ export default function AestheticClinicsPage() {
           </Reveal>
         </Container>
       </Section>
+
+      <RelatedReading
+        slugs={["aesthetic-clinic-lead-follow-up","why-speed-to-lead-matters","whatsapp-automation-for-business"]}
+        title="How clinics actually lose enquiries"
+        lead="Three pieces on the mechanics behind this page: where enquiries go cold, how fast a reply has to be, and what WhatsApp can and cannot do for a clinic."
+      />
 
       <CtaBand
         title="Start with a Revenue Leak Audit."

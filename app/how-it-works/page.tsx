@@ -4,19 +4,20 @@ import { Eyebrow } from "@/components/ui/eyebrow";
 import { Reveal } from "@/components/motion/reveal";
 import { PageHero } from "@/components/pages/page-hero";
 import { CtaBand } from "@/components/pages/cta-band";
+import { RelatedReading } from "@/components/pages/related-reading";
 import { BookCallButton } from "@/components/pages/book-call-button";
 import { howWeWork } from "@/lib/home-content";
 
 import { buildMetadata } from "@/lib/seo";
 
 export const metadata = buildMetadata({
-  title: "How ArkFlow works",
+  title: "Clinic Appointment Booking Automation Singapore",
   /* Corrected 7 Sep 2026: the step is "Optimisation", not "30-day
      optimisation" — that name was retired with the guarantee it was
      measured against. The audit is no longer the entry point either;
      a discovery call is. */
   description:
-    "Discovery, setup, testing, go-live and optimisation. How an ArkFlow system is built, tested and operated — starting with a discovery call.",
+    "How we build it: discovery, setup against your real services, testing, go-live, then weekly tuning. What happens in each stage and how long it takes.",
   path: "/how-it-works",
 });
 
@@ -111,6 +112,12 @@ export default function HowItWorksPage() {
           </Reveal>
         </Container>
       </Section>
+
+      <RelatedReading
+        slugs={["how-to-implement-ai-in-your-business","why-speed-to-lead-matters"]}
+        title="Read this before the first call"
+        lead="Two pieces that cover most of what people ask us in discovery."
+      />
 
       <CtaBand />
     </>

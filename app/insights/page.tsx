@@ -8,9 +8,9 @@ import { articles, categoryCounts, latestArticles } from "@/lib/insights";
 import { categories } from "@/lib/insights/categories";
 
 export const metadata = buildMetadata({
-  title: "ArkFlow Intelligence",
+  title: "Insights on Clinic Automation",
   description:
-    "Practical writing on Revenue Operations for Singapore service businesses — lead response, WhatsApp, CRM, voice AI and aesthetic clinic operations.",
+    "Practical writing for Singapore service businesses on lead response times, WhatsApp automation, PDPA, CRM and clinic operations. No vendor fluff.",
   path: "/insights",
 });
 

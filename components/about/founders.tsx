@@ -1,4 +1,6 @@
 import Image from "next/image";
+import Link from "next/link";
+import { Linkedin } from "lucide-react";
 import { COMPANY, COMPANY_IDENTIFIER } from "@/lib/site";
 
 /**
@@ -12,16 +14,27 @@ import { COMPANY, COMPANY_IDENTIFIER } from "@/lib/site";
  * founder has a real, reserved frame carrying their initials, sized to
  * the exact aspect ratio the photographs will use.
  *
- * TO DROP THE REAL PHOTOS IN: add the files to public/brand/, then set
- * `photo` on the founder below. Nothing else changes — same frame, same
- * dimensions, no layout shift, no redesign.
+ * REINSTATED 21 October 2026. The cards were hidden on 6 October
+ * because two empty frames read as an unfinished page. They are back,
+ * because an About page that names no human being is a worse problem
+ * than an unfinished one: a clinic owner deciding whether to hand over
+ * their patient enquiries wants to know who they are handing them to.
+ * The frames carry initials until the photographs arrive.
+ *
+ * EVERY UNSUPPLIED FIELD IS A VISIBLE PLACEHOLDER, not a guess. `bio`
+ * reads [BIO — …] on the page on purpose: a bracket in production is
+ * embarrassing for a day, an invented credential is a liability
+ * forever. Fill them in `founders` below and the brackets disappear.
+ *
+ * TO FINISH THIS SECTION:
+ *   1. Drop the photographs in public/brand/ and set `photo`.
+ *   2. Write two or three factual sentences each and set `bio`.
+ *   3. Set `linkedin` to each personal profile URL.
+ * Nothing else changes — same frame, same dimensions, no layout shift.
  *
  * NOTHING HERE IS INVENTED. Names and roles are as supplied by the
  * founder; the company line comes from lib/site.ts, which is the single
- * verified source for the ACRA name, UEN and registered address. There
- * are no biographies, because none have been supplied — an invented
- * credential on a trust page is the most expensive sentence on a
- * website.
+ * verified source for the ACRA name, UEN and registered address.
  */
 
 type Founder = {
@@ -30,26 +43,48 @@ type Founder = {
   initials: string;
   /** Set once real photography exists, e.g. "/brand/khairul.jpg". */
   photo?: string;
+  /**
+   * Two or three factual sentences. What they did before ArkFlow and
+   * what they are responsible for here. No adjectives that cannot be
+   * checked — not "visionary", not "award-winning" unless there is an
+   * award with a name and a year.
+   */
+  bio?: string;
+  /** Personal LinkedIn profile, not the company page. */
+  linkedin?: string;
 };
 
 const founders: Founder[] = [
-  { name: "Khairul Naim", role: "Founder", initials: "KN" },
-  { name: "Clifford Tan", role: "Co-Founder", initials: "CT" },
+  {
+    name: "Khairul Naim",
+    role: "Founder",
+    initials: "KN",
+    // photo: "/brand/khairul-naim.jpg",
+    // bio: "...",
+    // linkedin: "https://www.linkedin.com/in/...",
+  },
+  {
+    name: "Clifford Tan",
+    role: "Co-Founder",
+    initials: "CT",
+    // photo: "/brand/clifford-tan.jpg",
+    // bio: "...",
+    // linkedin: "https://www.linkedin.com/in/...",
+  },
 ];
 
-export function Founders() {
-  /* HIDDEN UNTIL THERE ARE PHOTOGRAPHS (founder decision, 6 Oct 2026).
-     Two empty frames carrying initials read as an unfinished page rather
-     than as a trust signal, so the cards stay out until there is
-     something real to put in them. Set `photo` on either founder above
-     and this grid returns on its own — no markup change, no redesign.
-     The company block below is unaffected: the registered entity, UEN
-     and address are verified and are the part doing the actual work. */
-  const hasPhotos = founders.some((f) => f.photo);
+/** A bracketed placeholder, styled so nobody ships it by accident. */
+function Placeholder({ children }: { children: React.ReactNode }) {
+  return (
+    <span className="rounded-[4px] bg-warning/10 px-1.5 py-0.5 font-mono text-small text-warning">
+      {children}
+    </span>
+  );
+}
 
+export function Founders() {
   return (
     <div>
-      {hasPhotos && (
       <div className="grid gap-10 sm:grid-cols-2 sm:gap-12">
         {founders.map((f) => (
           <div key={f.name}>
@@ -76,14 +111,46 @@ export function Founders() {
                 </div>
               )}
             </div>
+
             <p className="mt-5 text-subheading font-medium text-white">{f.name}</p>
-            <p className="mt-1 text-body text-[color:var(--text-secondary)]">{f.role}</p>
+            <p className="mt-1 text-body text-[color:var(--text-secondary)]">
+              {f.role}
+            </p>
+
+            <p className="mt-4 max-w-prose text-body text-[color:var(--text-secondary)]">
+              {f.bio ?? (
+                <Placeholder>
+                  [BIO — two or three factual sentences for {f.name}]
+                </Placeholder>
+              )}
+            </p>
+
+            {f.linkedin ? (
+              <Link
+                href={f.linkedin}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-4 inline-flex items-center gap-2 text-small text-blue-soft underline underline-offset-4 transition-colors hover:text-white"
+              >
+                <Linkedin size={16} aria-hidden />
+                {f.name} on LinkedIn
+              </Link>
+            ) : (
+              <p className="mt-4">
+                <Placeholder>[LINKEDIN URL — {f.name}]</Placeholder>
+              </p>
+            )}
+
+            {!f.photo && (
+              <p className="mt-3">
+                <Placeholder>[PHOTO — public/brand/, 4:5 portrait]</Placeholder>
+              </p>
+            )}
           </div>
         ))}
       </div>
-      )}
 
-      <dl className="grid max-w-2xl gap-3 text-body text-[color:var(--text-secondary)]">
+      <dl className="mt-14 grid max-w-2xl gap-3 text-body text-[color:var(--text-secondary)]">
         <div className="flex flex-wrap gap-x-3">
           <dt className="text-[color:var(--text-tertiary)]">Registered entity</dt>
           <dd>{COMPANY_IDENTIFIER}</dd>

@@ -47,9 +47,9 @@ import "./attract.css";
  * where the locked homepage scenes live — is not touched at all.
  */
 export const metadata = buildMetadata({
-  title: "Websites — the front door of your revenue system",
+  title: "Clinic Website Design Singapore",
   description:
-    "A website isn't where you put information. It's where you guide a decision. ArkFlow designs and builds the website experience for Singapore service businesses, as stage one of the revenue system behind it.",
+    "A website that guides a decision instead of listing services, with enquiry capture wired into the system that answers. Built for Singapore businesses.",
   path: "/attract",
 });
 

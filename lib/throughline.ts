@@ -173,7 +173,7 @@ export const THROUGHLINE_STAGES: readonly ThroughlineStage[] = [
     t: 0.222,
     kind: "branch",
     meaning:
-      "An answer in seconds, and a person takes over the moment judgement is needed.",
+      "An answer within minutes, and a person takes over the moment judgement is needed.",
   },
   {
     label: "Qualify",

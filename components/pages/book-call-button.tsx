@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { useBooking } from "@/lib/use-booking";
 import { contact } from "@/lib/content";
 import { track } from "@/lib/analytics";
+import { CTA_PRIMARY } from "@/lib/cta";
 
 /**
  * BookCallButton — opens the ArkFlow booking modal (GoHighLevel
@@ -17,7 +18,7 @@ export function BookCallButton({
   variant,
   withArrow,
   location = "book_call_button",
-  children = "Book Discovery Call",
+  children = CTA_PRIMARY,
 }: {
   className?: string;
   size?: "default" | "large";
