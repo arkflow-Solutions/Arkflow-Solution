@@ -376,7 +376,23 @@ export function ContactExperience() {
 
   return (
     <div className="cx">
-      <style>{styles}</style>
+      {/*
+        dangerouslySetInnerHTML, NOT <style>{styles}</style>.
+
+        FIXED 21 October 2026. As a text child, React escapes the CSS
+        on the server and does not on the client, so the two copies of
+        this stylesheet never matched. The page threw React errors
+        418, 423 and 425 on every load, and 423 means hydration gave
+        up and re-rendered the whole document on the client — the
+        reason /contact scored 96 on Lighthouse best-practices while
+        every other route scored 100.
+
+        The CSS is a local constant in this file. Nothing from a user,
+        a URL or a request reaches it, so there is no injection
+        surface here; the "dangerously" prefix is about untrusted
+        input, and there is none.
+      */}
+      <style dangerouslySetInnerHTML={{ __html: styles }} />
 
       {/* HERO */}
       <section className="cx-hero">
@@ -542,6 +558,8 @@ export function ContactExperience() {
                               className="cx-input"
                               style={{ marginTop: 0 }}
                               placeholder="First name *"
+                              aria-label="First name"
+                              required
                               value={form.firstName}
                               autoFocus
                               onChange={(e) => set({ firstName: e.target.value })}
@@ -551,6 +569,8 @@ export function ContactExperience() {
                               className="cx-input"
                               style={{ marginTop: 0 }}
                               placeholder="Last name *"
+                              aria-label="Last name"
+                              required
                               value={form.lastName}
                               onChange={(e) => set({ lastName: e.target.value })}
                               onKeyDown={(e) => e.key === "Enter" && next()}
@@ -566,6 +586,8 @@ export function ContactExperience() {
                           <input
                             className="cx-input"
                             placeholder="Radiance Aesthetics"
+                            aria-label="Business name"
+                            required
                             value={form.business}
                             autoFocus
                             onChange={(e) => set({ business: e.target.value })}
@@ -677,6 +699,8 @@ export function ContactExperience() {
                               className="cx-input"
                               style={{ marginTop: 0 }}
                               placeholder="Email *"
+                              aria-label="Email address"
+                              required
                               type="email"
                               value={form.email}
                               onChange={(e) => set({ email: e.target.value })}
@@ -685,6 +709,7 @@ export function ContactExperience() {
                               className="cx-input"
                               style={{ marginTop: 0 }}
                               placeholder="Phone"
+                              aria-label="Phone number (optional)"
                               value={form.phone}
                               onChange={(e) => set({ phone: e.target.value })}
                             />
@@ -705,6 +730,7 @@ export function ContactExperience() {
                           <textarea
                             className="cx-input"
                             placeholder="Anything you'd like us to know? (optional)"
+                            aria-label="Anything else you would like us to know (optional)"
                             value={form.message}
                             onChange={(e) => set({ message: e.target.value })}
                           />

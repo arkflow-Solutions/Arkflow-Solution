@@ -50,12 +50,30 @@ export function Wordmark({
         aria-hidden
         width={320}
         height={200}
+        /* 45px is what a 320x200 source occupies at h-7. Without it
+           next/image generated a srcset up to 640w and preloaded it at
+           high priority on every page, so a 28px-tall navbar logo was
+           competing with the headline and the webfonts for the first
+           bytes. */
+        sizes="45px"
         className="h-7 w-auto"
-        priority
+        /* NOT priority. This is the navigation, not the hero. The rule
+           is one priority image per page and the hero owns it. */
+        priority={false}
       />
+      {/* "FLOW" was --blue (#1a3cff), which measures 2.87:1 against
+          the ink background. That fails WCAG AA at any size: large
+          text needs 3:1 and this is right underneath it. It is the
+          wordmark, so it is on every page, and it was the only
+          contrast failure on the site.
+
+          --blue-soft (#3b82f6) is already in the locked palette and
+          measures about 5.3:1. Same hue family, same brand, legible.
+          The electric blue stays everywhere it passes — buttons, which
+          are blue-on-white, and accents at larger sizes. */}
       <span className="text-lg font-bold tracking-tight">
         <span className="text-white">ARK</span>
-        <span className="text-blue">FLOW</span>
+        <span className="text-blue-soft">FLOW</span>
       </span>
     </Link>
   );

@@ -109,15 +109,18 @@ export default function AestheticClinicsPage() {
 
           <ol className="mt-14 space-y-px overflow-hidden rounded-card border border-[color:var(--border-subtle)]">
             {journey.map((j, i) => (
-              <Reveal key={j.stage} delay={i * 0.04} className="bg-surface/60">
-                <li className="grid gap-5 p-7 md:grid-cols-[180px_1fr] md:p-8">
+              <Reveal
+                key={j.stage}
+                as="li"
+                delay={i * 0.04}
+                className="grid gap-5 bg-surface/60 p-7 md:grid-cols-[180px_1fr] md:p-8"
+              >
                   <p className="font-mono text-eyebrow uppercase text-blue-soft">
                     {j.stage}
                   </p>
-                  <p className="max-w-prose text-body text-[color:var(--text-secondary)]">
-                    {j.body}
-                  </p>
-                </li>
+                <p className="max-w-prose text-body text-[color:var(--text-secondary)]">
+                  {j.body}
+                </p>
               </Reveal>
             ))}
           </ol>

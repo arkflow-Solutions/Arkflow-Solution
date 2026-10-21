@@ -40,10 +40,20 @@ import { Schibsted_Grotesk, Hanken_Grotesk, JetBrains_Mono } from "next/font/goo
  * fallback occupies almost exactly the same space.
  */
 
-/** Display and headings. */
+/**
+ * WEIGHTS AND PRELOADING WERE TUNED AGAINST A MEASUREMENT, not
+ * guessed. The first cut loaded Schibsted at 500 and 600 and Hanken at
+ * 400 and 500, all preloaded alongside mono. Mobile Lighthouse on the
+ * homepage went from 88 to 77 and first contentful paint from 1.2s to
+ * 2.0s, with 80KB of font files landing in the critical window. The
+ * settings below are what brought it back; re-measure if you change
+ * them.
+ */
+
+/** Display and headings. One weight — 600 is the only one used. */
 export const fontSans = Schibsted_Grotesk({
   subsets: ["latin"],
-  weight: ["500", "600"],
+  weight: ["600"],
   variable: "--font-display",
   display: "swap",
 });
@@ -59,10 +69,17 @@ export const fontBody = Hanken_Grotesk({
 /**
  * The utility face — eyebrows, metrics, system labels, tabular
  * figures. The operational voice.
+ *
+ * NOT PRELOADED, deliberately. It sets eyebrows and small labels and
+ * never the largest element on any screen, so it has no business
+ * competing with the headline and the body copy for the first few
+ * hundred milliseconds. next/font still generates the fallback
+ * metrics, so the swap when it does arrive does not shift layout.
  */
 export const fontMono = JetBrains_Mono({
   subsets: ["latin"],
   weight: ["400", "500"],
   variable: "--font-mono",
   display: "swap",
+  preload: false,
 });

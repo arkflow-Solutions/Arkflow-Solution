@@ -56,8 +56,12 @@ export function RelatedReading({
 
         <ul className="mt-10 grid gap-x-10 gap-y-8 md:grid-cols-3">
           {items.map((a, i) => (
-            <Reveal key={a.slug} delay={i * 0.05}>
-              <li className="border-t border-[color:var(--border-subtle)] pt-5">
+            <Reveal
+              key={a.slug}
+              as="li"
+              delay={i * 0.05}
+              className="border-t border-[color:var(--border-subtle)] pt-5"
+            >
                 <Link
                   href={`/insights/${a.category}/${a.slug}`}
                   className="group block"
@@ -69,7 +73,6 @@ export function RelatedReading({
                     {a.description}
                   </span>
                 </Link>
-              </li>
             </Reveal>
           ))}
         </ul>

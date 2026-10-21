@@ -106,8 +106,12 @@ export function Engagement() {
 
           <ol className="mt-12 grid gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
             {engagementTimeline.weeks.map((w, i) => (
-              <Reveal key={w.week} delay={i * 0.05}>
-                <li className="border-t border-[color:var(--border-subtle)] pt-5">
+              <Reveal
+                key={w.week}
+                as="li"
+                delay={i * 0.05}
+                className="border-t border-[color:var(--border-subtle)] pt-5"
+              >
                   <span className="font-mono text-eyebrow uppercase text-[color:var(--text-tertiary)]">
                     {w.week}
                   </span>
@@ -117,7 +121,6 @@ export function Engagement() {
                   <p className="mt-2 text-small leading-relaxed text-[color:var(--text-secondary)]">
                     {w.body}
                   </p>
-                </li>
               </Reveal>
             ))}
           </ol>

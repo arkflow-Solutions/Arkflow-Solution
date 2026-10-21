@@ -84,7 +84,11 @@
   }
 
   h4, h5, h6 {
-    @apply font-display;
+    /* Body face, not the display face. Schibsted ships one weight on
+       this site (600) to keep the critical-path font payload down, and
+       a synthesised 500 looks worse than Hanken's real one. At these
+       sizes the two are hard to tell apart anyway. */
+    @apply font-sans;
     font-weight: 500;
     line-height: 1.25;
     /* No negative tracking at these sizes — it only helps above
