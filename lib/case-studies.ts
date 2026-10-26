@@ -193,4 +193,177 @@ export const khaiVisuals: CaseStudy = {
   },
 };
 
-export const publishedCaseStudies: CaseStudy[] = [khaiVisuals];
+export const brewprint: CaseStudy = {
+  slug: "brewprint-coffee",
+  client: "Brewprint Coffee",
+  discipline: "Specialty coffee and matcha",
+  sector: "Food and beverage",
+  live: "October 2026",
+  url: "https://www.brewprintsg.app/",
+  host: "brewprintsg.app",
+
+  standfirst:
+    "A neighbourhood cafe in Tampines that needed to sell beans to people who would never walk past it.",
+
+  body: [
+    /* The problem is stated structurally. No claim is made about what
+       the cafe sold before, because nothing was measured. */
+    "Brewprint roasts and serves specialty coffee from a shop in Tampines. A cafe like that has two quite different jobs on the web and most cafe websites only attempt the first: tell people where you are and when you open, and then stop. The second job is harder. Someone who liked the matcha on Saturday should be able to buy a bag of it on Wednesday from an office in Raffles Place, and someone planning a company event should be able to book the live coffee station without a four-email thread.",
+    "So the site is a shop as well as a storefront. Five products with their own pages and Product and Offer structured data, a working cart, a checkout, and an order confirmation. Alongside it an events page for the live coffee and matcha station, with its own booking path and its own confirmation. The cafe itself is described in the way Google needs it: CafeOrCoffeeShop structured data carrying the real address, the real coordinates and the real opening hours, so the shop shows up correctly when someone in Tampines asks their phone where to get coffee.",
+    "Underneath, the whole thing is hand-written. One third-party script on the entire site and it is the Google Map on the contact page. Fifty-four images, every one WebP. No framework, no page builder, no plugin stack, no theme. The blueprint drawings in the hero are drawn in the browser rather than loaded as photographs, which is why a site with that much going on in it still arrives quickly on a phone.",
+  ],
+
+  scope: [
+    {
+      title: "Attract",
+      summary: "Be findable by people who want coffee near them, and by people who want beans delivered.",
+      items: [
+        "Nineteen pages, including five product pages and an events page",
+        "CafeOrCoffeeShop structured data with address, coordinates and opening hours",
+        "Product and Offer structured data on every item in the shop",
+        "Three guides on matcha, beans and the cafe itself",
+        "Sitemap and a robots file that keeps cart and confirmation pages out of search",
+      ],
+    },
+    {
+      title: "Capture and convert",
+      summary: "Two different buyers, two different paths, both finished on the site.",
+      items: [
+        "A shop with a cart, a checkout and an order confirmation",
+        "An events path for booking the live coffee and matcha station",
+        "A first-order welcome offer, presented once rather than on every visit",
+        "WhatsApp, phone and email on every page for the ones who would rather ask",
+      ],
+    },
+    {
+      title: "Under the hood",
+      summary: "A shop that still has to load on a phone in a lift lobby.",
+      items: [
+        "54 images, every one WebP — no JPEG, no PNG",
+        "Exactly one third-party script, and it is the map on the contact page",
+        "Hero illustrations drawn in the browser rather than loaded as images",
+        "No framework, no page builder, no theme and no plugin stack",
+        "Five legal pages, including shipping and returns, because it takes payments",
+      ],
+    },
+  ],
+
+  facts: [
+    { value: 19, label: "pages live", source: "Counted from the published sitemap.xml" },
+    { value: 54, label: "images, all WebP", source: "Unique image files, crawled across all 19 pages" },
+    { value: 5, label: "products, each with schema", source: "Product and Offer markup, read from the page source" },
+    { value: 1, label: "third-party script", source: "The Google Map embed. Counted from the page source" },
+  ],
+
+  outcomes: [],
+
+  pending:
+    "The shop went live in October 2026. Order volume, average basket and event bookings will be published here when there are enough months of them to mean something, taken from the client's own records and only with their sign-off.",
+
+  shots: {
+    desktop: {
+      src: "/case-studies/brewprint-desktop.jpg",
+      width: 1440,
+      height: 900,
+      alt: "The Brewprint Coffee homepage: a line-drawn cup rendered like a technical blueprint beside the headline 'Coffee drawn to a blueprint', with Order Online and Book Our Service buttons.",
+    },
+    mobile: {
+      src: "/case-studies/brewprint-mobile.jpg",
+      width: 390,
+      height: 844,
+      alt: "The same homepage on a phone, the blueprint cup above the headline and the ordering button.",
+    },
+  },
+};
+
+export const fortAchievers: CaseStudy = {
+  slug: "fort-achievers",
+  client: "Fort Achievers & Co.",
+  discipline: "Home-based behaviour and communication support",
+  sector: "Child development",
+  live: "October 2026",
+  url: "https://www.fortachieversco.com/",
+  host: "fortachieversco.com",
+
+  standfirst:
+    "A Singapore practice supporting children at home, whose parents arrive at 1am having searched for something worrying.",
+
+  body: [
+    /* The audience description is the client's own, from their site.
+       No claim is made here about enquiry volume or outcomes. */
+    "Fort Achievers works with children in their own homes and shadows them at school. The parents who find them are usually searching at an odd hour, for something specific and frightening, in words no service page uses: why does my child hit, is this a meltdown or a tantrum, gentle parenting is not working. A brochure site with three service pages never meets that search.",
+    "So the largest part of this build is the writing. Fourteen articles, each one answering a question a parent actually types, each one linked to the service it belongs to. That sits on top of three service pages, an about page and an FAQ whose six questions are marked up as FAQPage structured data so the answers can appear in the search result itself. Two parent-story videos carry VideoObject markup with their real durations and upload dates.",
+    "The capture layer is built for the hour these parents arrive. Every page carries both a booking path for the free assessment and a WhatsApp button, twenty-three of them across the site, because a parent at 1am will send a message and will not fill in a form. And the entire site loads no third-party script at all: not one analytics tag, not one widget, not one font service. Sixty of its sixty-two images are lazy-loaded and the content renders with JavaScript switched off.",
+  ],
+
+  scope: [
+    {
+      title: "Attract",
+      summary: "Meet the parent at the search they actually make, not the one a brochure expects.",
+      items: [
+        "Twenty-five pages, fourteen of them long-form articles",
+        "Three service pages: home support, school shadowing, workshops and training",
+        "An FAQ marked up as FAQPage structured data, six questions",
+        "LocalBusiness and WebSite structured data with real opening hours",
+        "Two parent-story videos with VideoObject markup",
+      ],
+    },
+    {
+      title: "Capture",
+      summary: "A parent reading at 1am needs a way through that works at 1am.",
+      items: [
+        "A free-assessment booking path on every page",
+        "Twenty-three WhatsApp entry points across the site",
+        "Phone and contact form for the ones who would rather call",
+        "The same two actions in the header, the hero and the footer, everywhere",
+      ],
+    },
+    {
+      title: "Under the hood",
+      summary: "No vendor scripts at all, on a site about children.",
+      items: [
+        "Zero third-party scripts — no widget, no tag, no font service",
+        "60 of 62 images lazy-loaded, one marked high priority for the hero",
+        "Content renders with JavaScript switched off",
+        "Self-hosted fonts and self-hosted assets throughout",
+      ],
+    },
+  ],
+
+  facts: [
+    { value: 25, label: "pages live", source: "Counted from the published sitemap.xml" },
+    { value: 14, label: "articles published", source: "Blog URLs in the sitemap" },
+    { value: 23, label: "WhatsApp entry points", source: "wa.me links counted in the homepage source" },
+    { value: 0, label: "third-party scripts", source: "No external script tags in the page source" },
+  ],
+
+  outcomes: [],
+
+  pending:
+    "The site went live in October 2026. Enquiry and assessment-booking figures will be published here once there are enough months of them to mean something, taken from the client's own records and only with their sign-off. The Google rating shown on their site is their own, earned before this build, and is not a result of it.",
+
+  shots: {
+    desktop: {
+      src: "/case-studies/fort-achievers-desktop.jpg",
+      width: 1440,
+      height: 900,
+      alt: "The Fort Achievers & Co. homepage: a child reaching for a moon-shaped balloon behind the headline 'Home-based behaviour and communication support for children in Singapore', with booking and WhatsApp buttons.",
+    },
+    mobile: {
+      src: "/case-studies/fort-achievers-mobile.jpg",
+      width: 390,
+      height: 844,
+      alt: "The same homepage on a phone, the headline over the photograph above the two buttons.",
+    },
+  },
+};
+
+/**
+ * Newest first. The page renders them in this order.
+ */
+export const publishedCaseStudies: CaseStudy[] = [
+  fortAchievers,
+  brewprint,
+  khaiVisuals,
+];
+

@@ -22,6 +22,54 @@
  * screenshot throws onto a dark wall rather than as an accent.
  */
 
+/* -------------------------------------------------- entry marker */
+
+/*
+ * Three case studies on one page need a visible seam, or the second
+ * one's prose reads as a continuation of the first one's. The marker
+ * is an ordinal, the client's name and one line of metadata, sitting
+ * on the section rule — the same grammar as a drawing's title block.
+ */
+
+.af-cs-entry + .af-cs-entry {
+  /* The hairline on the marker's own Section already draws the rule,
+     so this is breathing room rather than a second line. */
+  margin-top: 2rem;
+}
+
+.af-cs-marker {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.25rem 1.25rem;
+  align-items: baseline;
+}
+
+.af-cs-marker__n {
+  grid-row: 1 / span 2;
+  font-family: var(--font-mono), monospace;
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  line-height: 1;
+  font-weight: 500;
+  color: var(--blue-soft);
+  font-variant-numeric: tabular-nums;
+}
+
+.af-cs-marker__name {
+  font-size: clamp(1.5rem, 3vw, 2.125rem);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  font-weight: 600;
+  color: #fff;
+}
+
+.af-cs-marker__meta {
+  font-family: var(--font-mono), monospace;
+  font-size: 0.6875rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+
 /* ------------------------------------------------------- showcase */
 
 .af-cs-showcase {

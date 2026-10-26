@@ -34,7 +34,16 @@ import type { CaseStudy } from "@/lib/case-studies";
  * prefers-reduced-motion both are pinned and nothing moves — the
  * composition does not depend on it.
  */
-export function Showcase({ study }: { study: CaseStudy }) {
+export function Showcase({
+  study,
+  priority = false,
+}: {
+  study: CaseStudy;
+  /* Only the first study on the page gets priority. Three priority
+     images on one route is three LCP candidates competing, which is
+     the same as none. */
+  priority?: boolean;
+}) {
   const reduce = useReducedMotion();
   const ref = useRef<HTMLDivElement>(null);
   const seen = useRef(false);
@@ -84,7 +93,8 @@ export function Showcase({ study }: { study: CaseStudy }) {
               width={study.shots.desktop.width}
               height={study.shots.desktop.height}
               sizes="(max-width: 1024px) 100vw, 1100px"
-              priority
+              priority={priority}
+              loading={priority ? undefined : "lazy"}
               className="af-cs-screen"
             />
           </figure>

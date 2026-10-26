@@ -5,10 +5,9 @@ import { Eyebrow } from "@/components/ui/eyebrow";
 import { Reveal } from "@/components/motion/reveal";
 import { PageHero } from "@/components/pages/page-hero";
 import { CtaBand } from "@/components/pages/cta-band";
-import { Showcase } from "@/components/case-studies/showcase";
-import { BuildFacts } from "@/components/case-studies/build-facts";
+import { CaseStudyEntry } from "@/components/case-studies/entry";
 import { caseStudies } from "@/lib/content";
-import { khaiVisuals } from "@/lib/case-studies";
+import { publishedCaseStudies } from "@/lib/case-studies";
 import { buildMetadata } from "@/lib/seo";
 
 import "./case-studies.css";
@@ -19,122 +18,54 @@ import "./case-studies.css";
  * THIS PAGE WAS EMPTY UNTIL 17 OCTOBER 2026, AND SAID SO. It carried
  * one line — "we would rather show you an empty page than an invented
  * one" — and a promise about what a case study would contain when
- * there was one. There is now one, so the page shows it.
+ * there was one. There is now more than one, so the page shows them.
+ *
+ * REBUILT AS A LIST, 27 October 2026. It rendered a single hardcoded
+ * study. Brewprint Coffee and Fort Achievers & Co. went live in the
+ * same month, so the page now maps over lib/case-studies.ts and
+ * publishing a fourth is a data edit with no change here.
  *
  * WHAT CHANGED IS THE CONTENT, NOT THE STANDARD. The promise is still
- * on the page, and the first case study is published under it: every
- * figure is a count that a stranger can re-measure from the client's
- * live site, and the performance numbers that an agency would put
- * here are conspicuously absent, with the reason stated. A page that
- * claimed a conversion lift three weeks after launch would be worth
- * less than the empty page it replaced.
+ * on the page, and every case study is published under it: every
+ * figure is a count a stranger can re-measure from the client's live
+ * site, and the performance numbers an agency would put here are
+ * conspicuously absent, with the reason stated once at the end rather
+ * than three times over.
  *
  * THE PROOF IS AN OUTBOUND LINK. The most persuasive thing available
- * is not a screenshot but the live site, so the page sends people to
+ * is not a screenshot but the live site, so each entry sends people to
  * it rather than keeping them here.
  */
 export const metadata = buildMetadata({
-  title: "Results",
+  title: "Results: Live Client Sites We Built",
   description:
-    "Khai Visuals, built and launched by ArkFlow: 35 pages, 1,398 photographs and one third-party script. Every figure can be checked on the live site.",
+    "Three Singapore businesses, built and launched by ArkFlow: a behaviour support practice, a specialty cafe and a wedding photographer. Every figure is checkable.",
   path: "/case-studies",
-  ogImage: khaiVisuals.shots.desktop.src,
+  ogImage: publishedCaseStudies[0].shots.desktop.src,
 });
 
 export default function CaseStudiesPage() {
-  const study = khaiVisuals;
-
   return (
     <>
       <PageHero
         eyebrow="Results"
-        title="The first one is live."
-        lead={`${study.client} — ${study.discipline.toLowerCase()} in Singapore — launched on an ArkFlow-built system in ${study.live}. Everything claimed below can be checked on the site itself, which is the only kind of proof worth publishing.`}
+        title="Three live, and you can go and check them."
+        lead="Every claim below can be verified on the client's own site in about a minute. That is the only kind of proof worth publishing, and it is the reason there are no percentages on this page."
       />
 
-      <Showcase study={study} />
+      {/* One entry per study. The first carries the priority image,
+          because it is the one above the fold. */}
+      {publishedCaseStudies.map((study, i) => (
+        <CaseStudyEntry
+          key={study.slug}
+          study={study}
+          index={i}
+          priority={i === 0}
+        />
+      ))}
 
-      {/* The record. A strap of facts before any prose, so a reader who
-          scans and leaves still takes away who, what and when. */}
-      <Section className="hairline !pt-16 md:!pt-20">
-        <Container>
-          <Reveal>
-            <dl className="grid grid-cols-2 gap-x-8 gap-y-7 border-b border-[color:var(--border-subtle)] pb-10 md:grid-cols-4">
-              {[
-                { k: "Client", v: study.client },
-                { k: "Sector", v: study.sector },
-                { k: "Live since", v: study.live },
-                { k: "Scope", v: "Attract and Capture" },
-              ].map((row) => (
-                <div key={row.k}>
-                  <dt className="font-mono text-eyebrow uppercase text-[color:var(--text-tertiary)]">
-                    {row.k}
-                  </dt>
-                  <dd className="mt-2 text-body text-white">{row.v}</dd>
-                </div>
-              ))}
-            </dl>
-          </Reveal>
-
-          <Reveal delay={0.05}>
-            <p className="mt-14 max-w-3xl text-lead text-white">
-              {study.standfirst}
-            </p>
-            <div className="mt-8 max-w-prose space-y-6">
-              {study.body.map((para) => (
-                <p key={para.slice(0, 32)} className="text-body text-[color:var(--text-secondary)]">
-                  {para}
-                </p>
-              ))}
-            </div>
-          </Reveal>
-        </Container>
-      </Section>
-
-      {/* Counts, not performance — the heading says so, and every
-          numeral carries its method underneath. */}
-      <Section className="hairline">
-        <Container>
-          <Reveal>
-            <Eyebrow>What was built</Eyebrow>
-            <h2 className="mt-5 max-w-2xl text-heading font-semibold">
-              Four numbers, each of which you can go and count.
-            </h2>
-            <BuildFacts facts={study.facts} />
-          </Reveal>
-        </Container>
-      </Section>
-
-      {/* The scope, grouped by the engine stages it covers. */}
-      <Section className="hairline">
-        <Container>
-          <Reveal>
-            <Eyebrow>The work</Eyebrow>
-            <h2 className="mt-5 max-w-2xl text-heading font-semibold">
-              Two stages of the engine, built as one system.
-            </h2>
-          </Reveal>
-
-          <div className="af-cs-scope">
-            {study.scope.map((group, i) => (
-              <Reveal key={group.title} delay={i * 0.06}>
-                <h3 className="af-cs-group__title">{group.title}</h3>
-                <p className="af-cs-group__summary">{group.summary}</p>
-                <ul className="af-cs-group__items">
-                  {group.items.map((item) => (
-                    <li key={item}>{item}</li>
-                  ))}
-                </ul>
-              </Reveal>
-            ))}
-          </div>
-        </Container>
-      </Section>
-
-      {/* THE SECTION AN AGENCY WOULD DELETE. It states what this case
-          study does not contain and why, and keeps the three standing
-          rules in view next to the first case study published under
-          them. */}
+      {/* THE SECTION AN AGENCY WOULD DELETE. Stated once, after all
+          three, rather than repeated under each one. */}
       <Section className="hairline">
         <Container className="max-w-3xl">
           <Reveal>
@@ -143,7 +74,13 @@ export default function CaseStudiesPage() {
               There are no performance numbers on this page.
             </h2>
             <p className="af-cs-pending text-lead text-[color:var(--text-secondary)]">
-              {study.pending}
+              All three went live in October 2026. Enquiry, booking and
+              order figures will be published here when there are enough
+              months of them to mean something, measured from each
+              client&apos;s own records and only with their sign-off. We
+              are not going to estimate them in the meantime, and where a
+              client&apos;s own site shows a rating they earned before we
+              built it, that is theirs and not a result of this work.
             </p>
 
             <p className="mt-12 text-body text-[color:var(--text-tertiary)]">
@@ -151,7 +88,10 @@ export default function CaseStudiesPage() {
             </p>
             <ul className="mt-5 space-y-5">
               {caseStudies.promise.map((p) => (
-                <li key={p} className="flex gap-3 text-lead text-[color:var(--text-secondary)]">
+                <li
+                  key={p}
+                  className="flex gap-3 text-lead text-[color:var(--text-secondary)]"
+                >
                   <Check size={18} className="mt-1.5 shrink-0 text-success" aria-hidden />
                   {p}
                 </li>
