@@ -50,7 +50,7 @@ export default function CaseStudiesPage() {
       <PageHero
         eyebrow="Results"
         title="Three live, and you can go and check them."
-        lead="Every claim below can be verified on the client's own site in about a minute. That is the only kind of proof worth publishing, and it is the reason there are no percentages on this page."
+        lead="Three Singapore businesses we built and still run. Every number below can be checked on their own sites in about a minute, which is why there are no percentages on this page."
       />
 
       {/* One entry per study. The first carries the priority image,

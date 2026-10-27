@@ -85,21 +85,20 @@ export const khaiVisuals: CaseStudy = {
   host: "khaivisuals.com",
 
   standfirst:
-    "A Singapore photographer whose work was already good enough to book itself, and a website that was not helping it.",
+    "A wedding portfolio that had to open fast on a phone, and a way to ask about a date without filling in a form.",
 
   body: [
     /* Framing only — no claim is made about the previous site's
        performance, because none was measured. The problem stated is
        structural and true of the category generally. */
-    "Khai photographs weddings. The pictures come from the moments people forget to pose, and a portfolio like that has one job on the web: to be seen in full, quickly, on a phone, by someone who is deciding this week. Most photography sites get in the way of that. They are slow, because a page builder loads its own machinery before the first photograph arrives — and when a couple finally decides to ask about a date, the only thing on offer is a contact form that answers tomorrow.",
-    "ArkFlow rebuilt the whole thing as one system rather than as a website with features bolted to it. Thirty-five pages of work, written and structured so that someone searching for a solemnisation photographer in Singapore can find it. One thousand three hundred and ninety-eight photographs, every single one served as WebP. A capture layer that turns an interested visitor into a conversation in the channel Singapore actually uses, with the enquiry type and the date already filled in before they have typed anything.",
-    "And one third-party script on the entire site. Everything else is hand-written and dependency-free: no framework, no page builder, no plugin stack. Every photograph is art-directed — a different crop is sent to a phone than to a laptop — and every one of them declares its dimensions so nothing jumps while the page settles. That is not craft for its own sake. It is what makes 1,398 photographs usable on a phone with one bar of signal at a wedding fair.",
+    "Khai shoots weddings. Couples find him on a phone, usually in the week they are deciding, so the site had to show the work in full without making them wait for it.",
+    "Thirty-five pages and 1,398 photographs, every one WebP, each sent to a phone at a different crop from the laptop version. Live chat on every page, and a date checker that writes the WhatsApp message for them before they type anything. One third-party script on the whole site.",
   ],
 
   scope: [
     {
       title: "Attract",
-      summary: "Make the work findable by the people already searching for it.",
+      summary: "Be findable by couples already searching for a photographer.",
       items: [
         "Thirty-five pages, structured and interlinked",
         "Ten wedding stories, each told in the order of the day",
@@ -110,7 +109,7 @@ export const khaiVisuals: CaseStudy = {
     },
     {
       title: "Capture",
-      summary: "Give an interested visitor somewhere to go that answers now.",
+      summary: "Somewhere to go that answers tonight, not tomorrow.",
       items: [
         "Live chat on every page, running on the ArkFlow CRM stack",
         "A date checker that composes a WhatsApp message from the enquiry type and the date",
@@ -120,7 +119,7 @@ export const khaiVisuals: CaseStudy = {
     },
     {
       title: "Under the hood",
-      summary: "The part nobody sees, which is the part that decides whether they stay.",
+      summary: "What makes 1,398 photographs survive a phone with one bar of signal.",
       items: [
         "1,398 photographs, every one WebP — no JPEG, no PNG",
         "Exactly one third-party script on the whole site",
@@ -196,21 +195,20 @@ export const khaiVisuals: CaseStudy = {
 export const brewprint: CaseStudy = {
   slug: "brewprint-coffee",
   client: "Brewprint Coffee",
-  discipline: "Specialty coffee and matcha",
+  discipline: "Online shop and back office",
   sector: "Food and beverage",
   live: "October 2026",
   url: "https://www.brewprintsg.app/",
   host: "brewprintsg.app",
 
   standfirst:
-    "A neighbourhood cafe in Tampines that needed to sell beans to people who would never walk past it.",
+    "A shop, an events booking system, and a back office the cafe runs without calling us.",
 
   body: [
     /* The problem is stated structurally. No claim is made about what
        the cafe sold before, because nothing was measured. */
-    "Brewprint roasts and serves specialty coffee from a shop in Tampines. A cafe like that has two quite different jobs on the web and most cafe websites only attempt the first: tell people where you are and when you open, and then stop. The second job is harder. Someone who liked the matcha on Saturday should be able to buy a bag of it on Wednesday from an office in Raffles Place, and someone planning a company event should be able to book the live coffee station without a four-email thread.",
-    "So the site is a shop as well as a storefront. Five products with their own pages and Product and Offer structured data, a working cart, a checkout, and an order confirmation. Alongside it an events page for the live coffee and matcha station, with its own booking path and its own confirmation. The cafe itself is described in the way Google needs it: CafeOrCoffeeShop structured data carrying the real address, the real coordinates and the real opening hours, so the shop shows up correctly when someone in Tampines asks their phone where to get coffee.",
-    "Underneath, the whole thing is hand-written. One third-party script on the entire site and it is the Google Map on the contact page. Fifty-four images, every one WebP. No framework, no page builder, no plugin stack, no theme. The blueprint drawings in the hero are drawn in the browser rather than loaded as photographs, which is why a site with that much going on in it still arrives quickly on a phone.",
+    "Brewprint is a cafe in Tampines. They wanted to sell beans and matcha to people who would never walk past the shop, take bookings for their live coffee station at events, and run both themselves.",
+    "There are two halves to it. The shop: five products, a cart, checkout, order confirmation, and a separate booking path for events. And a password-protected back office with eleven sections, where they handle orders, customers, products, discounts, the events calendar, the site pop-up, messages and subscribers. Prices change, a product goes up, a discount comes down, and none of it needs us.",
   ],
 
   scope: [
@@ -231,8 +229,19 @@ export const brewprint: CaseStudy = {
       items: [
         "A shop with a cart, a checkout and an order confirmation",
         "An events path for booking the live coffee and matcha station",
-        "A first-order welcome offer, presented once rather than on every visit",
+        "A first-order welcome offer, shown once rather than on every visit",
         "WhatsApp, phone and email on every page for the ones who would rather ask",
+      ],
+    },
+    {
+      title: "The back office",
+      summary: "The part the owner opens every morning.",
+      items: [
+        "Eleven sections behind a password: orders, calendar, customers, products",
+        "Discounts, the site pop-up, messages, subscribers, analytics and settings",
+        "Orders move through fulfilment states as they are prepared and delivered",
+        "An events calendar holding paid bookings and blocked dates, read by the booking page",
+        "Kept out of search by robots, and it is their data in their own account",
       ],
     },
     {
@@ -250,15 +259,15 @@ export const brewprint: CaseStudy = {
 
   facts: [
     { value: 19, label: "pages live", source: "Counted from the published sitemap.xml" },
+    { value: 11, label: "admin sections", source: "The back-office navigation at /admin" },
     { value: 54, label: "images, all WebP", source: "Unique image files, crawled across all 19 pages" },
-    { value: 5, label: "products, each with schema", source: "Product and Offer markup, read from the page source" },
     { value: 1, label: "third-party script", source: "The Google Map embed. Counted from the page source" },
   ],
 
   outcomes: [],
 
   pending:
-    "The shop went live in October 2026. Order volume, average basket and event bookings will be published here when there are enough months of them to mean something, taken from the client's own records and only with their sign-off.",
+    "The shop went live in October 2026 and the orders in it so far are the cafe's own tests. Real order volume, basket size and event bookings will be published here once there are enough months of them to mean something, from the client's records and with their sign-off.",
 
   shots: {
     desktop: {
@@ -286,20 +295,19 @@ export const fortAchievers: CaseStudy = {
   host: "fortachieversco.com",
 
   standfirst:
-    "A Singapore practice supporting children at home, whose parents arrive at 1am having searched for something worrying.",
+    "Fourteen articles answering the things parents actually type into Google at one in the morning.",
 
   body: [
     /* The audience description is the client's own, from their site.
        No claim is made here about enquiry volume or outcomes. */
-    "Fort Achievers works with children in their own homes and shadows them at school. The parents who find them are usually searching at an odd hour, for something specific and frightening, in words no service page uses: why does my child hit, is this a meltdown or a tantrum, gentle parenting is not working. A brochure site with three service pages never meets that search.",
-    "So the largest part of this build is the writing. Fourteen articles, each one answering a question a parent actually types, each one linked to the service it belongs to. That sits on top of three service pages, an about page and an FAQ whose six questions are marked up as FAQPage structured data so the answers can appear in the search result itself. Two parent-story videos carry VideoObject markup with their real durations and upload dates.",
-    "The capture layer is built for the hour these parents arrive. Every page carries both a booking path for the free assessment and a WhatsApp button, twenty-three of them across the site, because a parent at 1am will send a message and will not fill in a form. And the entire site loads no third-party script at all: not one analytics tag, not one widget, not one font service. Sixty of its sixty-two images are lazy-loaded and the content renders with JavaScript switched off.",
+    "Fort Achievers support children at home and shadow them at school. Parents find them late at night, searching for something specific and worrying, in words no service page uses: why does my child hit, is this a meltdown or a tantrum.",
+    "So most of this build is writing. Fourteen articles, one for each of those questions, each linked to the service it belongs to. Three service pages, an FAQ marked up so the answers can show in the search result, and two parent videos. Twenty-three WhatsApp buttons across the site, because at that hour a parent sends a message. No third-party scripts anywhere on it.",
   ],
 
   scope: [
     {
       title: "Attract",
-      summary: "Meet the parent at the search they actually make, not the one a brochure expects.",
+      summary: "Answer the search a worried parent actually makes.",
       items: [
         "Twenty-five pages, fourteen of them long-form articles",
         "Three service pages: home support, school shadowing, workshops and training",
@@ -310,7 +318,7 @@ export const fortAchievers: CaseStudy = {
     },
     {
       title: "Capture",
-      summary: "A parent reading at 1am needs a way through that works at 1am.",
+      summary: "A way through that works at one in the morning.",
       items: [
         "A free-assessment booking path on every page",
         "Twenty-three WhatsApp entry points across the site",
