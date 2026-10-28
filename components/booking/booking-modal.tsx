@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import Script from "next/script";
 import { X } from "lucide-react";
 import { contact } from "@/lib/content";
+import { GHL_EMBED_SCRIPT_URL } from "@/lib/site";
 
 /**
  * BookingModal — the ArkFlow booking widget, in a dialog.
@@ -12,7 +13,7 @@ import { contact } from "@/lib/content";
  * useBooking() (lib/use-booking.ts), which dispatches
  * "arkflow:open-booking"; this listens and opens with the widget URL from
  * lib/content.ts (contact.call.href → BOOKING_URL → calendar
- * dVmkLzktSpMYKEIXNBpz). Do not introduce a second calendar.
+ * NuxqCMoH5NOnYwkbxMTr). Do not introduce a second calendar.
  *
  * THIS IS NOW THE SITE'S ONLY CONVERSION. As of 6 September 2026 the
  * Revenue Leak Audit funnel is no longer the CTA, so every primary action
@@ -129,13 +130,11 @@ export function BookingModal() {
 
   return (
     <div className="fixed inset-0 z-[200] flex items-center justify-center p-4">
-      {/* Loaded only now that the modal is open. Served from the
-          white-label domain so the booking widget and its resize script
-          share an origin. */}
-      <Script
-        src="https://link.arkflowsolutions.com/js/form_embed.js"
-        strategy="lazyOnload"
-      />
+      {/* Loaded only now that the modal is open, and from the same
+          constant the iframe uses, so the widget and its resize script
+          can never again end up on different hosts — one of which was
+          404ing. */}
+      <Script src={GHL_EMBED_SCRIPT_URL} strategy="lazyOnload" />
       <div
         className="absolute inset-0 bg-black/70 backdrop-blur-sm"
         onClick={close}

@@ -2,7 +2,12 @@ import Link from "next/link";
 import { Container } from "@/components/ui/container";
 import { Section } from "@/components/ui/section";
 import { PageHero } from "@/components/pages/page-hero";
-import { CONTACT_EMAIL, COMPANY, LEGAL_DOCS } from "@/lib/site";
+/* GHL_HOST, not a literal. The policy used to name
+   link.arkflowsolutions.com, which stopped serving the widget — a
+   cookie policy describing a host that no longer loads anything is a
+   disclosure that is simply wrong. Reading the constant keeps the
+   statement true the next time the subdomain moves. */
+import { CONTACT_EMAIL, COMPANY, GHL_HOST, LEGAL_DOCS } from "@/lib/site";
 
 import { buildMetadata } from "@/lib/seo";
 
@@ -123,11 +128,9 @@ export default function CookiePolicyPage() {
                 GoHighLevel script or frame is requested by this site at all. If
                 you open it, the widget and its supporting script are served
                 from{" "}
-                <span className="font-mono text-small">
-                  link.arkflowsolutions.com
-                </span>{" "}
-                — a domain that belongs to us but is operated by our CRM
-                provider on our behalf.
+                <span className="font-mono text-small">{GHL_HOST}</span> — a
+                domain that belongs to us but is operated by our CRM provider
+                on our behalf.
               </p>
               <p className="mt-3 text-small text-[color:var(--text-tertiary)]">
                 Any cookie set in that context is set by the provider under its

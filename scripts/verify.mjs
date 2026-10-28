@@ -401,11 +401,43 @@ if (!redirectMatch) {
   ctaIssues++;
 }
 
-// 12b — the booking calendar is defined, and is the verified one.
+/**
+ * 12b — the booking calendar is defined, and is the verified one.
+ *
+ * ID UPDATED 28 October 2026, third calendar. dVmkLzktSpMYKEIXNBpz
+ * was served from link.arkflowsolutions.com, and that whole subdomain
+ * went away: the widget, the resize script and the old survey all
+ * return 404 on it. Every "Book a Discovery Call" on the live site
+ * was opening nothing. The founder supplied NuxqCMoH5NOnYwkbxMTr on
+ * go.arkflowsolutions.com; it was loaded in a browser before this
+ * check was changed, and renders a real calendar with slots.
+ *
+ * The check is updated rather than relaxed. Pinning the exact ID is
+ * what makes a silent revert fail the build instead of failing the
+ * booking flow, which is the one failure nobody notices from the
+ * outside.
+ */
 const siteSrc = read("lib/site.ts");
-if (!/dVmkLzktSpMYKEIXNBpz/.test(siteSrc)) {
-  bad("lib/site.ts does not define the verified booking calendar (dVmkLzktSpMYKEIXNBpz)");
+if (!/NuxqCMoH5NOnYwkbxMTr/.test(siteSrc)) {
+  bad("lib/site.ts does not define the verified booking calendar (NuxqCMoH5NOnYwkbxMTr)");
   ctaIssues++;
+}
+
+/**
+ * 12b-ii — the dead white-label host must not come back.
+ *
+ * NEW 28 October 2026. link.arkflowsolutions.com serves 404 for
+ * everything now, so any reference to it is a dead link by
+ * definition — and it had been sitting in three files at once: the
+ * calendar URL, the booking modal's resize script, and the cookie
+ * policy's description of where the widget is served from. A
+ * reference that is dead everywhere is worth a build failure.
+ */
+for (const f of publicSrc) {
+  if (/link\.arkflowsolutions\.com/.test(body(f))) {
+    bad(`${f} references link.arkflowsolutions.com, which no longer serves anything`);
+    ctaIssues++;
+  }
 }
 
 // 12c — the modal plumbing is intact end to end. Any one of these

@@ -24,7 +24,7 @@ import { cn } from "@/lib/utils";
  *   useBooking(contact.call.href)
  *     -> dispatches "arkflow:open-booking"
  *     -> <BookingModal /> (mounted once in app/layout.tsx)
- *     -> GHL calendar widget, ID dVmkLzktSpMYKEIXNBpz
+ *     -> GHL calendar widget, ID NuxqCMoH5NOnYwkbxMTr
  *
  * The calendar configuration is unchanged and comes from lib/site.ts via
  * lib/content.ts. Do not introduce a second calendar.

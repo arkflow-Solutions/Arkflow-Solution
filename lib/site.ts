@@ -8,17 +8,52 @@
  */
 
 /**
- * VERIFIED — GoHighLevel booking widget, discovery call.
- * Rebuilt account, 1 Sep 2026. The previous calendar
- * (KusL0qfR1oz37ZonStXL) belonged to the deleted sub-account and
- * every "Book Discovery Call" button was opening a dead widget.
+ * The GoHighLevel white-label host.
  *
- * Served from the link.arkflowsolutions.com white-label domain rather
- * than api.leadconnectorhq.com, so the booking iframe stays on an
- * ArkFlow domain.
+ * MOVED 28 October 2026, from link.arkflowsolutions.com to
+ * go.arkflowsolutions.com. The link.* subdomain is gone: the booking
+ * widget, the embed script and the old survey all return 404 on it.
+ * That means every "Book a Discovery Call" on the live site was
+ * opening a dead widget, and the resize script behind it was 404ing
+ * too — the same failure as 1 September 2026, when a rebuilt
+ * sub-account orphaned the previous calendar.
+ *
+ * ONE PLACE, so it cannot happen a third time quietly. Everything
+ * that touches the CRM host reads this constant: the calendar, the
+ * embed script, and the host named in the cookie policy. If the
+ * subdomain moves again, this line moves and the site follows.
+ */
+export const GHL_HOST = "go.arkflowsolutions.com";
+
+/**
+ * VERIFIED 28 October 2026 — GoHighLevel booking widget, discovery
+ * call. Supplied by the founder as an embed snippet and checked
+ * before it shipped: the URL returns 200, and the widget renders
+ * "Discovery Booking Call", 1 hr, Asia/Singapore (GMT+8), with real
+ * slots on it.
+ *
+ * Calendar history, because this is the third one:
+ *   KusL0qfR1oz37ZonStXL  deleted sub-account, dead by 1 Sep 2026
+ *   dVmkLzktSpMYKEIXNBpz  on link.*, dead by 28 Oct 2026
+ *   NuxqCMoH5NOnYwkbxMTr  current, on go.*
+ *
+ * scripts/verify.mjs check 12b asserts this exact ID, so a silent
+ * revert fails the build rather than the booking flow.
  */
 export const GHL_CALENDAR_URL =
-  "https://link.arkflowsolutions.com/widget/booking/dVmkLzktSpMYKEIXNBpz";
+  "https://go.arkflowsolutions.com/widget/booking/NuxqCMoH5NOnYwkbxMTr";
+
+/**
+ * The GoHighLevel resize script that the booking iframe needs.
+ *
+ * Loaded by components/booking/booking-modal.tsx at the moment the
+ * modal opens, never on page load. It lives here rather than in the
+ * component because check 12a forbids the CRM host appearing anywhere
+ * but this file — which is exactly the rule that would have caught
+ * the dead link.* script if it had been written this way in the first
+ * place.
+ */
+export const GHL_EMBED_SCRIPT_URL = "https://go.arkflowsolutions.com/js/form_embed.js";
 
 /** Alias — the name used across content and components. */
 export const BOOKING_URL = GHL_CALENDAR_URL;
@@ -67,26 +102,18 @@ export const AUDIT_URL =
  */
 
 /**
- * SUPERSEDED AS A PUBLIC CTA — the Lead Response Audit intake survey.
- * VERIFIED as a GoHighLevel asset, 1 Sep 2026.
+ * SURVEY_URL REMOVED 28 October 2026.
  *
- * NOT RENDERED ANYWHERE. Corrected 6 September 2026: the comments here
- * previously stated that /contact embedded this survey and that it was
- * therefore immune to the /api/enquiry environment-variable failure.
- * Both statements were false. The embed component was removed when the
- * multi-step form became the single intake path, and this constant has
- * had no consumer since.
+ * It was the Lead Response Audit intake survey, kept unused since 6
+ * September as "the record of a live GHL asset that may still be
+ * receiving submissions from elsewhere". It is not live: the URL
+ * returns 404, along with the rest of link.arkflowsolutions.com.
  *
- * It is retained, unused, only as the record of a live GHL asset that
- * may still be receiving submissions from elsewhere. It must never be
- * presented as a public CTA — the canonical conversion is the booking
- * modal (Book a Discovery Call).
- *
- * FOUNDER DECISION OPEN: retire this survey, rename it, or keep it as an
- * intake step. Delete this constant once decided.
+ * The founder decision it was waiting on (retire, rename, or keep as
+ * an intake step) is moot now that the asset is gone, so the dead URL
+ * goes and this note stays in its place. The survey ID was
+ * NXyNayYOuw3hhVcb9cMY if it ever needs to be traced in GoHighLevel.
  */
-export const SURVEY_URL =
-  "https://link.arkflowsolutions.com/widget/survey/NXyNayYOuw3hhVcb9cMY";
 
 /**
  * VERIFIED — www.arkflowsolutions.com is live and serving this site.

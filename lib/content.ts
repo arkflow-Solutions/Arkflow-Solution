@@ -114,9 +114,9 @@ export const contact = {
      iframe on /contact and claimed submissions landed in the CRM without
      depending on /api/enquiry. Neither was true any more: the embed
      component was deleted when the multi-step form became the single
-     intake path, and nothing read this object. SURVEY_URL still exists in
-     lib/site.ts as the record of a live GHL asset pending a founder
-     decision — it is simply not rendered anywhere. */
+     intake path, and nothing read this object. SURVEY_URL was deleted
+     from lib/site.ts on 28 October 2026 once the survey URL was found
+     to 404 along with the rest of the link.* subdomain. */
   email: { title: "Email", address: CONTACT_EMAIL },
   base: "Singapore · SGT business hours",
 };

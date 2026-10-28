@@ -27,8 +27,9 @@ export const metadata = buildMetadata({
  * components/contact/survey-embed.tsx was deleted on 6 September 2026.
  * It had been unreferenced since that change, while its own comments
  * still described it as live — a stale unreferenced file is exactly the
- * failure HOTFIX.md records. SURVEY_URL remains in lib/site.ts as the
- * record of the GHL asset, pending a founder decision.
+ * failure HOTFIX.md records. SURVEY_URL was removed from lib/site.ts
+ * on 28 October 2026 — the survey URL returns 404 along with the rest
+ * of the retired link.* subdomain.
  *
  * THE FAQ SCHEMA IS EMITTED HERE, not inside ContactExperience, because
  * this is the server component — structured data belongs in HTML the
