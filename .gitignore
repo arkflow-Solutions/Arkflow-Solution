@@ -17,3 +17,12 @@ npm-debug.log*
 # TypeScript
 *.tsbuildinfo
 next-env.d.ts
+
+# Agent skills installed with `npx skills add`.
+#
+# The skill files themselves are vendored third-party content (~290KB
+# of Markdown for cloudflare/security-audit-skill alone) and are
+# reproducible from skills-lock.json, which IS tracked. .claude/skills
+# also holds OS symlinks, which do not travel well between machines.
+.agents/
+.claude/skills/

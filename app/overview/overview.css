@@ -1,0 +1,430 @@
+/*
+ * /overview — the deck, as a page.
+ *
+ * ROUTE-SCOPED. Imported by app/overview/page.tsx and nothing else,
+ * so the deck has its own rhythm without adding a rule to
+ * app/globals.css. The `af-ov-` prefix belongs to this route alone.
+ *
+ * THE GRAMMAR IS A DECK, UNROLLED. A slide's job is to hold one idea
+ * at arm's length; a page's job is to be read. So each slide becomes
+ * a band with a lot of air around it, numbered where the deck
+ * numbered things, and the illustrative panels are drawn as panels
+ * rather than redrawn as fake interfaces — a screenshot of an
+ * interface that does not exist is the thing the deck's own
+ * "Illustrative" labels exist to prevent.
+ *
+ * NO NEW COLOUR. Blue for ordinals and the AI column, amber only
+ * through the shared IllustrativeTag, which is the site's warning
+ * colour and is exactly what a caveat should borrow.
+ */
+
+/* ---------------------------------------------------------- hero */
+
+.af-ov-hero {
+  padding-block: 9rem 4rem;
+}
+
+@media (min-width: 768px) {
+  .af-ov-hero {
+    padding-block: 11rem 5rem;
+  }
+}
+
+.af-ov-h1 {
+  margin-top: 1.25rem;
+  max-width: 18ch;
+  font-size: clamp(2.5rem, 6vw, 4.25rem);
+  line-height: 1.04;
+  letter-spacing: -0.03em;
+  font-weight: 600;
+  color: #fff;
+}
+
+.af-ov-hero__lines {
+  margin-top: 2rem;
+  display: grid;
+  gap: 0.5rem;
+  max-width: 34rem;
+}
+
+.af-ov-hero__lines li {
+  position: relative;
+  padding-left: 1.5rem;
+  font-size: 1.1875rem;
+  line-height: 1.55;
+  color: var(--text-secondary);
+}
+
+.af-ov-hero__lines li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.85em;
+  width: 0.75rem;
+  height: 1px;
+  background: var(--blue-soft);
+}
+
+/* ------------------------------------------------------ headings */
+
+.af-ov-h2 {
+  margin-top: 1.25rem;
+  max-width: 20ch;
+  font-size: clamp(1.875rem, 3.4vw, 2.75rem);
+  line-height: 1.1;
+  letter-spacing: -0.022em;
+  font-weight: 600;
+  color: #fff;
+}
+
+.af-ov-lead {
+  margin-top: 1.5rem;
+  max-width: 44rem;
+  font-size: 1.1875rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+
+/* A closing line that carries the argument of the section. Slightly
+   louder than a note, quieter than a lead. */
+.af-ov-close {
+  margin-top: 3rem;
+  max-width: 48rem;
+  padding-left: 1.5rem;
+  border-left: 1px solid var(--border-strong);
+  font-size: 1.0625rem;
+  line-height: 1.65;
+  color: #fff;
+}
+
+/* The deck's small-print footnotes. They must stay legible — a
+   caveat set too faint to read is a caveat that is not really made. */
+.af-ov-note {
+  margin-top: 2.5rem;
+  max-width: 48rem;
+  font-size: 0.875rem;
+  line-height: 1.6;
+  color: var(--text-tertiary);
+}
+
+.af-ov-notes .af-ov-note:not(:first-child) {
+  margin-top: 0.75rem;
+}
+
+/* --------------------------------------------------------- grids */
+
+.af-ov-grid2,
+.af-ov-grid3,
+.af-ov-grid5 {
+  display: grid;
+  gap: 2.5rem 2.5rem;
+  margin-top: 3.5rem;
+  list-style: none;
+  padding: 0;
+}
+
+@media (min-width: 640px) {
+  .af-ov-grid2,
+  .af-ov-grid3,
+  .af-ov-grid5 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1024px) {
+  .af-ov-grid3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .af-ov-grid5 {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 2rem 1.75rem;
+  }
+}
+
+.af-ov-cell {
+  border-top: 1px solid var(--border-subtle);
+  padding-top: 1.25rem;
+}
+
+.af-ov-cell__n {
+  display: block;
+  margin-bottom: 0.75rem;
+  font-family: var(--font-mono), monospace;
+  font-size: 0.6875rem;
+  letter-spacing: 0.14em;
+  color: var(--blue-soft);
+  font-variant-numeric: tabular-nums;
+}
+
+.af-ov-cell__title {
+  font-size: 1.0625rem;
+  line-height: 1.35;
+  font-weight: 500;
+  color: #fff;
+}
+
+.af-ov-cell__body {
+  margin-top: 0.625rem;
+  font-size: 0.9375rem;
+  line-height: 1.65;
+  color: var(--text-secondary);
+}
+
+/* -------------------------------------------------------- panels */
+
+.af-ov-stack {
+  display: grid;
+  gap: 1.25rem;
+  margin-top: 3rem;
+}
+
+.af-ov-panel {
+  border: 1px solid var(--border-subtle);
+  border-radius: 1rem;
+  background: rgba(15, 23, 42, 0.6);
+  padding: 1.75rem;
+}
+
+@media (min-width: 768px) {
+  .af-ov-panel {
+    padding: 2.25rem;
+  }
+}
+
+.af-ov-panel__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.af-ov-panel__label {
+  font-family: var(--font-mono), monospace;
+  font-size: 0.6875rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+
+.af-ov-panel__title {
+  max-width: 34ch;
+  font-size: 1.25rem;
+  line-height: 1.3;
+  letter-spacing: -0.015em;
+  font-weight: 500;
+  color: #fff;
+}
+
+.af-ov-panel__body {
+  margin-top: 0.875rem;
+  max-width: 48rem;
+  font-size: 1rem;
+  line-height: 1.7;
+  color: var(--text-secondary);
+}
+
+.af-ov-panel__note {
+  margin-top: 1.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--border-subtle);
+  font-size: 0.8125rem;
+  line-height: 1.6;
+  color: var(--text-tertiary);
+}
+
+/* The pipeline stages from slide 5. Labels only, no counts. */
+.af-ov-pipeline {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1.5rem;
+  list-style: none;
+  padding: 0;
+  counter-reset: none;
+}
+
+.af-ov-pipeline li {
+  padding: 0.375rem 0.75rem;
+  border: 1px solid var(--border-subtle);
+  border-radius: 999px;
+  font-size: 0.8125rem;
+  color: var(--platinum);
+}
+
+/* --------------------------------------------- chains and steps */
+
+.af-ov-chain {
+  display: grid;
+  gap: 0;
+  margin-top: 3rem;
+  list-style: none;
+  padding: 0;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.af-ov-chain li {
+  display: flex;
+  align-items: baseline;
+  gap: 1.25rem;
+  padding: 1.125rem 0;
+  border-bottom: 1px solid var(--border-subtle);
+  font-size: 1rem;
+  line-height: 1.5;
+  color: var(--text-secondary);
+}
+
+.af-ov-chain__n {
+  flex: none;
+  font-family: var(--font-mono), monospace;
+  font-size: 0.6875rem;
+  letter-spacing: 0.14em;
+  color: var(--blue-soft);
+  font-variant-numeric: tabular-nums;
+}
+
+.af-ov-steps {
+  display: grid;
+  gap: 0.625rem;
+  margin-top: 1.5rem;
+  list-style: none;
+  padding: 0;
+  counter-reset: step;
+}
+
+@media (min-width: 768px) {
+  .af-ov-steps {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.625rem 2rem;
+  }
+}
+
+.af-ov-steps li {
+  counter-increment: step;
+  display: flex;
+  gap: 0.75rem;
+  font-size: 0.9375rem;
+  line-height: 1.55;
+  color: var(--text-secondary);
+}
+
+.af-ov-steps li::before {
+  content: counter(step, decimal-leading-zero);
+  flex: none;
+  font-family: var(--font-mono), monospace;
+  font-size: 0.6875rem;
+  letter-spacing: 0.1em;
+  color: var(--blue-soft);
+  padding-top: 0.2em;
+}
+
+/* --------------------------------------------------------- split */
+
+.af-ov-split {
+  display: grid;
+  gap: 3rem;
+  margin-top: 3.5rem;
+}
+
+@media (min-width: 768px) {
+  .af-ov-split {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 3.5rem;
+  }
+}
+
+.af-ov-split__title {
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--blue-soft);
+  font-family: var(--font-mono), monospace;
+  font-size: 0.6875rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--blue-soft);
+}
+
+/* The human column is marked in the site's "human takeover" green,
+   which is the one place that colour is allowed. */
+.af-ov-split__title.is-team {
+  border-bottom-color: var(--success, #059669);
+  color: var(--success, #059669);
+}
+
+.af-ov-split__items {
+  margin-top: 1.5rem;
+  display: grid;
+  gap: 0.875rem;
+  list-style: none;
+  padding: 0;
+}
+
+.af-ov-split__items li {
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+
+/* --------------------------------------------------------- close */
+
+.af-ov-points {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 2rem;
+  list-style: none;
+  padding: 0;
+}
+
+.af-ov-points li {
+  padding: 0.375rem 0.875rem;
+  border: 1px solid var(--border-subtle);
+  border-radius: 999px;
+  font-size: 0.875rem;
+  color: var(--platinum);
+}
+
+.af-ov-pilot {
+  margin-top: 2rem;
+  padding-left: 1.5rem;
+  border-left: 1px solid var(--border-strong);
+  max-width: 44rem;
+  font-size: 1rem;
+  line-height: 1.65;
+  color: var(--text-secondary);
+}
+
+.af-ov-contact {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.75rem;
+  margin-top: 2.5rem;
+  font-size: 0.9375rem;
+  color: var(--platinum);
+}
+
+.af-ov-contact a {
+  color: var(--blue-soft);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  transition: color 200ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.af-ov-contact a:hover {
+  color: #fff;
+}
+
+.af-ov-sig {
+  margin-top: 2rem;
+  font-family: var(--font-mono), monospace;
+  font-size: 0.6875rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .af-ov-contact a {
+    transition: none;
+  }
+}
