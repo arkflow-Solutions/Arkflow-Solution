@@ -55,6 +55,30 @@ export const GHL_CALENDAR_URL =
  */
 export const GHL_EMBED_SCRIPT_URL = "https://go.arkflowsolutions.com/js/form_embed.js";
 
+/**
+ * The LeadConnector live chat widget. Added 29 October 2026.
+ *
+ * VERIFIED: the loader returns 200 and the widget id belongs to this
+ * account — it differs from the one on khaivisuals.com, so this is
+ * not a client's widget pasted onto our own site.
+ *
+ * SERVED FROM THE VENDOR CDN, not the white-label domain. GHL_HOST
+ * above is ArkFlow's own subdomain for booking and forms;
+ * widgets.leadconnectorhq.com is GoHighLevel's shared CDN and there
+ * is no white-label equivalent for the chat widget. That difference
+ * is why it is a separate constant rather than built from GHL_HOST,
+ * and why the cookie policy names both hosts.
+ *
+ * LOADS ON EVERY PAGE. Unlike the booking widget, which is requested
+ * only when a visitor opens the modal, a chat bubble has to be
+ * present to be useful. That changed what the cookie policy had to
+ * say — see app/cookies/page.tsx.
+ */
+export const CHAT_WIDGET_ID = "6ae234ceeebfe8c5f0131e6d";
+export const CHAT_WIDGET_HOST = "widgets.leadconnectorhq.com";
+export const CHAT_WIDGET_LOADER = `https://${CHAT_WIDGET_HOST}/loader.js`;
+export const CHAT_WIDGET_RESOURCES = `https://${CHAT_WIDGET_HOST}/chat-widget/loader.js`;
+
 /** Alias — the name used across content and components. */
 export const BOOKING_URL = GHL_CALENDAR_URL;
 

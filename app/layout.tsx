@@ -9,6 +9,7 @@ import { IntroVeilOnHome } from "@/components/motion/intro-veil-on-home";
 import { OrgJsonLd, WebSiteJsonLd } from "@/components/seo/json-ld";
 import { SITE_URL } from "@/lib/site";
 import { GoogleAnalytics } from "@/components/analytics/google-analytics";
+import { LiveChat } from "@/components/chat/live-chat";
 
 /**
  * Site metadata.
@@ -117,6 +118,9 @@ export default function RootLayout({
         <WebSiteJsonLd />
         <BookingModal />
         <GoogleAnalytics />
+        {/* Live chat. Loads lazily, after the page is interactive —
+            see the note in components/chat/live-chat.tsx. */}
+        <LiveChat />
         {/*
           MOVED 6 September 2026 — the GoHighLevel embed script
           (form_embed.js) used to load here, on every page.

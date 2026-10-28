@@ -7,7 +7,13 @@ import { PageHero } from "@/components/pages/page-hero";
    cookie policy describing a host that no longer loads anything is a
    disclosure that is simply wrong. Reading the constant keeps the
    statement true the next time the subdomain moves. */
-import { CONTACT_EMAIL, COMPANY, GHL_HOST, LEGAL_DOCS } from "@/lib/site";
+import {
+  CHAT_WIDGET_HOST,
+  CONTACT_EMAIL,
+  COMPANY,
+  GHL_HOST,
+  LEGAL_DOCS,
+} from "@/lib/site";
 
 import { buildMetadata } from "@/lib/seo";
 
@@ -125,9 +131,8 @@ export default function CookiePolicyPage() {
               </h3>
               <p className="mt-3">
                 Loads only if you open the booking widget. Until you do, no
-                GoHighLevel script or frame is requested by this site at all. If
-                you open it, the widget and its supporting script are served
-                from{" "}
+                booking script or frame is requested by this site. If you open
+                it, the widget and its supporting script are served from{" "}
                 <span className="font-mono text-small">{GHL_HOST}</span> — a
                 domain that belongs to us but is operated by our CRM provider
                 on our behalf.
@@ -136,6 +141,33 @@ export default function CookiePolicyPage() {
                 Any cookie set in that context is set by the provider under its
                 own arrangements. We do not control it and do not restate its
                 behaviour here.
+              </p>
+
+              <h3 className="mt-8 text-body font-medium text-white">
+                GoHighLevel — live chat
+              </h3>
+              <p className="mt-3">
+                Unlike the booking widget, the chat bubble loads on every page,
+                because it has to be present for you to be able to use it. It
+                is loaded after the page has finished rendering, from{" "}
+                <span className="font-mono text-small">{CHAT_WIDGET_HOST}</span>{" "}
+                — our CRM provider&apos;s own content network, not a domain of
+                ours.
+              </p>
+              <p className="mt-3">
+                It may set cookies or similar local storage in order to
+                remember a conversation between pages and across visits. If you
+                start a chat, what you type is sent to our CRM provider and
+                stored against your conversation so that we can reply.
+              </p>
+              <p className="mt-3 text-small text-[color:var(--text-tertiary)]">
+                As with the booking widget, those cookies are set by the
+                provider under its own arrangements. We do not control them and
+                do not restate their behaviour here. If you would rather it did
+                not load, blocking{" "}
+                <span className="font-mono text-small">{CHAT_WIDGET_HOST}</span>{" "}
+                in your browser or an extension stops it without affecting the
+                rest of the site.
               </p>
 
               <h3 className="mt-8 text-body font-medium text-white">
