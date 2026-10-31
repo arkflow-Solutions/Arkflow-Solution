@@ -65,7 +65,7 @@ const nextConfig = {
          the two are identical, so they cannot drift. */
       {
         source: "/audit",
-        destination: "https://go.arkflowsolutions.com/revenue-leak-audit-page",
+        destination: "https://link.arkflowsolutions.com/revenue-leak-audit-page",
         permanent: false,
       },
     ];

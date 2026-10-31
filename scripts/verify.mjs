@@ -424,20 +424,48 @@ if (!/NuxqCMoH5NOnYwkbxMTr/.test(siteSrc)) {
 }
 
 /**
- * 12b-ii — the dead white-label host must not come back.
+ * 12b-ii — the dead WIDGET paths must not come back.
  *
- * NEW 28 October 2026. link.arkflowsolutions.com serves 404 for
- * everything now, so any reference to it is a dead link by
- * definition — and it had been sitting in three files at once: the
- * calendar URL, the booking modal's resize script, and the cookie
- * policy's description of where the widget is served from. A
- * reference that is dead everywhere is worth a build failure.
+ * CORRECTED 31 October 2026. The 28 October version of this check
+ * banned link.arkflowsolutions.com outright, on the conclusion that
+ * the whole subdomain was dead. That was wrong, and testing the
+ * rebuilt audit funnel is what exposed it: link.* is alive and hosts
+ * the funnel pages. What moved to go.* was /widget/ and /js/ — those
+ * specific paths 404 on link.*, which is what the original check
+ * actually observed.
+ *
+ * So the ban is now path-scoped. The two hosts are not
+ * interchangeable in either direction and the build should say so:
+ *   link.*  funnel pages        /widget/ and /js/ 404 here
+ *   go.*    widgets and scripts  funnel pages 404 here
  */
+const DEAD_PATHS = [
+  [/link\.arkflowsolutions\.com\/widget\//, "link.arkflowsolutions.com/widget/ — booking widgets moved to go.*"],
+  [/link\.arkflowsolutions\.com\/js\//, "link.arkflowsolutions.com/js/ — form_embed.js moved to go.*"],
+  [/go\.arkflowsolutions\.com\/revenue-leak-audit/, "go.arkflowsolutions.com/revenue-leak-audit… — the funnel lives on link.*"],
+];
 for (const f of publicSrc) {
-  if (/link\.arkflowsolutions\.com/.test(body(f))) {
-    bad(`${f} references link.arkflowsolutions.com, which no longer serves anything`);
-    ctaIssues++;
+  const src = body(f);
+  for (const [re, why] of DEAD_PATHS) {
+    if (re.test(src)) {
+      bad(`${f} references ${why}`);
+      ctaIssues++;
+    }
   }
+}
+
+/**
+ * 12a-ii — the audit funnel URL must still resolve to a funnel.
+ *
+ * A URL that silently stops working is this project's recurring
+ * failure: three dead GoHighLevel assets in two weeks, each found by
+ * accident. This cannot reach out to the network from a build, so it
+ * asserts the shape instead — the host that serves funnels, and the
+ * slug that was walked end to end on 31 October.
+ */
+if (AUDIT_URL_VALUE && !/^https:\/\/link\.arkflowsolutions\.com\/revenue-leak-audit/.test(AUDIT_URL_VALUE)) {
+  bad(`AUDIT_URL (${AUDIT_URL_VALUE}) is not a link.* revenue-leak-audit funnel URL`);
+  ctaIssues++;
 }
 
 // 12c — the modal plumbing is intact end to end. Any one of these

@@ -98,14 +98,40 @@ export const BOOKING_URL = GHL_CALENDAR_URL;
  *               redirects here, so there is exactly one funnel rather
  *               than an on-site form competing with a GHL one.
  *
+ *   28 Oct 2026 Found dead. go.arkflowsolutions.com/revenue-leak-audit
+ *               -page returned {"msg":"Not found"} — so every audit
+ *               CTA on the site, and the /audit redirect, led nowhere.
+ *   31 Oct 2026 Rebuilt by the founder on the link.* subdomain and
+ *               verified here end to end before this line changed.
+ *
+ * VERIFIED 31 October 2026, all three funnel steps walked in a browser:
+ *   1  /revenue-leak-audit-page        landing, "Start the Audit"
+ *   2  /revenue-leak-audit-question-page   22 questions over 5 steps,
+ *      required-field validation refusing to advance when it should
+ *   3  /leak-audit-report?r=<payload>  a real report naming the
+ *      business and scoring a Revenue Leak Index per category
+ *
+ * WHY link.* AND NOT go.*. Both subdomains are live and they serve
+ * different things. go.* hosts the booking widget and form_embed.js;
+ * link.* hosts the funnel pages. The 28 October note claiming link.*
+ * was dead was wrong — only its /widget/ paths had moved. Neither
+ * host is a drop-in for the other: the funnel 404s on go.*, and the
+ * calendar 404s on link.*.
+ *
+ * THE SLUG. The founder supplied "-page-page" and that works, but so
+ * does "-page", byte-for-byte the same page. The shorter one is used
+ * because it is what a person would type and what reads sanely in a
+ * CTA; if GHL ever stops aliasing it, check 12a-ii below fails the
+ * build rather than letting the CTA rot quietly.
+ *
  * ONE PLACE, ON PURPOSE. Every audit CTA and the /audit redirect read
  * this constant, so the destination changes in one edit. scripts/verify
- * .mjs check 12a allows this host only through this constant: a
- * hardcoded go.arkflowsolutions.com URL anywhere in public source still
- * fails the build.
+ * .mjs check 12a allows these hosts only through lib/site.ts: a
+ * hardcoded funnel URL anywhere else in public source still fails the
+ * build.
  */
 export const AUDIT_URL =
-  "https://go.arkflowsolutions.com/revenue-leak-audit-page";
+  "https://link.arkflowsolutions.com/revenue-leak-audit-page";
 
 /**
  * The note below describes the September removal and is kept as the
