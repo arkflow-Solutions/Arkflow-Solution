@@ -1,0 +1,849 @@
+<!--
+  ArkFlow Revenue Leak Audit — FUNNEL STEP 3: REPORT PAGE
+  Paste into a GHL "Custom JS/HTML" element (same setup as Steps 1 & 2).
+  Edit AF_CONFIG (bottom of the file) before publishing.
+  Reads the answers from the ?r= link (also used in the email) and rebuilds the full report.
+
+  ─────────────────────────────────────────────────────────────────
+  CHANGES IN THIS REVISION — 31 October 2026
+  Everything else is byte-for-byte your original. Two edits only.
+
+  1. bookingUrl was DEAD. It pointed at
+       link.arkflowsolutions.com/widget/booking/dVmkLzktSpMYKEIXNBpz
+     which returns 404. Anyone finishing the 22-question audit and
+     clicking "Book Your 30-Minute Audit Call" hit an error page —
+     the highest-intent click in the whole funnel.
+     Now: go.arkflowsolutions.com/widget/booking/NuxqCMoH5NOnYwkbxMTr
+     Verified 200, renders "Discovery Booking Call · 1 hr ·
+     Asia/Singapore (GMT+8)" with real slots.
+
+     Note the HOST changed as well as the id. The calendar lives on
+     go.*; the funnel pages live on link.*; neither serves the
+     other's paths.
+
+  2. chatWidgetId moved into AF_CONFIG. The loader at the bottom had
+     the id written twice — once in the duplicate-guard selector and
+     once on the script tag. Changing one and not the other would
+     silently load the widget twice. Now there is one value.
+     The id itself is unchanged (6ac493bea323fc9a2ecde4ef), which is
+     the funnel's own widget and differs from the one on
+     arkflowsolutions.com on purpose.
+
+  Checked and left alone because they resolve: the logo on
+  assets.cdn.filesafe.space, wa.me/6587655809, the Google Fonts
+  links, and startUrl /revenue-leak-audit-page.
+  ─────────────────────────────────────────────────────────────────
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+  html, body { background: #050b1a !important; margin: 0 !important; padding: 0 !important; overflow-x: hidden; }
+  #afr.afa-bleed { width: 100vw !important; max-width: 100vw !important; margin-left: calc(50% - 50vw) !important; margin-right: calc(50% - 50vw) !important; }
+  #afr, #afr * { box-sizing: border-box; margin: 0; padding: 0; }
+  #afr {
+    --bg: #050b1a; --bg2: #0a1530; --panel: rgba(13,27,58,.78); --panel2: rgba(5,11,26,.55);
+    --line: rgba(90,140,255,.18); --line2: rgba(90,140,255,.32);
+    --blue: #1f6bff; --blue2: #3d8bff; --blue3: #6fb0ff; --glow: rgba(31,107,255,.45);
+    --text: #f4f7ff; --muted: #a9b6d3; --dim: #6f7fa3;
+    --s-low: #2fbf8f; --s-mod: #e9b23c; --s-high: #f07a2e; --s-crit: #e8436a;
+    --track: rgba(90,140,255,.13);
+    position: relative; min-height: 100vh; width: 100%; overflow: hidden;
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif; color: var(--text);
+    background:
+      radial-gradient(1100px 600px at 90% -5%, rgba(31,107,255,.2), transparent 60%),
+      radial-gradient(900px 600px at -10% 40%, rgba(31,107,255,.1), transparent 60%),
+      linear-gradient(180deg, var(--bg) 0%, var(--bg2) 100%);
+    -webkit-font-smoothing: antialiased; line-height: 1.5;
+  }
+  #afr .wrap { position: relative; z-index: 2; max-width: 1080px; margin: 0 auto; padding: 24px 20px 64px; }
+  #afr .top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  #afr .logo { text-decoration: none; color: #f4f7ff; display: inline-flex; align-items: center; gap: 12px; }
+  #afr .logo img { height: 46px; width: 46px; display: block; filter: drop-shadow(0 0 12px rgba(31,107,255,.35)); }
+  #afr .logo-text { display: inline-flex; flex-direction: column; line-height: 1; font-weight: 800; letter-spacing: .26em; font-size: 17px; color: #f4f7ff; }
+  #afr .logo-text span { color: #3d8bff; }
+  #afr .logo-text small { margin-top: 6px; font-size: 9px; font-weight: 600; letter-spacing: .5em; color: #c9d4ec; }
+  #afr .top-actions { display: flex; gap: 10px; }
+  #afr .ghost { display: inline-flex; align-items: center; gap: 8px; padding: 10px 14px; border-radius: 10px; border: 1px solid var(--line2); background: rgba(10,21,48,.6); color: #dbe4f7; font: inherit; font-size: 13px; font-weight: 600; cursor: pointer; text-decoration: none; }
+  #afr .ghost:hover { background: rgba(31,107,255,.1); }
+  #afr .ghost svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2; }
+
+  #afr .card { background: var(--panel); border: 1px solid var(--line); border-radius: 20px; padding: 28px; position: relative;
+    backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); box-shadow: 0 30px 70px -30px rgba(0,0,0,.65); }
+  #afr .card::before { content: ""; position: absolute; top: -1px; left: 28px; right: 28px; height: 1px; background: linear-gradient(90deg, transparent, rgba(110,170,255,.7), transparent); }
+  #afr section.block { margin-top: 22px; }
+  #afr .eyebrow { font-size: 12px; font-weight: 800; letter-spacing: .2em; color: var(--blue2); text-transform: uppercase; }
+  #afr h1 { font-size: clamp(30px, 4.6vw, 46px); line-height: 1.08; font-weight: 800; letter-spacing: -.025em; margin-top: 10px; }
+  #afr h1 em { font-style: normal; background: linear-gradient(90deg, #3d8bff, #8cc0ff); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  #afr h2 { font-size: 22px; font-weight: 800; letter-spacing: -.01em; margin-top: 6px; }
+  #afr .sub { margin-top: 8px; color: var(--muted); font-size: 15px; }
+  #afr .meta { margin-top: 14px; display: flex; flex-wrap: wrap; gap: 8px; }
+  #afr .chip { font-size: 12px; color: var(--muted); padding: 6px 10px; border-radius: 999px; border: 1px solid var(--line); background: rgba(10,21,48,.6); }
+
+  /* hero */
+  #afr .hero { margin-top: 26px; display: grid; grid-template-columns: 300px 1fr; gap: 28px; align-items: center; }
+  #afr .gauge { position: relative; text-align: center; }
+  #afr .gauge svg { width: 100%; max-width: 280px; display: block; margin: 0 auto; }
+  #afr .gauge-num { position: absolute; left: 0; right: 0; top: 52%; transform: translateY(-50%); }
+  #afr .gauge-num b { font-size: 58px; font-weight: 800; letter-spacing: -.03em; line-height: 1; }
+  #afr .gauge-num small { display: block; font-size: 13px; color: var(--muted); margin-top: 4px; }
+  #afr .badge { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 700; padding: 7px 12px; border-radius: 999px; border: 1px solid var(--line2); background: rgba(5,11,26,.6); color: #fff; }
+  #afr .badge i { width: 9px; height: 9px; border-radius: 50%; background: var(--c); box-shadow: 0 0 0 3px rgba(255,255,255,.06); }
+  #afr .scale-note { margin-top: 10px; font-size: 12px; color: var(--dim); }
+  #afr .summary p { font-size: 16.5px; line-height: 1.7; color: #dbe4f7; }
+  #afr .summary p + p { margin-top: 12px; }
+  #afr .summary strong { color: #fff; }
+  #afr .kpis { margin-top: 20px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  #afr .kpi { padding: 16px; border-radius: 14px; background: var(--panel2); border: 1px solid var(--line); }
+  #afr .kpi .k { font-size: 12px; color: var(--dim); font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
+  #afr .kpi .v { margin-top: 6px; font-size: 24px; font-weight: 800; letter-spacing: -.02em; }
+  #afr .kpi .n { margin-top: 2px; font-size: 12.5px; color: var(--muted); }
+
+  /* stage scores */
+  #afr .stages { margin-top: 20px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+  #afr .stage { padding: 20px; border-radius: 16px; background: var(--panel2); border: 1px solid var(--line); }
+  #afr .stage.primary { border-color: rgba(61,139,255,.6); box-shadow: 0 0 0 1px rgba(61,139,255,.25) inset; }
+  #afr .stage-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+  #afr .stage-name { display: flex; align-items: center; gap: 10px; font-size: 17px; font-weight: 800; }
+  #afr .stage-ico { width: 36px; height: 36px; border-radius: 10px; display: grid; place-items: center; background: rgba(31,107,255,.12); border: 1px solid rgba(31,107,255,.3); }
+  #afr .stage-ico svg { width: 18px; height: 18px; stroke: var(--blue3); fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+  #afr .stage-score { font-size: 28px; font-weight: 800; letter-spacing: -.02em; }
+  #afr .stage-score small { font-size: 13px; color: var(--dim); font-weight: 600; }
+  #afr .meter { position: relative; margin-top: 14px; height: 10px; border-radius: 10px; background: var(--track); }
+  #afr .meter i { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 10px; background: linear-gradient(90deg, #1f6bff, #6fb0ff); width: 0; transition: width 1.2s cubic-bezier(.2,.8,.2,1); }
+  #afr .meter .tick { position: absolute; top: -3px; bottom: -3px; width: 2px; background: rgba(5,11,26,.9); }
+  #afr .meter-scale { display: flex; justify-content: space-between; margin-top: 6px; font-size: 11px; color: var(--dim); }
+  #afr .stage-verdict { margin-top: 12px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  #afr .stage-verdict span { font-size: 13.5px; color: var(--muted); }
+  #afr .findings { margin-top: 14px; list-style: none; display: grid; gap: 8px; }
+  #afr .findings li { display: grid; grid-template-columns: 16px 1fr; gap: 10px; font-size: 13.5px; color: #cdd7ee; line-height: 1.5; }
+  #afr .findings li::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--blue3); margin: 7px 0 0 4px; }
+  #afr .findings b { color: #fff; font-weight: 600; }
+  #afr .primary-tag { font-size: 11px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: #9fc3ff; background: rgba(31,107,255,.16); border: 1px solid rgba(31,107,255,.4); padding: 4px 8px; border-radius: 999px; }
+
+  /* funnel + bars */
+  #afr .two { margin-top: 20px; display: grid; grid-template-columns: 1.1fr .9fr; gap: 14px; }
+  #afr .panel { padding: 22px; border-radius: 16px; background: var(--panel2); border: 1px solid var(--line); }
+  #afr .panel-title { font-size: 15px; font-weight: 800; }
+  #afr .panel-sub { font-size: 13px; color: var(--dim); margin-top: 2px; }
+  #afr .funnel { margin-top: 18px; display: grid; gap: 4px; }
+  #afr .f-row { display: grid; grid-template-columns: 112px 1fr; gap: 12px; align-items: center; }
+  #afr .f-label { font-size: 13px; color: var(--muted); font-weight: 600; text-align: right; }
+  #afr .f-track { position: relative; height: 38px; }
+  #afr .f-bar { position: absolute; top: 0; bottom: 0; left: 50%; transform: translateX(-50%); border-radius: 8px; display: flex; align-items: center; justify-content: center;
+    font-size: 14px; font-weight: 800; color: #fff; min-width: 54px; transition: width 1s cubic-bezier(.2,.8,.2,1); cursor: default; }
+  #afr .f-leak { display: grid; grid-template-columns: 112px 1fr; gap: 12px; }
+  #afr .f-leak div:last-child { text-align: center; font-size: 12.5px; color: #ffb3a1; padding: 3px 0; }
+  #afr .f-leak div:last-child::before { content: "↓ "; color: var(--dim); }
+  #afr .f-note { margin-top: 14px; font-size: 12px; color: var(--dim); line-height: 1.55; }
+
+  #afr .hbars { margin-top: 18px; display: grid; gap: 14px; }
+  #afr .hb-top { display: flex; justify-content: space-between; gap: 10px; font-size: 13.5px; }
+  #afr .hb-top span { color: #dbe4f7; font-weight: 600; }
+  #afr .hb-top b { color: #fff; font-variant-numeric: tabular-nums; }
+  #afr .hb-track { margin-top: 6px; height: 12px; border-radius: 6px; background: var(--track); position: relative; cursor: default; }
+  #afr .hb-track i { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 0 4px 4px 0; background: var(--blue2); width: 0; transition: width 1s cubic-bezier(.2,.8,.2,1); }
+  #afr .hb-total { margin-top: 16px; padding-top: 14px; border-top: 1px dashed var(--line2); display: flex; justify-content: space-between; font-weight: 800; }
+
+  /* profile */
+  #afr .profile { margin-top: 18px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  #afr .pf { padding: 14px 16px; border-radius: 12px; background: var(--panel2); border: 1px solid var(--line); }
+  #afr .pf .k { font-size: 11.5px; color: var(--dim); font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+  #afr .pf .v { margin-top: 4px; font-size: 14px; color: #fff; font-weight: 600; line-height: 1.45; }
+  #afr .quote { margin-top: 14px; padding: 16px 18px; border-left: 3px solid var(--blue2); background: rgba(31,107,255,.07); border-radius: 0 12px 12px 0; font-size: 15px; color: #dbe4f7; font-style: italic; }
+  #afr .quote small { display: block; margin-top: 6px; font-style: normal; font-size: 12px; color: var(--dim); }
+
+  /* recommendations */
+  #afr .recs { margin-top: 18px; display: grid; gap: 12px; counter-reset: rec; }
+  #afr .rec { display: grid; grid-template-columns: 44px 1fr; gap: 16px; padding: 18px 20px; border-radius: 16px; background: var(--panel2); border: 1px solid var(--line); }
+  #afr .rec-n { width: 44px; height: 44px; border-radius: 12px; display: grid; place-items: center; font-weight: 800; font-size: 17px; background: rgba(31,107,255,.14); border: 1px solid rgba(31,107,255,.35); color: #cfe0ff; }
+  #afr .rec-top { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; }
+  #afr .rec-title { font-size: 16px; font-weight: 800; }
+  #afr .tag { font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 999px; border: 1px solid var(--line2); color: var(--muted); }
+  #afr .tag.impact { color: #fff; display: inline-flex; align-items: center; gap: 6px; }
+  #afr .tag.impact i { width: 7px; height: 7px; border-radius: 50%; background: var(--c); }
+  #afr .rec-body { margin-top: 6px; font-size: 14px; color: #cdd7ee; line-height: 1.6; }
+
+  /* plan */
+  #afr .plan { margin-top: 18px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  #afr .phase { padding: 18px; border-radius: 14px; background: var(--panel2); border: 1px solid var(--line); position: relative; }
+  #afr .phase-k { font-size: 12px; font-weight: 800; letter-spacing: .14em; color: var(--blue2); text-transform: uppercase; }
+  #afr .phase-t { margin-top: 4px; font-size: 15px; font-weight: 800; }
+  #afr .phase ul { margin-top: 10px; list-style: none; display: grid; gap: 8px; }
+  #afr .phase li { font-size: 13.5px; color: #cdd7ee; display: grid; grid-template-columns: 18px 1fr; gap: 8px; line-height: 1.45; }
+  #afr .phase li svg { width: 16px; height: 16px; stroke: var(--blue3); fill: none; stroke-width: 2; margin-top: 2px; }
+
+  /* CTA */
+  #afr .cta { margin-top: 22px; display: grid; grid-template-columns: 1.2fr .8fr; gap: 24px; align-items: center;
+    background: linear-gradient(135deg, rgba(31,107,255,.22), rgba(13,27,58,.85) 60%); border-color: rgba(61,139,255,.45); }
+  #afr .cta h2 { font-size: 26px; }
+  #afr .cta p { margin-top: 10px; color: #cdd7ee; font-size: 15px; line-height: 1.65; }
+  #afr .cta ul { margin-top: 14px; list-style: none; display: grid; gap: 8px; }
+  #afr .cta li { display: grid; grid-template-columns: 20px 1fr; gap: 8px; font-size: 14px; color: #dbe4f7; }
+  #afr .cta li svg { width: 18px; height: 18px; stroke: var(--blue3); fill: none; stroke-width: 2.2; margin-top: 1px; }
+  #afr .cta-btns { display: grid; gap: 10px; }
+  #afr .btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; padding: 17px 22px; border-radius: 13px; font: inherit; font-size: 16px; font-weight: 700; text-decoration: none; cursor: pointer; text-align: center; transition: transform .15s cubic-bezier(.2,.8,.2,1); }
+  #afr .btn svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 2.2; }
+  #afr .btn-primary { color: #fff; border: 1px solid rgba(140,180,255,.45); background: linear-gradient(180deg, #2a76ff 0%, #1556e0 100%); box-shadow: 0 10px 30px -8px var(--glow), inset 0 1px 0 rgba(255,255,255,.25); }
+  #afr .btn-primary:hover { transform: translateY(-1px); }
+  #afr .btn-ghost { color: #dbe4f7; border: 1px solid var(--line2); background: rgba(5,11,26,.5); }
+  #afr .cta-note { font-size: 12px; color: var(--dim); text-align: center; }
+
+  /* method */
+  #afr details.method { margin-top: 22px; }
+  #afr details.method summary { cursor: pointer; font-size: 15px; font-weight: 800; list-style: none; display: flex; justify-content: space-between; align-items: center; }
+  #afr details.method summary::-webkit-details-marker { display: none; }
+  #afr details.method summary::after { content: "+"; font-size: 22px; color: var(--blue3); }
+  #afr details.method[open] summary::after { content: "–"; }
+  #afr .method-body { margin-top: 14px; font-size: 13.5px; color: var(--muted); line-height: 1.7; display: grid; gap: 10px; }
+  #afr .method-body b { color: #dbe4f7; }
+  #afr .method-body table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  #afr .method-body td, #afr .method-body th { padding: 8px 10px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+  #afr .method-body th { color: #dbe4f7; font-weight: 700; }
+  #afr .method-body td:last-child, #afr .method-body th:last-child { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
+
+  #afr .foot { margin-top: 30px; text-align: center; font-size: 12px; color: var(--dim); line-height: 1.7; }
+  #afr .foot a { color: var(--muted); }
+
+  #afr .empty { margin-top: 60px; text-align: center; }
+  #afr .empty p { margin-top: 10px; color: var(--muted); }
+  #afr .empty .btn { margin-top: 22px; }
+
+  /* tooltip */
+  #afr-tip { position: fixed; z-index: 100000; pointer-events: none; padding: 8px 10px; border-radius: 8px; background: #0b1631; border: 1px solid rgba(110,170,255,.4); color: #f4f7ff; font: 600 12.5px/1.4 'Plus Jakarta Sans', system-ui, sans-serif; box-shadow: 0 10px 30px rgba(0,0,0,.5); opacity: 0; transition: opacity .12s; max-width: 260px; }
+
+  #afr .rise { opacity: 0; transform: translateY(12px); animation: afr-rise .6s cubic-bezier(.2,.8,.2,1) forwards; }
+  @keyframes afr-rise { to { opacity: 1; transform: none; } }
+  @media (prefers-reduced-motion: reduce) { #afr .rise { animation: none; opacity: 1; transform: none; } #afr .meter i, #afr .hb-track i, #afr .f-bar, #afr .btn { transition: none; } }
+
+  @media (max-width: 900px) {
+    #afr .hero { grid-template-columns: 1fr; gap: 10px; }
+    #afr .two, #afr .cta { grid-template-columns: 1fr; }
+    #afr .plan { grid-template-columns: 1fr; }
+    #afr .profile { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 640px) {
+    #afr .wrap { padding: 16px 14px 100px; }
+    #afr .logo img { height: 36px; width: 36px; } #afr .logo-text { font-size: 15px; }
+    #afr .ghost .lbl { display: none; }
+    #afr .card { padding: 20px 18px; border-radius: 18px; }
+    #afr .kpis { grid-template-columns: 1fr; }
+    #afr .stages { grid-template-columns: 1fr; }
+    #afr .profile { grid-template-columns: 1fr; }
+    #afr .f-row, #afr .f-leak { grid-template-columns: 84px 1fr; gap: 8px; }
+    #afr .f-label { font-size: 12px; }
+    #afr .rec { grid-template-columns: 1fr; gap: 10px; padding: 16px; }
+    #afr .rec-n { width: 36px; height: 36px; font-size: 15px; }
+  }
+  @media print {
+    #afr { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    #afr .top-actions, #afr .cta-btns { display: none !important; }
+    #afr .card, #afr .stage, #afr .panel, #afr .rec, #afr .phase { break-inside: avoid; backdrop-filter: none; }
+    #afr .rise { opacity: 1 !important; transform: none !important; animation: none !important; }
+    #afr details.method .method-body { display: grid !important; }
+  }
+</style>
+
+<section id="afr">
+  <div class="wrap">
+    <header class="top">
+      <a class="logo" href="https://arkflowsolutions.com" aria-label="ArkFlow Solutions"><img id="afr-logo-img" alt="ArkFlow Solutions"><span class="logo-text"><b style="font-weight:800">ARK<span>FLOW</span></b><small>SOLUTIONS</small></span></a>
+      <div class="top-actions">
+        <button class="ghost" id="afr-print" type="button"><svg viewBox="0 0 24 24"><path d="M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg><span class="lbl">Save as PDF</span></button>
+        <button class="ghost" id="afr-copy" type="button"><svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg><span class="lbl" id="afr-copy-lbl">Copy link</span></button>
+      </div>
+    </header>
+    <main id="afr-main"></main>
+    <footer class="foot">
+      © <span id="afr-year"></span> ArkFlow Solutions Pte. Ltd. · UEN 202638999Z · <a href="https://arkflowsolutions.com" target="_blank" rel="noopener">arkflowsolutions.com</a><br>
+      This report is generated automatically from your answers. Figures are planning estimates, not guarantees.
+    </footer>
+  </div>
+  <div id="afr-tip" role="tooltip"></div>
+</section>
+
+<script>
+(function () {
+  /* ================= SETTINGS — edit before publishing ================= */
+  var AF_CONFIG = {
+    logoUrl: "https://assets.cdn.filesafe.space/CUdCfVm6xGGL7snMjPIJ/media/6ab13a6dde8ed1c29fa56a78.png",
+
+    /* FIXED 31 Oct 2026. Was link.arkflowsolutions.com/widget/booking/
+       dVmkLzktSpMYKEIXNBpz, which 404s — the booking button at the end
+       of the audit led to an error page. The calendar is served from
+       go.*, not link.*; the funnel pages are the other way round. */
+    bookingUrl: "https://go.arkflowsolutions.com/widget/booking/NuxqCMoH5NOnYwkbxMTr",
+
+    whatsappNumber: "6587655809",
+    startUrl: "/revenue-leak-audit-page",                            // Step 1 path (used if someone opens the report without data)
+
+    /* The funnel's own chat widget. Deliberately different from the
+       one on arkflowsolutions.com. Written once, here, because the
+       loader at the bottom used to repeat it in its duplicate-guard
+       and would have loaded the widget twice if the two drifted. */
+    chatWidgetId: "6ac493bea323fc9a2ecde4ef",
+
+    auditVersion: "v1"
+  };
+  /* ===================================================================== */
+
+  var root = document.getElementById("afr");
+  if (!root) return;
+
+  function goFullWidth() {
+    var el = root.parentElement;
+    while (el && el !== document.body) {
+      ["padding","margin-top","margin-bottom"].forEach(function (p) { el.style.setProperty(p, "0", "important"); });
+      el.style.setProperty("max-width", "none", "important"); el.style.setProperty("width", "100%", "important");
+      el.style.setProperty("background", "transparent", "important"); el.style.setProperty("border", "0", "important"); el.style.setProperty("box-shadow", "none", "important");
+      el = el.parentElement;
+    }
+    root.classList.remove("afa-bleed");
+    if (root.getBoundingClientRect().width < document.documentElement.clientWidth - 1) root.classList.add("afa-bleed");
+  }
+  goFullWidth(); window.addEventListener("load", goFullWidth); window.addEventListener("resize", goFullWidth);
+
+  (function () {
+    var img = document.getElementById("afr-logo-img"), txt = root.querySelector(".logo-text");
+    function useText() { img.style.display = "none"; }
+    if (!AF_CONFIG.logoUrl || AF_CONFIG.logoUrl.indexOf("PASTE_") === 0) useText(); else { img.onerror = useText; img.src = AF_CONFIG.logoUrl; }
+  })();
+  document.getElementById("afr-year").textContent = new Date().getFullYear();
+
+  /* ---------- question definitions (copied from Step 2 — keep in sync) ---------- */
+  function o(v, l, i) { return { v: v, l: l, i: i }; }
+  var SECTIONS = ["Business Snapshot", "Enquiry & Response", "Booking & Conversion", "Follow-Up & Retention", "Systems & Priorities"];
+
+  var SCREENS = [
+    { sec: 0, title: "Tell us about your business.", sub: "This helps us understand your industry and the value of each customer.",
+      qs: [
+        { id: "business_type", label: "What type of business do you operate?", type: "select", req: true, options: [
+          o("aesthetic","Aesthetic / Beauty"), o("medical","Medical / Dental Clinic"), o("wellness","Wellness / Spa / Massage"),
+          o("fitness","Fitness / Gym / Studio"), o("education","Education / Tuition / Enrichment"), o("realestate","Real Estate / Property"),
+          o("automotive","Automotive / Car Dealer / Workshop"), o("home","Home Services / Renovation"), o("professional","Professional Services"),
+          o("creative","Events / Photography / Creative"), o("fnb","F&B / Hospitality"), o("retail","Retail / E-commerce"), o("other","Other") ] },
+        { id: "business_profile", label: "How big is your team?", type: "tiles", cols: 3, req: true, options: [
+          o("solo","Solo operator","user"), o("s2_5","2-5 staff","team"), o("s6_20","6-20 staff","team"),
+          o("s21_50","21-50 staff","users"), o("s50","50+ staff","building") ] },
+        { id: "monthly_new_enquiries", label: "How many new enquiries do you receive each month?", type: "tiles", cols: 3, req: true, options: [
+          o("lt50","Under 50"), o("50_100","50-100"), o("101_250","101-250"), o("251_500","251-500"), o("501_1000","501-1,000"), o("1000p","1,000+") ] },
+        { id: "average_customer_value", label: "What is the approximate value of a typical new customer?", help: "Average first purchase or package value in SGD.", type: "money", req: true }
+      ] },
+    { sec: 0, title: "Where do your enquiries come from?", sub: "Select every channel that brings you new enquiries.",
+      qs: [
+        { id: "enquiry_channels", label: "Enquiry channels", type: "multitiles", cols: 3, req: true, options: [
+          o("website","Website","globe"), o("instagram","Instagram","camera"), o("facebook","Facebook","thumb"), o("whatsapp","WhatsApp","chat"),
+          o("tiktok","TikTok","note"), o("google","Google / Maps","pin"), o("phone","Phone Calls","phone"), o("email","Email","mail"),
+          o("referrals","Referrals","users"), o("walkins","Walk-ins","store"), o("directories","Directories / Marketplaces","list"), o("other","Other","dots") ] }
+      ] },
+    { sec: 1, title: "How quickly does your business usually respond to a new enquiry?", sub: "Think about a typical weekday enquiry, not your best day.",
+      hint: "Enquiries cool quickly. Your report will compare your response time against the window where most bookings are won.",
+      qs: [
+        { id: "typical_response_time", label: "Typical first response time", type: "radio", req: true, auto: true, options: [
+          o("immediate","Immediately (under 1 minute)"), o("m5","Within 5 minutes"), o("m15","Within 15 minutes"), o("h1","Within 1 hour"),
+          o("sameday","Within the same day"), o("h24","Within 24 hours"), o("gt24","More than 24 hours"), o("depends","It depends"), o("notsure","I'm not sure") ] }
+      ] },
+    { sec: 1, title: "What happens to enquiries that arrive after hours?", sub: "Evenings, weekends and public holidays.",
+      qs: [
+        { id: "afterhours_enquiry_process", label: "After-hours enquiries", type: "radio", req: true, auto: true, options: [
+          o("autoqualify","An automated reply that also qualifies or books them"), o("autoreply","An automated reply message only"),
+          o("staffmanual","Staff reply manually after hours"), o("nextday","We reply the next working day"),
+          o("missed","They are often missed"), o("notsure","I'm not sure") ] }
+      ] },
+    { sec: 1, title: "How many enquiries never get a proper reply?", sub: "Missed calls, unread DMs, chats that were seen but never answered.",
+      qs: [
+        { id: "unanswered_enquiries", label: "Roughly what share of enquiries go unanswered or get lost?", type: "radio", req: true, auto: true, options: [
+          o("lt5","Almost none (under 5%)"), o("5_10","5-10%"), o("11_25","11-25%"), o("26_50","26-50%"), o("gt50","More than 50%"), o("notsure","I'm not sure") ] }
+      ] },
+    { sec: 1, title: "How are enquiries captured and qualified?", sub: "Where enquiry details end up, and how your team decides who's a good fit.",
+      qs: [
+        { id: "enquiry_capture_system", label: "Where are new enquiries recorded?", help: "Select all that apply.", type: "multi", req: true, options: [
+          o("crm","CRM"), o("booking","Booking system"), o("spreadsheet","Spreadsheet"), o("whatsapp","WhatsApp chats only"),
+          o("inbox","Email inbox"), o("paper","Notebook / paper"), o("none","Not captured in one place", null) ], exclusive: "none" },
+        { id: "qualification_process", label: "How are enquiries qualified?", type: "radio", req: true, options: [
+          o("automated","Automated: a chat or AI assistant qualifies them first"), o("scripted","Staff ask a set list of questions"),
+          o("informal","Informal: depends on who replies"), o("none","No qualification: every enquiry is handled the same"), o("notsure","I'm not sure") ] }
+      ] },
+    { sec: 2, title: "Turning interest into appointments.", sub: "How enquiries move from conversation to booking.",
+      hint: "Many businesses lose opportunities at this stage. If you don't track it, choose \"I don't know\"; that's useful too.",
+      qs: [
+        { id: "enquiry_to_booking_rate", label: "What percentage of enquiries typically become appointments or sales?", type: "radio", req: true, auto: true, options: [
+          o("lt10","Less than 10%"), o("10_25","10-25%"), o("26_50","26-50%"), o("51_75","51-75%"), o("76_90","76-90%"), o("gt90","90%+"), o("unknown","I don't know") ] }
+      ] },
+    { sec: 2, title: "How do customers book with you?", sub: "Select every way a booking actually happens today.",
+      qs: [
+        { id: "booking_method", label: "Booking methods", type: "multi", req: true, options: [
+          o("online","Online self-booking link / calendar"), o("staffchat","Staff book via WhatsApp or phone"), o("dm","Through social media DMs"),
+          o("email","Email back-and-forth"), o("walkin","Walk-ins only"), o("none","No formal booking process") ], exclusive: "none" }
+      ] },
+    { sec: 2, title: "No-shows and missed appointments.", sub: "Booked customers who don't turn up, or cancel last minute.",
+      qs: [
+        { id: "noshow_rate", label: "Roughly what share of booked appointments are no-shows?", type: "radio", req: true, options: [
+          o("lt5","Under 5%"), o("5_10","5-10%"), o("11_20","11-20%"), o("21_30","21-30%"), o("gt30","More than 30%"),
+          o("notsure","Not sure / we don't track it"), o("na","Not applicable: we don't take appointments") ] },
+        { id: "noshow_recovery_process", label: "What do you do to prevent or recover no-shows?", help: "Select all that apply.", type: "multi", req: true, options: [
+          o("autoremind","Automated reminders before the appointment"), o("manualremind","Manual reminder calls or messages"),
+          o("autoresched","Automated rebooking message after a no-show"), o("manualchase","Staff chase no-shows manually"),
+          o("deposit","Deposit or booking fee"), o("nothing","Nothing currently") ], exclusive: "nothing" }
+      ] },
+    { sec: 2, title: "Can you see where every lead stands right now?", sub: "New, contacted, qualified, booked, won or lost.",
+      qs: [
+        { id: "pipeline_visibility", label: "Pipeline visibility", type: "radio", req: true, auto: true, options: [
+          o("realtime","Yes: a live dashboard shows every lead's stage"), o("crmpartial","We have a CRM but it isn't kept up to date"),
+          o("spreadsheet","We track it in a spreadsheet"), o("heads","It's in people's heads and chat history"), o("none","No, we have no visibility") ] }
+      ] },
+    { sec: 3, title: "What happens after the first enquiry?", sub: "How you follow up with prospects who don't book immediately.",
+      qs: [
+        { id: "unconverted_lead_followup", label: "How do you follow up with interested prospects who don't buy straight away?", help: "Select all that apply.", type: "multi", req: true, options: [
+          o("automated","Automated follow-up sequence"), o("assigned","Assigned salesperson follows up"), o("manual","Manual follow-up when someone has time"),
+          o("depends","Depends on the employee"), o("once","One follow-up message, then we stop"), o("none","We don't have a consistent follow-up") ], exclusive: "none" },
+        { id: "followup_confidence", label: "How confident are you that every interested prospect gets followed up?", type: "slider", min: 1, max: 10, def: 5, req: true,
+          lo: "Not confident", hi: "Completely confident" }
+      ] },
+    { sec: 3, title: "Your existing customers.", sub: "Past customers are often the fastest revenue to recover.",
+      qs: [
+        { id: "existing_customer_database", label: "Do you keep a database of past customers?", type: "radio", req: true, options: [
+          o("crm","Yes, in a CRM with contact details"), o("list","Yes, in a spreadsheet or contact list"),
+          o("scattered","Scattered across phones, WhatsApp and booking tools"), o("none","No customer database") ] },
+        { id: "previous_customer_reactivation", label: "How do you bring past customers back?", help: "Select all that apply.", type: "multi", req: true, options: [
+          o("automated","Automated win-back / rebooking campaigns"), o("promos","Regular promotions or newsletters"), o("occasions","Birthday or anniversary offers"),
+          o("loyalty","Loyalty or membership programme"), o("manual","Occasional manual outreach"), o("nothing","Nothing currently") ], exclusive: "nothing" }
+      ] },
+    { sec: 3, title: "Which customer journeys already run automatically?", sub: "Only tick the ones that happen without anyone having to remember.",
+      qs: [
+        { id: "automated_customer_journeys", label: "Automated journeys", type: "multi", req: true, options: [
+          o("instant","Instant reply to new enquiries"), o("qualify","Lead qualification"), o("reminders","Appointment reminders"),
+          o("reviews","Review requests after a visit"), o("nurture","Follow-up for undecided prospects"), o("reactivate","Reactivation of past customers"),
+          o("rebook","Rebooking / upsell reminders"), o("none","None of these") ], exclusive: "none" }
+      ] },
+    { sec: 4, title: "Which of the following do you currently use?", sub: "This helps us understand your current setup and integration options.",
+      qs: [
+        { id: "current_system", label: "Current systems", type: "multitiles", cols: 3, req: true, options: [
+          o("crm","CRM","db"), o("booking","Booking System","cal"), o("whatsapp","WhatsApp Business","chat"), o("instagram","Instagram","camera"),
+          o("facebook","Facebook","thumb"), o("email","Email","mail"), o("gcal","Google Calendar","cal"), o("payment","Payment System","card"),
+          o("spreadsheet","Spreadsheet","sheet"), o("marketing","Marketing Tools","send"), o("none","None","none"), o("other","Other","dots") ], exclusive: "none" }
+      ] },
+    { sec: 4, title: "What do you believe is the biggest leak in your customer journey?", sub: "In your own words. This shapes the focus of your report.",
+      qs: [
+        { id: "biggest_revenue_leak", label: "Biggest leak right now", type: "textarea", req: false,
+          ph: "Example: We get lots of enquiries but many don't book. / Follow-up after the first enquiry is inconsistent." },
+        { id: "priority_improvement", label: "If we could fix ONE part of your customer journey, what would have the biggest impact?", type: "select", req: true, options: [
+          o("response","Faster response to enquiries"), o("bookings","More booked appointments"), o("noshows","Fewer no-shows"),
+          o("conversion","Better sales conversion"), o("followup","Better follow-up"), o("repeat","More repeat customers"), o("visibility","Clear visibility of my pipeline") ] }
+      ] },
+    { sec: 4, title: "Where should we send your audit findings?", sub: "Almost done. Your personalised report opens right after this step and a copy goes to your email.",
+      contact: true, qs: [] }
+  ];
+
+
+
+  /* ===================== ENGINE START (identical copy in Step 3) ===================== */
+  var AF_ENGINE = (function () {
+    function has(a, v) { return Array.isArray(a) && a.indexOf(v) > -1; }
+    function pick(map, k, d) { return (k in map) ? map[k] : d; }
+    function clamp(x) { return Math.max(0, Math.min(1, x)); }
+    function r(x) { return Math.round(x); }
+
+    // "Badness" 0 (no leak) → 1 (severe leak) per answer
+    var B = {
+      rt: { immediate: 0, m5: .1, m15: .3, h1: .5, sameday: .75, h24: .9, gt24: 1, depends: .6, notsure: .7 },
+      ah: { autoqualify: 0, autoreply: .45, staffmanual: .35, nextday: .8, missed: 1, notsure: .7 },
+      un: { lt5: 0, "5_10": .3, "11_25": .6, "26_50": .85, gt50: 1, notsure: .6 },
+      br: { lt10: 1, "10_25": .75, "26_50": .45, "51_75": .2, "76_90": .08, gt90: 0, unknown: .8 },
+      ql: { automated: 0, scripted: .3, informal: .65, none: .9, notsure: .7 },
+      bm: { online: .1, staffchat: .5, dm: .6, email: .6, walkin: .7, none: 1 },
+      ns: { lt5: 0, "5_10": .3, "11_20": .6, "21_30": .85, gt30: 1, notsure: .7, na: 0 },
+      fu: { automated: .1, assigned: .4, manual: .65, depends: .7, once: .75, none: 1 },
+      pv: { realtime: 0, crmpartial: .45, spreadsheet: .6, heads: .9, none: 1 },
+      db: { crm: 0, list: .35, scattered: .75, none: 1 },
+      ra: { automated: .05, loyalty: .3, promos: .35, occasions: .4, manual: .6, nothing: 1 }
+    };
+    function best(map, arr, d) { // lowest badness among selected
+      if (!Array.isArray(arr) || !arr.length) return d;
+      return Math.min.apply(null, arr.map(function (k) { return pick(map, k, d); }));
+    }
+    function captureBad(a) {
+      var c = a.enquiry_capture_system || [];
+      if (has(c, "crm")) return 0; if (has(c, "booking")) return .25; if (has(c, "spreadsheet")) return .45;
+      if (has(c, "inbox")) return .65; if (has(c, "whatsapp") || has(c, "paper")) return .8; return 1;
+    }
+    function noshowMitigation(a) {
+      var m = 0, x = a.noshow_recovery_process || [];
+      if (has(x, "autoremind")) m += .5; if (has(x, "autoresched")) m += .3; if (has(x, "deposit")) m += .2;
+      if (has(x, "manualremind")) m += .2; if (has(x, "manualchase")) m += .15;
+      return Math.min(.8, m);
+    }
+    function journeysCount(a) { return (a.automated_customer_journeys || []).filter(function (x) { return x !== "none"; }).length; }
+
+    function scores(a) {
+      var resp = .45 * pick(B.rt, a.typical_response_time, .7) + .25 * pick(B.ah, a.afterhours_enquiry_process, .7) + .30 * pick(B.un, a.unanswered_enquiries, .6);
+      resp = .85 * resp + .15 * captureBad(a);
+
+      var nsRaw = pick(B.ns, a.noshow_rate, .7);
+      var ns = clamp(nsRaw * (1 - noshowMitigation(a)));
+      var conv = .40 * pick(B.br, a.enquiry_to_booking_rate, .8) + .20 * pick(B.ql, a.qualification_process, .7) + .20 * best(B.bm, a.booking_method, 1) + .20 * ns;
+      if (a.noshow_rate === "na") conv = (.40 * pick(B.br, a.enquiry_to_booking_rate, .8) + .20 * pick(B.ql, a.qualification_process, .7) + .20 * best(B.bm, a.booking_method, 1)) / .8;
+
+      var conf = Number(a.followup_confidence || 5);
+      var fol = .45 * best(B.fu, a.unconverted_lead_followup, 1) + .30 * ((10 - conf) / 9) + .25 * pick(B.pv, a.pipeline_visibility, .9);
+
+      var ra = a.previous_customer_reactivation || [];
+      var raBad = best(B.ra, ra, 1);
+      var extra = ra.filter(function (x) { return x !== "nothing"; }).length - 1;
+      if (extra > 0) raBad = Math.max(0, raBad - .1 * extra);
+      var ret = .30 * pick(B.db, a.existing_customer_database, .8) + .40 * raBad + .30 * (1 - journeysCount(a) / 7);
+
+      var s = { response: r(clamp(resp) * 100), conversion: r(clamp(conv) * 100), followup: r(clamp(fol) * 100), retention: r(clamp(ret) * 100) };
+      s.overall = r(.30 * s.response + .30 * s.conversion + .25 * s.followup + .15 * s.retention);
+      return s;
+    }
+
+    function category(x) { return x >= 75 ? "Critical" : x >= 50 ? "High" : x >= 25 ? "Moderate" : "Low"; }
+    var AREA_NAME = { response: "Response", conversion: "Conversion", followup: "Follow-Up", retention: "Retention" };
+    function primaryArea(s) {
+      var k = ["response", "conversion", "followup", "retention"].sort(function (x, y) { return s[y] - s[x]; })[0];
+      return AREA_NAME[k];
+    }
+
+    /* Revenue at risk — planning estimate built only from the answers given.
+       Factors below are ArkFlow planning assumptions, shown to the reader on the report. */
+    var EST = {
+      enq: { lt50: 30, "50_100": 75, "101_250": 175, "251_500": 375, "501_1000": 750, "1000p": 1200 },
+      book: { lt10: .07, "10_25": .18, "26_50": .38, "51_75": .63, "76_90": .83, gt90: .92, unknown: .2 },
+      unans: { lt5: .03, "5_10": .075, "11_25": .18, "26_50": .38, gt50: .6, notsure: .1 },
+      slow: { immediate: 0, m5: .02, m15: .05, h1: .1, sameday: .18, h24: .25, gt24: .35, depends: .12, notsure: .15 },
+      noshow: { lt5: .03, "5_10": .075, "11_20": .15, "21_30": .25, gt30: .35, notsure: .1, na: 0 }
+    };
+    function estimate(a, s) {
+      var E = pick(EST.enq, a.monthly_new_enquiries, 75), Bk = pick(EST.book, a.enquiry_to_booking_rate, .2);
+      var V = Math.max(0, Number(a.average_customer_value) || 0);
+      var u = pick(EST.unans, a.unanswered_enquiries, .1), sl = pick(EST.slow, a.typical_response_time, .15);
+      var n = pick(EST.noshow, a.noshow_rate, .1), rec = .5 * (1 - noshowMitigation(a));
+      var parts = {
+        unanswered: E * u * Bk * V,
+        slow: E * (1 - u) * sl * Bk * V,
+        noshow: E * Bk * n * rec * V,
+        followup: E * (1 - u) * (1 - Bk) * .08 * (s.followup / 100) * V
+      };
+      var total = parts.unanswered + parts.slow + parts.noshow + parts.followup;
+      var round = function (x) { return x >= 1000 ? Math.round(x / 100) * 100 : Math.round(x / 10) * 10; };
+      return {
+        monthly: round(total), low: round(total * .7), high: round(total * 1.3), annual: round(total * 12),
+        parts: { unanswered: round(parts.unanswered), slow: round(parts.slow), noshow: round(parts.noshow), followup: round(parts.followup) },
+        inputs: { enquiries: E, bookingRate: Bk, value: V, unansweredRate: u, slowLoss: sl, noshowRate: n, assumedBookingRate: a.enquiry_to_booking_rate === "unknown" }
+      };
+    }
+
+    // Ranking = stage severity + share of the revenue estimate this fix addresses + the priority the person chose
+    var PRIO = { response: ["response"], bookings: ["conversion"], noshows: ["noshow"], conversion: ["conversion"], followup: ["followup"], repeat: ["retention"], visibility: ["visibility"] };
+    function recommendations(a, s, L, est) {
+      var R = [], rt = a.typical_response_time, ch = (L.enquiry_channels || []).slice(0, 3).join(", ") || "your enquiry channels";
+      var prio = PRIO[a.priority_improvement] || [];
+      function add(area, weight, title, body, rev, tags) {
+        tags = (tags || []).concat([area]);
+        var revBonus = rev && est && est.monthly > 0 ? 40 * (est.parts[rev] || 0) / est.monthly : 0;
+        var prioBonus = tags.some(function (t) { return prio.indexOf(t) > -1; }) ? 12 : 0;
+        R.push({ area: AREA_NAME[area], score: Math.round(s[area] * weight + revBonus + prioBonus), title: title, body: body });
+      }
+
+      if (pick(B.rt, rt, .7) >= .3)
+        add("response", pick(B.rt, rt, .7), "Reply to every new enquiry within 5 minutes",
+          "Your typical first reply is \"" + (L.typical_response_time || "unknown") + "\". Set up an instant first response on " + ch + " that acknowledges the enquiry, answers common questions and hands over to your team.", "slow");
+      if (pick(B.ah, a.afterhours_enquiry_process, .7) >= .35)
+        add("response", pick(B.ah, a.afterhours_enquiry_process, .7), "Cover enquiries that arrive after hours",
+          "After-hours enquiries are currently handled as \"" + (L.afterhours_enquiry_process || "unknown") + "\". An automated assistant can reply, qualify and offer booking slots while your team is offline.", "unanswered");
+      if (pick(B.un, a.unanswered_enquiries, .6) >= .3 || captureBad(a) >= .65)
+        add("response", Math.max(pick(B.un, a.unanswered_enquiries, .6), captureBad(a)), "Capture every enquiry in one place",
+          "Bring every channel into one shared inbox linked to a CRM, so no message is left unread and every enquiry has an owner and a status.", "unanswered");
+      if (best(B.bm, a.booking_method, 1) >= .5)
+        add("conversion", best(B.bm, a.booking_method, 1), "Let prospects book themselves",
+          "Bookings currently happen via: " + ((L.booking_method || []).join(", ") || "manual arrangements") + ". Offer a live booking link inside every reply so ready-to-buy prospects can lock in a slot immediately.", null, ["bookings"]);
+      if (pick(B.ql, a.qualification_process, .7) >= .65)
+        add("conversion", pick(B.ql, a.qualification_process, .7), "Qualify enquiries before your team spends time on them",
+          "Use a short, consistent set of qualifying questions (need, budget, timing) so your team prioritises the enquiries most likely to book.");
+      if (pick(B.br, a.enquiry_to_booking_rate, .8) >= .75)
+        add("conversion", pick(B.br, a.enquiry_to_booking_rate, .8),
+          a.enquiry_to_booking_rate === "unknown" ? "Start measuring your enquiry-to-booking rate" : "Lift your enquiry-to-booking rate",
+          a.enquiry_to_booking_rate === "unknown"
+            ? "You don't currently know how many enquiries turn into bookings. Tracking this one number shows exactly where to focus and whether changes are working."
+            : "Only " + (L.enquiry_to_booking_rate || "") + " of enquiries become bookings. Faster replies, clear next steps and a direct booking link at every touchpoint are the quickest levers.", null, ["bookings"]);
+      var nsLeft = pick(B.ns, a.noshow_rate, .7) * (1 - noshowMitigation(a));
+      if (a.noshow_rate !== "na" && nsLeft >= .3)
+        add("conversion", nsLeft, "Cut no-shows with automated reminders",
+          "Send confirmation, 24-hour and same-day reminders automatically, and an instant rebooking message to anyone who misses their slot.", "noshow", ["noshow"]);
+      var fu = best(B.fu, a.unconverted_lead_followup, 1);
+      if (fu >= .4 || Number(a.followup_confidence) <= 6)
+        add("followup", Math.max(fu, (10 - Number(a.followup_confidence || 5)) / 9), "Put follow-up on autopilot",
+          "Your follow-up confidence is " + (a.followup_confidence || "?") + "/10. A multi-step sequence over WhatsApp and email (day 1, 3, 7, 14) makes sure every undecided prospect is followed up without relying on memory.", "followup");
+      if (pick(B.pv, a.pipeline_visibility, .9) >= .45)
+        add("followup", .8 * pick(B.pv, a.pipeline_visibility, .9), "Get a live view of your pipeline",
+          "Track every lead through clear stages (new, contacted, qualified, booked, won, lost) so you can see where deals stall and who needs attention today.", null, ["visibility"]);
+      if (pick(B.db, a.existing_customer_database, .8) >= .35)
+        add("retention", pick(B.db, a.existing_customer_database, .8), "Build one customer database",
+          "Consolidate past customers into a single CRM list with contact details and visit history. It's the foundation for every repeat-business campaign.");
+      if (best(B.ra, a.previous_customer_reactivation, 1) >= .35)
+        add("retention", best(B.ra, a.previous_customer_reactivation, 1), "Bring past customers back",
+          "Run a simple reactivation campaign to customers who haven't returned in 60–90 days, plus timed rebooking reminders based on your typical repeat cycle.");
+      var jc = journeysCount(a);
+      if (jc < 3) {
+        var all = { instant: "instant replies", qualify: "lead qualification", reminders: "appointment reminders", reviews: "review requests", nurture: "nurture follow-up", reactivate: "reactivation", rebook: "rebooking reminders" };
+        var missing = Object.keys(all).filter(function (k) { return !has(a.automated_customer_journeys, k); }).map(function (k) { return all[k]; });
+        add("retention", 1 - jc / 7, "Automate the key customer journeys",
+          "Only " + jc + " of 7 core journeys run automatically today. Missing: " + missing.slice(0, 4).join(", ") + (missing.length > 4 ? " and more" : "") + ".");
+      }
+      R.sort(function (x, y) { return y.score - x.score; });
+      R.forEach(function (x) { x.impact = x.score >= 60 ? "High" : x.score >= 30 ? "Medium" : "Low"; });
+      return R;
+    }
+
+    function run(a, L) {
+      var s = scores(a), est = estimate(a, s);
+      return { scores: s, category: category(s.overall), primaryArea: primaryArea(s), estimate: est, recommendations: recommendations(a, s, L || {}, est) };
+    }
+    return { run: run, category: category };
+  })();
+  /* ===================== ENGINE END ===================== */
+
+  /* ---------- load answers ---------- */
+  var QBYID = {}; SCREENS.forEach(function (sc) { sc.qs.forEach(function (q) { QBYID[q.id] = q; }); });
+  function labelOf(id, code) { var q = QBYID[id]; if (!q || !q.options) return code; for (var i = 0; i < q.options.length; i++) if (q.options[i].v === code) return q.options[i].l; return code; }
+  function labelsFor(A) { var L = {}; Object.keys(A).forEach(function (id) { var v = A[id]; L[id] = Array.isArray(v) ? v.map(function (c) { return labelOf(id, c); }) : (QBYID[id] && QBYID[id].options ? labelOf(id, v) : v); }); return L; }
+  function fromB64url(s) { s = s.replace(/-/g, "+").replace(/_/g, "/"); while (s.length % 4) s += "="; return decodeURIComponent(escape(atob(s))); }
+
+  var params = new URLSearchParams(window.location.search), data = null, session = null;
+  try { session = JSON.parse(sessionStorage.getItem("afa_result") || "null"); } catch (e) {}
+  try { if (params.get("r")) data = JSON.parse(fromB64url(params.get("r"))); } catch (e) { data = null; }
+  if (!data && session) data = { a: session.answers, b: session.business_name, d: new Date().toISOString().slice(0, 10) };
+
+  var main = document.getElementById("afr-main");
+  function esc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
+
+  if (!data || !data.a || !data.a.business_type) {
+    main.innerHTML = '<div class="empty card"><div class="eyebrow">Revenue Leak Audit</div><h2>We couldn\'t find your audit answers.</h2><p>The link may be incomplete. Open the full link from your email, or take the audit again (it takes 3–5 minutes).</p><a class="btn btn-primary" href="' + esc(AF_CONFIG.startUrl) + '">Start the Audit</a></div>';
+    return;
+  }
+
+  var A = data.a, L = labelsFor(A), R = AF_ENGINE.run(A, L), S = R.scores, E = R.estimate;
+  var biz = data.b || (session && session.business_name) || "Your business";
+  var firstName = session && session.first_name ? session.first_name : "";
+  var ownWords = session && session.biggest_revenue_leak ? session.biggest_revenue_leak : "";
+  var dateStr = (function () { try { return new Date(data.d + "T00:00:00").toLocaleDateString("en-SG", { day: "numeric", month: "long", year: "numeric" }); } catch (e) { return data.d; } })();
+
+  /* ---------- helpers ---------- */
+  var STATUS = { Low: "var(--s-low)", Moderate: "var(--s-mod)", High: "var(--s-high)", Critical: "var(--s-crit)" };
+  var VERDICT = { Low: "Working well", Moderate: "Some gaps to close", High: "Significant leak", Critical: "Urgent: losing revenue here" };
+  function cat(x) { return AF_ENGINE.category(x); }
+  function badge(c, text) { return '<span class="badge" style="--c:' + STATUS[c] + '"><i></i>' + esc(text || c) + "</span>"; }
+  function money(n) { return "S$" + Math.round(n).toLocaleString("en-SG"); }
+  function pct(x) { return Math.round(x * 100) + "%"; }
+  function joinL(x) { return Array.isArray(x) && x.length ? x.join(", ") : "—"; }
+  var CHECK = '<svg viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg>';
+  var ICON = {
+    Response: '<svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-3-6.7"/><path d="M21 4v5h-5"/></svg>',
+    Conversion: '<svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>',
+    "Follow-Up": '<svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h10M4 18h6"/><path d="M17 15l3 3-3 3"/></svg>',
+    Retention: '<svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 4.5a3.5 3.5 0 0 1 0 7M21.5 20a6.5 6.5 0 0 0-4-6"/></svg>'
+  };
+
+  /* ---------- gauge (semicircle) ---------- */
+  function gauge(score) {
+    var R0 = 110, cx = 140, cy = 140, a0 = Math.PI, len = Math.PI * R0;
+    var path = "M " + (cx - R0) + " " + cy + " A " + R0 + " " + R0 + " 0 0 1 " + (cx + R0) + " " + cy;
+    var ticks = [25, 50, 75].map(function (t) {
+      var a = a0 - (t / 100) * Math.PI, x1 = cx + Math.cos(a) * (R0 - 14), y1 = cy - Math.sin(a) * (R0 - 14), x2 = cx + Math.cos(a) * (R0 + 14), y2 = cy - Math.sin(a) * (R0 + 14);
+      return '<line x1="' + x1 + '" y1="' + y1 + '" x2="' + x2 + '" y2="' + y2 + '" stroke="#0d1b3a" stroke-width="3"/>';
+    }).join("");
+    return '<svg viewBox="0 0 280 160" role="img" aria-label="Overall revenue leak score ' + score + ' out of 100">' +
+      '<defs><linearGradient id="afr-g" x1="0" x2="1"><stop offset="0" stop-color="#1f6bff"/><stop offset="1" stop-color="#8cc0ff"/></linearGradient></defs>' +
+      '<path d="' + path + '" fill="none" stroke="rgba(90,140,255,.13)" stroke-width="20" stroke-linecap="round"/>' +
+      '<path id="afr-arc" d="' + path + '" fill="none" stroke="url(#afr-g)" stroke-width="20" stroke-linecap="round" stroke-dasharray="' + len + '" stroke-dashoffset="' + len + '" style="transition:stroke-dashoffset 1.4s cubic-bezier(.2,.8,.2,1)" data-target="' + (len * (1 - score / 100)) + '"/>' +
+      ticks + '<text x="' + (cx - R0) + '" y="158" fill="#6f7fa3" font-size="11" text-anchor="middle">0</text><text x="' + (cx + R0) + '" y="158" fill="#6f7fa3" font-size="11" text-anchor="middle">100</text></svg>';
+  }
+
+  /* ---------- findings per stage ---------- */
+  var nsLabel = A.noshow_rate === "na" ? "Not applicable (no appointments)" : L.noshow_rate;
+  var jc = (A.automated_customer_journeys || []).filter(function (x) { return x !== "none"; }).length;
+  var STAGES = [
+    { name: "Response", key: "response", desc: "How fast and how reliably enquiries get a reply.", f: [
+      ["Typical first reply", L.typical_response_time], ["After hours", L.afterhours_enquiry_process],
+      ["Enquiries going unanswered", L.unanswered_enquiries], ["Enquiries recorded in", joinL(L.enquiry_capture_system)] ] },
+    { name: "Conversion", key: "conversion", desc: "How many enquiries become booked, attended appointments.", f: [
+      ["Enquiry-to-booking rate", L.enquiry_to_booking_rate], ["Qualification", L.qualification_process],
+      ["Booking happens via", joinL(L.booking_method)], ["No-show rate", nsLabel + (A.noshow_rate !== "na" ? " · Prevention: " + joinL(L.noshow_recovery_process) : "")] ] },
+    { name: "Follow-Up", key: "followup", desc: "What happens to prospects who don't book straight away.", f: [
+      ["Follow-up method", joinL(L.unconverted_lead_followup)], ["Follow-up confidence", (A.followup_confidence || "?") + " / 10"],
+      ["Pipeline visibility", L.pipeline_visibility] ] },
+    { name: "Retention", key: "retention", desc: "Whether past customers are brought back to buy again.", f: [
+      ["Customer database", L.existing_customer_database], ["Reactivation", joinL(L.previous_customer_reactivation)],
+      ["Automated journeys", jc + " of 7 running" + (jc ? " (" + joinL(L.automated_customer_journeys) + ")" : "")] ] }
+  ];
+
+  /* ---------- funnel numbers ---------- */
+  var I = E.inputs, enq = I.enquiries, answered = enq * (1 - I.unansweredRate), booked = enq * I.bookingRate, attended = booked * (1 - I.noshowRate);
+  var FUN = [
+    ["Enquiries", enq, "New enquiries per month (midpoint of " + L.monthly_new_enquiries + ")"],
+    ["Get a reply", answered, "Estimated enquiries that receive a reply"],
+    ["Book", booked, "Estimated bookings at " + (I.assumedBookingRate ? "an assumed 20%" : "your " + L.enquiry_to_booking_rate) + " booking rate"],
+    ["Show up", attended, A.noshow_rate === "na" ? "No appointment no-shows" : "After an estimated " + pct(I.noshowRate) + " no-show rate"]
+  ];
+  var LEAKS = [
+    "~" + Math.round(enq - answered) + " never get a proper reply",
+    "~" + Math.max(0, Math.round(answered - booked)) + " replied to but don't book",
+    A.noshow_rate === "na" ? "" : "~" + Math.round(booked - attended) + " don't turn up"
+  ];
+
+  /* ---------- summary text ---------- */
+  var oc = R.category, pa = R.primaryArea, paScore = S[{ Response: "response", Conversion: "conversion", "Follow-Up": "followup", Retention: "retention" }[pa]];
+  var ranked = STAGES.slice().sort(function (x, y) { return S[x.key] - S[y.key]; });
+  var strongest = ranked[0];
+  var summary =
+    "<p>" + (firstName ? esc(firstName) + ", " : "") + "<strong>" + esc(biz) + "</strong> scored <strong>" + S.overall + "/100</strong> on the Revenue Leak Index, a <strong>" + oc.toLowerCase() + "</strong> level of leakage. " +
+    "The biggest leak is in <strong>" + pa + "</strong> (" + paScore + "/100)" + (strongest.name !== pa ? ", and the smallest is in <strong>" + strongest.name + "</strong> (" + S[strongest.key] + "/100)." : ".") + "</p>" +
+    (E.monthly > 0 ? "<p>Based on your answers, an estimated <strong>" + money(E.monthly) + " per month</strong> (range " + money(E.low) + " – " + money(E.high) + ") may be slipping through enquiries that go unanswered, slow replies, no-shows and missed follow-up. That's roughly <strong>" + money(E.annual) + " a year</strong>.</p>" : "") +
+    "<p>Your priority is <strong>" + esc(L.priority_improvement || "") + "</strong>. The action plan below starts with the changes most likely to recover revenue first.</p>";
+
+  /* ---------- render ---------- */
+  var recs = R.recommendations;
+  var h = "";
+  h += '<section class="card rise" style="margin-top:22px">' +
+    '<div class="eyebrow">Revenue Leak Audit Report</div>' +
+    "<h1>" + esc(biz) + "<br><em>where revenue is leaking</em></h1>" +
+    '<div class="meta"><span class="chip">' + esc(L.business_type) + '</span><span class="chip">' + esc(L.business_profile) + '</span><span class="chip">' + esc(dateStr) + '</span></div>' +
+    '<div class="hero"><div class="gauge">' + gauge(S.overall) + '<div class="gauge-num"><b>' + S.overall + '</b><small>Revenue Leak Index</small></div>' +
+      '<div style="margin-top:6px">' + badge(oc, oc + " leakage") + '</div><div class="scale-note">0 = no leaks · 100 = severe leaks</div></div>' +
+    '<div class="summary">' + summary + "</div></div>" +
+    '<div class="kpis">' +
+      '<div class="kpi"><div class="k">Est. monthly revenue at risk</div><div class="v">' + money(E.monthly) + '</div><div class="n">Range ' + money(E.low) + " – " + money(E.high) + "</div></div>" +
+      '<div class="kpi"><div class="k">Est. yearly revenue at risk</div><div class="v">' + money(E.annual) + '</div><div class="n">If nothing changes for 12 months</div></div>' +
+      '<div class="kpi"><div class="k">Biggest leak</div><div class="v">' + pa + '</div><div class="n">' + paScore + "/100 · " + VERDICT[cat(paScore)] + "</div></div>" +
+    "</div></section>";
+
+  // stage scores
+  h += '<section class="card block rise"><div class="eyebrow">Leak score by stage</div><h2>Your 4 customer journey stages</h2><p class="sub">Each stage is scored 0–100 from your answers. Higher scores mean more revenue is leaking at that stage.</p><div class="stages">';
+  STAGES.forEach(function (st) {
+    var sc = S[st.key], c = cat(sc), prim = st.name === pa;
+    h += '<div class="stage' + (prim ? " primary" : "") + '"><div class="stage-head"><div class="stage-name"><span class="stage-ico">' + ICON[st.name] + "</span>" + st.name + (prim ? ' <span class="primary-tag">Biggest leak</span>' : "") + '</div><div class="stage-score">' + sc + "<small>/100</small></div></div>" +
+      '<div class="meter" data-tip="' + st.name + ": " + sc + '/100 (' + c + ')"><i data-w="' + sc + '"></i><span class="tick" style="left:25%"></span><span class="tick" style="left:50%"></span><span class="tick" style="left:75%"></span></div>' +
+      '<div class="meter-scale"><span>Low</span><span>Moderate</span><span>High</span><span>Critical</span></div>' +
+      '<div class="stage-verdict">' + badge(c) + "<span>" + VERDICT[c] + " · " + st.desc + "</span></div>" +
+      '<ul class="findings">' + st.f.map(function (x) { return "<li><span>" + esc(x[0]) + ": <b>" + esc(x[1] || "—") + "</b></span></li>"; }).join("") + "</ul></div>";
+  });
+  h += "</div></section>";
+
+  // funnel + revenue breakdown
+  var maxF = FUN[0][1] || 1;
+  var funnel = FUN.map(function (r, i) {
+    var w = Math.max(14, (r[1] / maxF) * 100), alpha = [1, .82, .66, .52][i];
+    var row = '<div class="f-row"><div class="f-label">' + r[0] + '</div><div class="f-track"><div class="f-bar" data-w="' + w + '" style="width:0;background:rgba(31,107,255,' + alpha + ')" data-tip="' + esc(r[2]) + ": ~" + Math.round(r[1]) + '">' + Math.round(r[1]) + "</div></div></div>";
+    if (i < LEAKS.length && LEAKS[i]) row += '<div class="f-leak"><div></div><div>' + esc(LEAKS[i]) + "</div></div>";
+    return row;
+  }).join("");
+  var parts = [["Unanswered enquiries", E.parts.unanswered], ["Slow first response", E.parts.slow], ["No-shows not recovered", E.parts.noshow], ["Missed follow-up", E.parts.followup]];
+  var maxP = Math.max.apply(null, parts.map(function (p) { return p[1]; })) || 1;
+  var bars = parts.map(function (p) {
+    return '<div><div class="hb-top"><span>' + p[0] + "</span><b>" + money(p[1]) + '</b></div><div class="hb-track" data-tip="' + p[0] + ": " + money(p[1]) + ' per month"><i data-w="' + (p[1] / maxP * 100) + '"></i></div></div>';
+  }).join("");
+  h += '<section class="two block rise">' +
+    '<div class="panel"><div class="panel-title">Where enquiries drop out each month</div><div class="panel-sub">Estimated from your enquiry volume, reply coverage, booking and no-show answers.</div><div class="funnel">' + funnel + '</div>' +
+      '<div class="f-note">Numbers are rounded estimates for a typical month' + (I.assumedBookingRate ? ". You didn't know your booking rate, so 20% is assumed." : ".") + "</div></div>" +
+    '<div class="panel"><div class="panel-title">Revenue at risk by leak source</div><div class="panel-sub">Per month, at ' + money(I.value) + ' per customer.</div><div class="hbars">' + bars + '</div><div class="hb-total"><span>Total estimate</span><span>' + money(E.monthly) + "/mo</span></div></div>" +
+  "</section>";
+
+  // business snapshot
+  h += '<section class="card block rise"><div class="eyebrow">Your business snapshot</div><h2>What you told us</h2><div class="profile">' +
+    [["Business type", L.business_type], ["Team size", L.business_profile], ["New enquiries / month", L.monthly_new_enquiries],
+     ["Typical customer value", money(I.value)], ["Enquiry channels", joinL(L.enquiry_channels)], ["Current systems", joinL(L.current_system)]]
+      .map(function (x) { return '<div class="pf"><div class="k">' + x[0] + '</div><div class="v">' + esc(x[1]) + "</div></div>"; }).join("") +
+    "</div>" + (ownWords ? '<div class="quote">"' + esc(ownWords) + '"<small>Your biggest leak, in your words</small></div>' : "") + "</section>";
+
+  // recommendations
+  h += '<section class="card block rise"><div class="eyebrow">Recommendations</div><h2>What to fix, in priority order</h2><p class="sub">Ranked by how much each gap is likely costing you, based on your scores.</p><div class="recs">';
+  if (!recs.length) h += '<div class="rec"><div class="rec-n">✓</div><div><div class="rec-title">No major leaks detected</div><div class="rec-body">Your answers show strong processes across all four stages. The next gains usually come from fine-tuning messaging and measuring results more closely.</div></div></div>';
+  recs.forEach(function (r, i) {
+    var ic = r.impact === "High" ? "Critical" : r.impact === "Medium" ? "Moderate" : "Low";
+    h += '<div class="rec"><div class="rec-n">' + (i + 1) + '</div><div><div class="rec-top"><span class="rec-title">' + esc(r.title) + '</span><span class="tag impact" style="--c:' + STATUS[ic] + '"><i></i>' + r.impact + ' impact</span><span class="tag">' + esc(r.area) + '</span></div><div class="rec-body">' + esc(r.body) + "</div></div></div>";
+  });
+  h += "</div></section>";
+
+  // 90-day plan
+  if (recs.length) {
+    var phases = [["Days 1–30", "Quick wins on the biggest leaks", recs.slice(0, 2)], ["Days 31–60", "Build the system", recs.slice(2, 4)], ["Days 61–90", "Compound the gains", recs.slice(4, 6)]];
+    h += '<section class="card block rise"><div class="eyebrow">90-day action plan</div><h2>A realistic order to tackle this</h2><div class="plan">' +
+      phases.filter(function (p) { return p[2].length; }).map(function (p) {
+        return '<div class="phase"><div class="phase-k">' + p[0] + '</div><div class="phase-t">' + p[1] + "</div><ul>" + p[2].map(function (r) { return "<li>" + CHECK + "<span>" + esc(r.title) + "</span></li>"; }).join("") + "</ul></div>";
+      }).join("") + "</div></section>";
+  }
+
+  // CTA
+  var hasBook = AF_CONFIG.bookingUrl && AF_CONFIG.bookingUrl.indexOf("PASTE_") !== 0;
+  var waText = encodeURIComponent("Hi ArkFlow, I just completed the Revenue Leak Audit for " + biz + " (score " + S.overall + "/100). I'd like to discuss the findings.");
+  h += '<section class="card cta block rise"><div><div class="eyebrow">Next step</div><h2>Want help fixing these leaks?</h2>' +
+    "<p>ArkFlow Solutions builds AI-powered response, qualification and follow-up systems for service businesses. On a 30-minute call we'll walk through this report with you and show what a system built around your " + pa.toLowerCase() + " leak would look like.</p>" +
+    "<ul><li>" + CHECK + "<span>Walk through your scores and the top 3 fixes</span></li><li>" + CHECK + "<span>See how your enquiry-to-booking flow could run automatically</span></li><li>" + CHECK + "<span>Ask about our one-month pilot, custom-built for your business</span></li></ul></div>" +
+    '<div class="cta-btns">' +
+      (hasBook ? '<a class="btn btn-primary" href="' + esc(AF_CONFIG.bookingUrl) + '" target="_blank" rel="noopener">Book Your 30-Minute Audit Call<svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>' : "") +
+      (AF_CONFIG.whatsappNumber ? '<a class="btn btn-ghost" href="https://wa.me/' + AF_CONFIG.whatsappNumber.replace(/\D/g, "") + "?text=" + waText + '" target="_blank" rel="noopener">Message us on WhatsApp</a>' : "") +
+      '<div class="cta-note">No obligation. A copy of this report has been sent to your email.</div></div></section>';
+
+  // methodology
+  var slowPct = pct(I.slowLoss), unPct = pct(I.unansweredRate);
+  h += '<details class="method card block rise"><summary>How this report is calculated</summary><div class="method-body">' +
+    "<p><b>Leak scores.</b> Each of your answers is mapped to a severity between 0 (no leak) and 1 (severe leak). Answers are weighted within each stage and converted to a 0–100 score. The overall Revenue Leak Index weights Response 30%, Conversion 30%, Follow-Up 25% and Retention 15%. Bands: 0–24 Low, 25–49 Moderate, 50–74 High, 75–100 Critical.</p>" +
+    "<p><b>Revenue at risk.</b> A planning estimate built only from your answers. It uses the midpoint of your enquiry range and booking-rate range, and treats each booking as worth your stated customer value. The factors below are ArkFlow planning assumptions, not industry statistics. The range shown is ±30%.</p>" +
+    "<table><tr><th>Input used</th><th>Value</th></tr>" +
+      "<tr><td>Monthly enquiries (midpoint of " + esc(L.monthly_new_enquiries) + ")</td><td>" + enq + "</td></tr>" +
+      "<tr><td>Booking rate" + (I.assumedBookingRate ? " (assumed: you answered \"I don't know\")" : " (midpoint of " + esc(L.enquiry_to_booking_rate) + ")") + "</td><td>" + pct(I.bookingRate) + "</td></tr>" +
+      "<tr><td>Value per customer</td><td>" + money(I.value) + "</td></tr>" +
+      "<tr><td>Enquiries unanswered (from \"" + esc(L.unanswered_enquiries) + "\")</td><td>" + unPct + "</td></tr>" +
+      "<tr><td>Replied-to enquiries lost to slow replies (assumption for \"" + esc(L.typical_response_time) + "\")</td><td>" + slowPct + "</td></tr>" +
+      "<tr><td>No-show rate (from \"" + esc(nsLabel) + "\")</td><td>" + pct(I.noshowRate) + "</td></tr>" +
+      "<tr><td>Share of no-shows recoverable with better reminders and rebooking</td><td>up to 50%</td></tr>" +
+      "<tr><td>Undecided prospects recoverable with structured follow-up (scaled by your Follow-Up score)</td><td>up to 8%</td></tr>" +
+    "</table><p>Retention leaks are scored but not included in the revenue figure, because repeat-purchase value varies too widely to estimate from these answers.</p></div></details>";
+
+  main.innerHTML = h;
+
+
+  /* ---------- animate ---------- */
+  requestAnimationFrame(function () {
+    setTimeout(function () {
+      var arc = document.getElementById("afr-arc"); if (arc) arc.style.strokeDashoffset = arc.getAttribute("data-target");
+      root.querySelectorAll("[data-w]").forEach(function (el) { el.style.width = el.getAttribute("data-w") + "%"; });
+    }, 150);
+  });
+  root.querySelectorAll(".rise").forEach(function (el, i) { el.style.animationDelay = (i * 0.08) + "s"; });
+
+  /* ---------- tooltips ---------- */
+  var tip = document.getElementById("afr-tip");
+  function showTip(e) { var t = e.target.closest("[data-tip]"); if (!t) return; tip.textContent = t.getAttribute("data-tip"); tip.style.opacity = 1; moveTip(e); }
+  function moveTip(e) { var x = e.clientX + 14, y = e.clientY + 14; if (x + 270 > window.innerWidth) x = e.clientX - 270; tip.style.left = x + "px"; tip.style.top = y + "px"; }
+  root.addEventListener("mouseover", showTip);
+  root.addEventListener("mousemove", function (e) { if (tip.style.opacity == 1) moveTip(e); });
+  root.addEventListener("mouseout", function (e) { if (e.target.closest("[data-tip]")) tip.style.opacity = 0; });
+
+  /* ---------- actions ---------- */
+  document.getElementById("afr-print").addEventListener("click", function () { var d = root.querySelector("details.method"); if (d) d.open = true; window.print(); });
+  document.getElementById("afr-copy").addEventListener("click", function () {
+    var url = window.location.href, lbl = document.getElementById("afr-copy-lbl");
+    function done() { lbl.textContent = "Link copied"; setTimeout(function () { lbl.textContent = "Copy link"; }, 2000); }
+    if (navigator.clipboard) navigator.clipboard.writeText(url).then(done, function () { window.prompt("Copy this link:", url); });
+    else window.prompt("Copy this link:", url);
+  });
+  document.title = "Revenue Leak Audit · " + biz + " | ArkFlow Solutions";
+
+  /* ---------- ArkFlow chat widget (loaded once) ---------- */
+  (function () {
+    var id = AF_CONFIG.chatWidgetId;
+    if (!id) return;
+    if (window.__afChatLoaded || document.querySelector('script[data-widget-id="' + id + '"]')) return;
+    window.__afChatLoaded = true;
+    var w = document.createElement("script");
+    w.src = "https://widgets.leadconnectorhq.com/loader.js";
+    w.setAttribute("data-resources-url", "https://widgets.leadconnectorhq.com/chat-widget/loader.js");
+    w.setAttribute("data-widget-id", id);
+    w.async = true;
+    document.body.appendChild(w);
+  })();
+})();
+</script>

@@ -1,0 +1,104 @@
+<!--
+  ArkFlow — Revenue Leak Audit funnel, report step
+  Fix for the dead "Book Your 30-Minute Audit Call" button
+  Prepared 31 October 2026
+
+  WHAT IS WRONG
+  The report page at /leak-audit-report links its main CTA to:
+
+      https://link.arkflowsolutions.com/widget/booking/dVmkLzktSpMYKEIXNBpz
+
+  That calendar was retired. It returns 404. Anyone who finishes the
+  22-question audit, reads their report and clicks the one button that
+  matters lands on an error page.
+
+  THE REPLACEMENT, verified 31 October 2026:
+
+      https://go.arkflowsolutions.com/widget/booking/NuxqCMoH5NOnYwkbxMTr   200
+      https://go.arkflowsolutions.com/js/form_embed.js                      200
+
+  Note the host changes too. The calendar lives on go.*, the funnel
+  pages live on link.*, and neither host serves the other's paths.
+
+  Two options below. OPTION A is the one-line fix and keeps the report
+  exactly as it looks today. OPTION B embeds the calendar into the page
+  instead of linking out.
+-->
+
+
+<!-- ══════════════════════════════════════════════════════════════
+     OPTION A — RECOMMENDED. Replace the button's href, nothing else.
+
+     This is your existing markup with one URL changed. Same classes,
+     same arrow, same layout, same WhatsApp button beside it. Find the
+     <div class="cta-btns"> block on the report step and replace the
+     first anchor with this one.
+     ══════════════════════════════════════════════════════════════ -->
+
+<a class="btn btn-primary"
+   href="https://go.arkflowsolutions.com/widget/booking/NuxqCMoH5NOnYwkbxMTr"
+   target="_blank"
+   rel="noopener">Book Your 30-Minute Audit Call<svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
+
+
+<!-- For reference, the whole block as it should read. The WhatsApp
+     anchor and the note are unchanged; only the first href differs.
+     The {{business}} and {{score}} placeholders below are whatever
+     your funnel already substitutes into the WhatsApp message — leave
+     that part exactly as you find it rather than copying mine, which
+     has my test data baked in. -->
+
+<div class="cta-btns">
+  <a class="btn btn-primary"
+     href="https://go.arkflowsolutions.com/widget/booking/NuxqCMoH5NOnYwkbxMTr"
+     target="_blank"
+     rel="noopener">Book Your 30-Minute Audit Call<svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></a>
+
+  <!-- unchanged -->
+  <a class="btn btn-ghost" href="https://wa.me/6587655809?text=..." target="_blank" rel="noopener">Message us on WhatsApp</a>
+
+  <div class="cta-note">No obligation. A copy of this report has been sent to your email.</div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════════════
+     OPTION B — embed the calendar in the report instead of linking out.
+
+     This is the snippet you sent, cleaned up. It puts the booking
+     calendar directly on the report page, so someone can pick a slot
+     without a second click.
+
+     THREE THINGS TO KNOW BEFORE USING IT:
+
+     1. form_embed.js must load ONCE per page. If the report step
+        already loads it for another widget, do not add it again —
+        keep the <iframe> and drop the <script>.
+
+     2. The id suffix is a timestamp GoHighLevel generates to keep
+        multiple embeds on one page distinct. If you ever put two
+        widgets on the same page, they need different ids.
+
+     3. It is heavier than a link: the calendar loads for every visitor
+        who reaches the report, not only the ones who want to book.
+        If the report page starts feeling slow, Option A is the reason
+        it is the recommended one.
+     ══════════════════════════════════════════════════════════════ -->
+
+<iframe src="https://go.arkflowsolutions.com/widget/booking/NuxqCMoH5NOnYwkbxMTr"
+        allow="payment"
+        style="width:100%;border:none;overflow:hidden;"
+        scrolling="no"
+        title="Book a 30-minute audit call with ArkFlow"
+        id="NuxqCMoH5NOnYwkbxMTr_1793410680001"></iframe>
+<script src="https://go.arkflowsolutions.com/js/form_embed.js" type="text/javascript"></script>
+
+
+<!--
+  AFTER YOU PASTE IT, CHECK THE ONE THING THAT MATTERS:
+  open the report step, click through to the calendar, and confirm you
+  see "Discovery Booking Call · 1 hr · Asia/Singapore (GMT+8)" with
+  real time slots. That is what the working calendar renders.
+
+  WHILE YOU ARE IN THERE: delete the test contact this check created —
+  "ArkFlow Funnel Test (delete me)", arkflowsolutions.sg+audittest@gmail.com.
+-->
